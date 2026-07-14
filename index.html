@@ -100,6 +100,8 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--white);transition:width .35s var(--ease);}
 .nav-links a:hover{color:var(--white);}
 .nav-links a:hover::after{width:100%;}
+.nav-links a.active{color:var(--white);}
+.nav-links a.active::after{width:100%;background:var(--accent);}
 .nav-cta{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;}
 .nav-social{display:flex;align-items:center;gap:12px;padding-right:16px;border-right:1px solid var(--line);flex:0 0 auto;}
 .nav-social a{color:var(--dim);display:flex;transition:color .3s var(--ease),transform .3s var(--ease);}
@@ -116,6 +118,38 @@ nav{display:flex;align-items:center;justify-content:space-between;}
   .nav-links{display:none;}
   .nav-cta .btn{display:none;}
   .burger{display:flex;}
+}
+
+/* ---------- scroll progress + side dots ---------- */
+#scrollProgress{position:fixed;top:0;left:0;height:2.5px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--white));
+  z-index:200;transition:width .1s linear;}
+.side-dots{
+  position:fixed;right:26px;top:50%;transform:translateY(-50%);
+  z-index:90;display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+.side-dots::before{
+  content:'';position:absolute;left:50%;top:-30px;bottom:-30px;width:1px;
+  background:var(--line);transform:translateX(-50%);z-index:-1;
+}
+.dot-link{
+  position:relative;width:9px;height:9px;border-radius:50%;
+  border:1px solid var(--line-strong);background:var(--black);
+  transition:all .35s var(--ease);display:block;
+}
+.dot-link:hover{border-color:var(--white);transform:scale(1.3);}
+.dot-link.active{background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 12px 2px var(--accent-dim);transform:scale(1.35);}
+.dot-tip{
+  position:absolute;right:22px;top:50%;transform:translateY(-50%) translateX(4px);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;
+  color:var(--dim);white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
+}
+.dot-link:hover .dot-tip,.dot-link.active .dot-tip{opacity:1;transform:translateY(-50%) translateX(0);}
+.dot-link.active .dot-tip{color:var(--white);}
+@media (max-width:960px){
+  .side-dots{display:none;}
 }
 
 /* ---------- hero ---------- */
@@ -330,6 +364,16 @@ footer{padding:70px 0 40px;}
 <div class="grain" style="filter:url(#noiseFilter);"></div>
 <div class="vignette"></div>
 
+<div id="scrollProgress"></div>
+
+<nav class="side-dots" aria-label="Section navigation">
+  <a href="#hero" class="dot-link" data-target="hero"><span class="dot-tip">Home</span></a>
+  <a href="#work" class="dot-link" data-target="work"><span class="dot-tip">Work</span></a>
+  <a href="#process" class="dot-link" data-target="process"><span class="dot-tip">Process</span></a>
+  <a href="#order" class="dot-link" data-target="order"><span class="dot-tip">Order</span></a>
+  <a href="#contact" class="dot-link" data-target="contact"><span class="dot-tip">Contact</span></a>
+</nav>
+
 <!-- NAV -->
 <header id="siteHeader">
   <div class="wrap">
@@ -363,7 +407,7 @@ footer{padding:70px 0 40px;}
 <main id="top">
 
   <!-- HERO -->
-  <section class="hero">
+  <section id="hero" class="hero">
     <div class="wrap">
       <div class="hero-top-row reveal">
         <div class="eyebrow" style="margin-bottom:0;">TAKING NEW ORDERS</div>
@@ -376,7 +420,7 @@ footer{padding:70px 0 40px;}
         <h1 class="reveal">Cover art for<br>artists who<br><span class="outline">mean it.</span></h1>
       </div>
       <div class="hero-meta reveal">
-        <p class="hero-sub">Made from scratch. Any genre. Starting at $35.</p>
+        <p class="hero-sub">Made from scratch. Any genre. Priced around your budget.</p>
         <div class="hero-cta">
           <a href="#work" class="btn"><span>View Work</span></a>
           <a href="#order" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
@@ -387,8 +431,8 @@ footer{padding:70px 0 40px;}
 
   <div class="marquee-wrap">
     <div class="marquee" id="marquee">
-      <span><b>Original Cover Art</b> · Any Genre · <b>From $35</b> · Now Booking · </span>
-      <span><b>Original Cover Art</b> · Any Genre · <b>From $35</b> · Now Booking · </span>
+      <span><b>Original Cover Art</b> · Any Genre · <b>Every Budget Welcome</b> · Now Booking · </span>
+      <span><b>Original Cover Art</b> · Any Genre · <b>Every Budget Welcome</b> · Now Booking · </span>
     </div>
   </div>
 
@@ -420,7 +464,7 @@ footer{padding:70px 0 40px;}
         <div class="step">
           <div class="num">02</div>
           <h3>Get a quote</h3>
-          <p>I reply with a price and timeframe — usually within a day or two.</p>
+          <p>I reply with a quote and timeframe based on your budget — usually within a day or two.</p>
         </div>
         <div class="step">
           <div class="num">03</div>
@@ -434,8 +478,8 @@ footer{padding:70px 0 40px;}
         </div>
       </div>
       <div class="price-line reveal">
-        <span>Cover art starts at</span>
-        <span class="price-badge">From <b>$35</b></span>
+        <span>Got a budget in mind?</span>
+        <span class="price-badge">Tell me — I'll work with it</span>
       </div>
     </div>
   </section>
@@ -482,6 +526,10 @@ footer{padding:70px 0 40px;}
                 <label for="deadline">Deadline (optional)</label>
                 <input type="text" id="deadline" name="deadline" placeholder="e.g. March 5, or 'flexible'">
               </div>
+            </div>
+            <div class="field">
+              <label for="budget">Budget (optional)</label>
+              <input type="text" id="budget" name="budget" placeholder="e.g. flexible, or a range you have in mind">
             </div>
             <div class="field">
               <label for="brief">What do you want it to have?</label>
@@ -604,11 +652,31 @@ document.querySelectorAll('a,button,.card,input,textarea,select,.file-drop').for
   el.addEventListener('mouseleave', ()=>ring.classList.remove('grow'));
 });
 
-/* ---------- header scroll state ---------- */
+/* ---------- header scroll state + progress bar ---------- */
 const header = document.getElementById('siteHeader');
+const progressBar = document.getElementById('scrollProgress');
 window.addEventListener('scroll', ()=>{
   header.classList.toggle('scrolled', window.scrollY>30);
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max>0 ? (window.scrollY/max)*100 : 0;
+  progressBar.style.width = pct+'%';
 },{passive:true});
+
+/* ---------- scroll-spy: active section for top nav + side dots ---------- */
+const spySections = ['hero','work','process','order','contact']
+  .map(id=>document.getElementById(id)).filter(Boolean);
+const navLinkEls = document.querySelectorAll('.nav-links a[href^="#"]');
+const dotLinkEls = document.querySelectorAll('.dot-link');
+const spyObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const id = en.target.id;
+      navLinkEls.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+      dotLinkEls.forEach(d=>d.classList.toggle('active', d.dataset.target===id));
+    }
+  });
+},{rootMargin:'-45% 0px -45% 0px',threshold:0});
+spySections.forEach(sec=>spyObserver.observe(sec));
 
 /* ---------- scroll reveal ---------- */
 const io = new IntersectionObserver((entries)=>{
