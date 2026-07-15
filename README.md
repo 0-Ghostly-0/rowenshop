@@ -1,6 +1,6 @@
-# rowen.shop
+# rowen.work
 
-Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnails, ads & PFPs. Built as one HTML file that feels like a multi-page site: navigating between Cover Art / Thumbnails / Ads / PFPs / Order swaps the visible page with a transition, and each has its own shareable URL (e.g. `rowen.shop/#cover-art`), but it's all a single page load — no separate files or server routing needed.
+Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnails, ads & PFPs. Built as one HTML file that feels like a multi-page site: navigating between Cover Art / Thumbnails / Ads / PFPs / Order swaps the visible page with a transition, and each has its own shareable URL (e.g. `rowen.work/#cover-art`), but it's all a single page load — no separate files or server routing needed.
 
 ## Files
 - `index.html` — the entire site (HTML/CSS/JS, no build step needed)
@@ -23,7 +23,7 @@ Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnail
 - Portfolio lightbox: clicking any cover art or thumbnail opens a bigger detail view. "Request Something Like This" closes the popup, jumps to the Order page with the right service pre-selected, and auto-attaches that image as a reference file. Picking more files afterward (drag-drop or the file picker) adds to the reference set instead of replacing it.
 
 ## Going live
-Deploy to Vercel (see chat for the GitHub → Vercel walkthrough) and connect the `rowen.shop` domain once purchased.
+Deploy to Vercel (see chat for the GitHub → Vercel walkthrough) and connect the `rowen.work` domain (already purchased).
 
 ## Adding real examples for Thumbnails / Ads / PFPs
 Each of those pages currently shows a "coming soon" panel (search `class="coming-soon"` in `index.html`). To swap one out for a real portfolio grid once you have example work, follow the same pattern as the Cover Art page: add the images under `assets/`, then replace the `coming-soon` block with a `<div class="grid" id="grid-...">` and inject the images the same way the Cover Art grid does near the bottom of the `<script>` tag (search `portfolio data (real covers, inlined)`).

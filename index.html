@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROWEN — Graphic Design Studio</title>
-<meta name="description" content="ROWEN designs cover art, YouTube thumbnails, ads &amp; PFPs for creators who mean it. Made from scratch, priced around your budget — request a project at rowen.shop.">
+<meta name="description" content="ROWEN designs cover art, YouTube thumbnails, ads &amp; PFPs for creators who mean it. Made from scratch, priced around your budget — request a project at rowen.work.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="assets/brand/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="assets/brand/favicon-16.png" type="image/png" sizes="16x16">
@@ -374,6 +374,10 @@ section{position:relative;z-index:2;}
   transition:all .3s var(--ease);
 }
 .pay-pill:hover{color:var(--black);background:var(--white);border-color:var(--white);}
+.pay-pill-cashapp{color:#00D632;border-color:rgba(0,214,50,.35);background:rgba(0,214,50,.06);}
+.pay-pill-cashapp:hover{color:var(--black);background:#00D632;border-color:#00D632;}
+.pay-pill-venmo{color:#3D95CE;border-color:rgba(61,149,206,.35);background:rgba(61,149,206,.06);}
+.pay-pill-venmo:hover{color:var(--black);background:#3D95CE;border-color:#3D95CE;}
 .pay-note{margin-top:12px;font-size:12.5px;color:var(--dimmer);line-height:1.5;max-width:340px;}
 
 form{display:flex;flex-direction:column;gap:18px;}
@@ -464,6 +468,18 @@ footer{padding:70px 0 40px;}
 .lightbox-body h3{font-size:24px;margin:8px 0 14px;}
 .lightbox-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(8,8,10,.6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
 
+/* payment confirm modal */
+.payment-modal-content{max-width:460px;}
+.payment-modal-content .lightbox-body{padding:34px 30px 30px;}
+.payment-modal-content h3{font-size:22px;margin:0 0 14px;}
+.payment-modal-text{font-size:14px;line-height:1.6;color:var(--dim);margin-bottom:22px;}
+.payment-modal-methods{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.pay-pill-applepay{color:var(--white);border-color:var(--line-strong);background:rgba(255,255,255,.06);cursor:default;}
+.payment-modal-note{font-size:12.5px;line-height:1.55;color:var(--dimmer);margin-bottom:26px;}
+.payment-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.payment-modal-back{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);cursor:pointer;border-bottom:1px solid transparent;transition:all .3s var(--ease);}
+.payment-modal-back:hover{color:var(--white);border-color:var(--white);}
+
 /* toast */
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(calc(100% + 40px));background:var(--white);color:var(--black);
   padding:14px 22px;border-radius:100px;font-size:13.5px;font-family:'Space Grotesk',sans-serif;font-weight:500;
@@ -507,7 +523,7 @@ footer{padding:70px 0 40px;}
 <header id="siteHeader">
   <div class="wrap">
     <nav>
-      <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
+      <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
       <div class="nav-links">
         <a href="#cover-art" data-page="cover-art">Cover Art</a>
         <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
@@ -796,8 +812,8 @@ footer{padding:70px 0 40px;}
           </ul>
           <div class="pay-row">
             <span class="pay-label">Pay via</span>
-            <a href="https://cash.app/$rowenarts" target="_blank" rel="noopener" class="pay-pill">CashApp</a>
-            <a href="https://venmo.com/u/rowenarts" target="_blank" rel="noopener" class="pay-pill">Venmo</a>
+            <a href="https://cash.app/$rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
+            <a href="https://venmo.com/u/rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
           </div>
           <p class="pay-note">Pay before or after — your call. Paying upfront just means I start sooner.</p>
         </div>
@@ -876,7 +892,7 @@ footer{padding:70px 0 40px;}
   <div class="wrap">
     <div class="foot-top">
       <div class="foot-brand">
-        <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
+        <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
         <p>Cover art, thumbnails, ads &amp; PFPs.</p>
       </div>
       <div class="foot-cols">
@@ -911,7 +927,7 @@ footer{padding:70px 0 40px;}
     </div>
     <div class="foot-bottom">
       <span>© <span id="year"></span> Rowen</span>
-      <span class="mono">rowen.shop</span>
+      <span class="mono">rowen.work</span>
     </div>
   </div>
 </footer>
@@ -925,6 +941,29 @@ footer{padding:70px 0 40px;}
     <div class="lightbox-body">
       <h3 id="lightboxTitle"></h3>
       <a href="#order/cover-art" class="btn solid" id="lightboxCta" style="width:100%;justify-content:center;"><span>Request Something Like This</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT CONFIRM MODAL -->
+<div class="lightbox" id="paymentModal">
+  <div class="lightbox-bg" id="paymentModalBg"></div>
+  <div class="lightbox-content payment-modal-content">
+    <div class="lightbox-close" id="paymentModalClose">✕</div>
+    <div class="lightbox-body">
+      <div class="eyebrow" style="margin-bottom:14px;">Before you send it</div>
+      <h3>How payment works</h3>
+      <p class="payment-modal-text">No payment is due right now — this just sends your request. Once I reply with a timeframe and quote, you can pay whenever works for you: upfront, or after it's done. Paying upfront just means I start sooner.</p>
+      <div class="payment-modal-methods">
+        <a href="https://cash.app/$rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
+        <a href="https://venmo.com/u/rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
+        <span class="pay-pill pay-pill-applepay">Apple Pay</span>
+      </div>
+      <p class="payment-modal-note">I also take Apple Pay — just DM me on Discord for that one, it's not set up for auto-links like the others.</p>
+      <div class="payment-modal-actions">
+        <div class="payment-modal-back" id="paymentModalBack">Go back</div>
+        <button type="button" class="btn solid" id="paymentModalConfirm" style="justify-content:center;"><span>Got it — Send Request</span> <span class="arrow">↗</span></button>
+      </div>
     </div>
   </div>
 </div>
@@ -1255,13 +1294,28 @@ if(lbCta){
   });
 }
 
+/* ---------- payment confirm modal ---------- */
+const paymentModal = document.getElementById('paymentModal');
+document.getElementById('paymentModalClose').addEventListener('click', ()=>paymentModal.classList.remove('open'));
+document.getElementById('paymentModalBg').addEventListener('click', ()=>paymentModal.classList.remove('open'));
+document.getElementById('paymentModalBack').addEventListener('click', ()=>paymentModal.classList.remove('open'));
+document.getElementById('paymentModalConfirm').addEventListener('click', ()=>{
+  paymentModal.classList.remove('open');
+  submitOrderForm();
+});
+
 /* ---------- order form submit ---------- */
 const orderForm = document.getElementById('orderForm');
 const formStatus = document.getElementById('formStatus');
 const submitText = document.getElementById('submitText');
 
-orderForm.addEventListener('submit', async (e)=>{
+orderForm.addEventListener('submit', (e)=>{
   e.preventDefault();
+  if(!orderForm.reportValidity()) return;
+  paymentModal.classList.add('open');
+});
+
+async function submitOrderForm(){
   submitText.textContent = 'Sending...';
   formStatus.textContent = '';
 
@@ -1295,7 +1349,7 @@ orderForm.addEventListener('submit', async (e)=>{
     formStatus.textContent = 'Network error — please try the email link below instead.';
   }
   submitText.textContent = 'Send Request';
-});
+}
 
 function showToast(msg){
   const toast = document.getElementById('toast');
