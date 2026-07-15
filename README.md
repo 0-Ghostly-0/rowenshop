@@ -11,7 +11,7 @@ Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnail
 ## Pages
 - **Home** (`#home`) — intro + links out to each service
 - **Cover Art** (`#cover-art`) — full portfolio grid (26 real pieces)
-- **Thumbnails** (`#thumbnails`) — "coming soon" panel until real examples are added
+- **Thumbnails** (`#thumbnails`) — full portfolio grid (31 real pieces)
 - **Ads** (`#ads`) — "coming soon" panel until real examples are added
 - **PFPs** (`#pfps`) — "coming soon" panel until real examples are added
 - **Order** (`#order`) — shared request form; the "What do you need?" field auto-fills based on which service page you arrived from
