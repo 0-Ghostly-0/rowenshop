@@ -84,6 +84,13 @@ h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em;font-we
 }
 
 /* ---------- background fx ---------- */
+#bg-image{
+  position:absolute;top:0;left:0;right:0;height:100svh;z-index:0;pointer-events:none;
+  background:url('assets/brand/bg-texture.webp') no-repeat center top/cover;
+  opacity:.55;
+  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
+}
 #bg-canvas{position:fixed;inset:0;z-index:0;opacity:.55;}
 .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;}
 .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,transparent 40%,var(--black) 100%);}
@@ -369,6 +376,7 @@ footer{padding:70px 0 40px;}
 
 <div id="cursor-dot"></div>
 <div id="cursor-ring"></div>
+<div id="bg-image"></div>
 <canvas id="bg-canvas"></canvas>
 <svg class="grain" width="0" height="0"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter></svg>
 <div class="grain" style="filter:url(#noiseFilter);"></div>
@@ -695,7 +703,17 @@ const io = new IntersectionObserver((entries)=>{
     if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); }
   });
 },{threshold:0.15});
-document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* long/tall containers (like the portfolio grid) can exceed the viewport height,
+   so a 15%-of-element threshold may never be reachable on narrow screens.
+   Use a near-zero threshold for these instead. */
+const ioTall = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in-view'); ioTall.unobserve(en.target); }
+  });
+},{threshold:0.01});
+document.querySelectorAll('.reveal-stagger').forEach(el=>ioTall.observe(el));
 
 /* ---------- magnetic buttons ---------- */
 document.querySelectorAll('.btn').forEach(btn=>{
