@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROWEN — Cover Art Studio</title>
 <meta name="description" content="ROWEN designs cover art for artists who mean it. Albums, EPs, singles &amp; visualizers — request a project at rowen.shop.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/brand/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/brand/favicon-16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,6 +98,8 @@ header.scrolled{background:rgba(8,8,10,.75);backdrop-filter:blur(14px);border-co
 nav{display:flex;align-items:center;justify-content:space-between;}
 .logo{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
 .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px 2px var(--accent-dim);animation:pulse 2.4s ease-in-out infinite;}
+.logo img{height:24px;width:auto;display:block;filter:drop-shadow(0 0 10px rgba(244,244,242,.08));}
+.foot-brand .logo img{height:28px;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(1.6);}}
 .nav-links{display:flex;gap:40px;font-size:14px;color:var(--dim);}
 .nav-links a{position:relative;padding:4px 0;transition:color .3s;}
@@ -167,6 +173,10 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 }
 .discord-badge:hover{background:rgba(255,43,131,.16);border-color:var(--accent);transform:translateY(-1px);}
 .hero-inner{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;}
+.hero-mark{display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:6px;}
+.hero-mark img{width:clamp(120px,15vw,220px);height:auto;opacity:.9;filter:drop-shadow(0 0 46px rgba(255,43,131,.16));animation:hero-mark-float 6s ease-in-out infinite;}
+@keyframes hero-mark-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@media (max-width:860px){.hero-mark{display:none;}}
 .hero h1{
   font-size:clamp(46px,7.4vw,108px);line-height:.98;font-weight:500;
   letter-spacing:-.035em;text-wrap:balance;
@@ -378,7 +388,7 @@ footer{padding:70px 0 40px;}
 <header id="siteHeader">
   <div class="wrap">
     <nav>
-      <a href="#top" class="logo"><span class="dot"></span>ROWEN<span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
+      <a href="#top" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
       <div class="nav-links">
         <a href="#work">Work</a>
         <a href="#process">Process</a>
@@ -418,6 +428,7 @@ footer{padding:70px 0 40px;}
       </div>
       <div class="hero-inner" style="margin-top:24px;">
         <h1 class="reveal">Cover art for<br>artists who<br><span class="outline">mean it.</span></h1>
+        <div class="hero-mark reveal"><img src="assets/brand/logo-mark-hero.webp" alt="ROWEN mark"></div>
       </div>
       <div class="hero-meta reveal">
         <p class="hero-sub">Made from scratch. Any genre. Priced around your budget.</p>
@@ -573,7 +584,7 @@ footer{padding:70px 0 40px;}
   <div class="wrap">
     <div class="foot-top">
       <div class="foot-brand">
-        <a href="#top" class="logo"><span class="dot"></span>ROWEN<span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
+        <a href="#top" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.shop</span></a>
         <p>Original cover art. Any genre.</p>
       </div>
       <div class="foot-cols">
