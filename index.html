@@ -395,6 +395,21 @@ form{display:flex;flex-direction:column;gap:18px;}
 }
 .file-drop:hover,.file-drop.drag{border-color:var(--white);background:var(--card);color:var(--white);}
 .file-drop input{display:none;}
+.file-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.file-chip{
+  display:flex;align-items:center;gap:8px;max-width:100%;
+  background:var(--card);border:1px solid var(--line);border-radius:100px;
+  padding:6px 8px 6px 14px;font-size:12.5px;color:var(--dim);font-family:'Inter',sans-serif;
+  animation:chip-in .35s var(--ease);
+}
+.file-chip .chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;}
+.file-chip .chip-remove{
+  flex:0 0 auto;width:18px;height:18px;border-radius:50%;
+  background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--dim);font-size:13px;line-height:1;transition:background .2s,color .2s;
+}
+.file-chip .chip-remove:hover{background:var(--accent);color:var(--white);}
+@keyframes chip-in{from{opacity:0;transform:translateY(4px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 .form-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:6px;}
 .form-note{font-size:12.5px;color:var(--dimmer);max-width:280px;}
 .form-note a{color:var(--accent);border-bottom:1px solid transparent;transition:border-color .3s;}
@@ -450,10 +465,10 @@ footer{padding:70px 0 40px;}
 .lightbox-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(8,8,10,.6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
 
 /* toast */
-#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--white);color:var(--black);
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(calc(100% + 40px));background:var(--white);color:var(--black);
   padding:14px 22px;border-radius:100px;font-size:13.5px;font-family:'Space Grotesk',sans-serif;font-weight:500;
-  z-index:300;transition:transform .5s var(--ease);}
-#toast.show{transform:translateX(-50%) translateY(0);}
+  z-index:300;opacity:0;pointer-events:none;transition:transform .5s var(--ease),opacity .5s var(--ease);}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;}
 
 @media (max-width:560px){
   .section-pad{padding:90px 0;}
@@ -834,6 +849,7 @@ footer{padding:70px 0 40px;}
                 <span id="fileDropText">Drop images here or click to browse</span>
                 <input type="file" id="fileInput" name="attachment" multiple accept="image/*">
               </label>
+              <div class="file-list" id="fileList"></div>
             </div>
 
             <div class="form-foot">
@@ -1145,6 +1161,7 @@ buildGrid(document.getElementById('grid-thumbnails'), thumbnails, 'thumbnails');
 const fileDrop = document.getElementById('fileDrop');
 const fileInput = document.getElementById('fileInput');
 const fileDropText = document.getElementById('fileDropText');
+const fileList = document.getElementById('fileList');
 let referenceFiles = [];
 
 function syncFileInput(){
@@ -1157,9 +1174,28 @@ function appendReferenceFiles(newFiles){
   referenceFiles = referenceFiles.concat(Array.from(newFiles));
   syncFileInput();
 }
+function removeReferenceFile(index){
+  referenceFiles.splice(index, 1);
+  syncFileInput();
+}
 function updateFileText(){
   const n = referenceFiles.length;
   fileDropText.textContent = n ? `${n} file${n>1?'s':''} selected` : 'Drop images here or click to browse';
+  if(fileList){
+    fileList.innerHTML = referenceFiles.map((f,i)=>`
+      <div class="file-chip">
+        <span class="chip-name" title="${f.name}">${f.name}</span>
+        <span class="chip-remove" data-index="${i}" title="Remove">✕</span>
+      </div>
+    `).join('');
+  }
+}
+if(fileList){
+  fileList.addEventListener('click', e=>{
+    const btn = e.target.closest('.chip-remove');
+    if(!btn) return;
+    removeReferenceFile(Number(btn.dataset.index));
+  });
 }
 ['dragenter','dragover'].forEach(evt=>fileDrop.addEventListener(evt,e=>{e.preventDefault();fileDrop.classList.add('drag');}));
 ['dragleave','drop'].forEach(evt=>fileDrop.addEventListener(evt,e=>{e.preventDefault();fileDrop.classList.remove('drag');}));
