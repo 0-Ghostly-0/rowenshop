@@ -19,6 +19,8 @@ Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnail
 ## Status
 - Order form: connected to Formspree (form ID `xojgvwbp`), sending submissions to rowenapichardo@gmail.com. Falls back to opening the visitor's email client if Formspree is ever unreachable.
 - Contact: Discord is the featured/preferred channel throughout (nav, hero badge, footer, order page); email and CashApp/Venmo are secondary.
+- Opening animation: a short logo intro plays once on every page load, then fades out (respects `prefers-reduced-motion`).
+- Portfolio lightbox: clicking any cover art or thumbnail opens a bigger detail view. "Request Something Like This" closes the popup, jumps to the Order page with the right service pre-selected, and auto-attaches that image as a reference file. Picking more files afterward (drag-drop or the file picker) adds to the reference set instead of replacing it.
 
 ## Going live
 Deploy to Vercel (see chat for the GitHub → Vercel walkthrough) and connect the `rowen.shop` domain once purchased.
