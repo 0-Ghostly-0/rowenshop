@@ -852,8 +852,8 @@ footer{padding:70px 0 40px;}
               </div>
             </div>
             <div class="field">
-              <label for="budget">Budget</label>
-              <input type="text" id="budget" name="budget" placeholder="e.g. flexible, or a range you have in mind" required>
+              <label for="budget">Budget <span style="color:var(--dimmer);font-weight:400;">($25 minimum)</span></label>
+              <input type="text" id="budget" name="budget" placeholder="e.g. $25–50, flexible (min $25), or a range you have in mind" required>
             </div>
             <div class="field">
               <label for="brief">What do you want it to have?</label>
@@ -1184,7 +1184,7 @@ const covers = Array.from({length: coverCount}, (_, i) => {
 });
 buildGrid(document.getElementById('grid'), covers, 'cover-art');
 
-const thumbCount = 31;
+const thumbCount = 32;
 const thumbnails = Array.from({length: thumbCount}, (_, i) => {
   const n = String(i + 1).padStart(2, '0');
   return { title: `Thumbnail ${n}`, src: `assets/thumbnails/thumb-${n}.webp` };
@@ -1309,8 +1309,24 @@ const orderForm = document.getElementById('orderForm');
 const formStatus = document.getElementById('formStatus');
 const submitText = document.getElementById('submitText');
 
+/* Budget field allows free text ("flexible", a range, etc.) but if the
+   visitor types a plain number, enforce a $25 minimum via the native
+   validation bubble (same mechanism as the required-field checks). */
+const budgetInput = document.getElementById('budget');
+const MIN_BUDGET = 25;
+function validateBudget(){
+  const match = budgetInput.value.match(/(\d+(\.\d+)?)/);
+  if(match && parseFloat(match[1]) < MIN_BUDGET){
+    budgetInput.setCustomValidity(`My minimum budget is $${MIN_BUDGET}. Enter $${MIN_BUDGET} or more (or describe a range).`);
+  } else {
+    budgetInput.setCustomValidity('');
+  }
+}
+budgetInput.addEventListener('input', validateBudget);
+
 orderForm.addEventListener('submit', (e)=>{
   e.preventDefault();
+  validateBudget();
   if(!orderForm.reportValidity()) return;
   paymentModal.classList.add('open');
 });
