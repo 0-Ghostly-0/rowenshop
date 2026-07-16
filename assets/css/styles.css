@@ -704,11 +704,6 @@ input[type="range"].compare-slider{
 
 /* policy / legal modal */
 .policy-modal-content .lightbox-body{padding:34px 34px 36px;}
-.policy-note{
-  border:1px solid var(--accent-dim);background:rgba(255,43,131,.07);border-radius:10px;
-  padding:14px 16px;font-size:12.5px;color:var(--dim);line-height:1.6;margin-bottom:22px;
-}
-.policy-note b{color:var(--white);}
 .policy-body h4{font-size:15px;margin:22px 0 8px;color:var(--white);}
 .policy-body h4:first-child{margin-top:0;}
 .policy-body p,.policy-body li{font-size:13.5px;line-height:1.7;color:var(--dim);}

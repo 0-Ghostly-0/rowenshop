@@ -528,7 +528,6 @@ function renderPolicy(key){
   if (!policy || !policyModalBody) return;
   policyModalTitle.textContent = policy.title;
   policyModalBody.innerHTML = `
-    <div class="policy-note"><b>Draft placeholder:</b> this is generic starter wording, not legal advice. Have it reviewed (ideally by a lawyer familiar with your local laws) and customize it before relying on it.</div>
     ${policy.body.map(sec => `<h4>${sec.h}</h4><p>${sec.p}</p>`).join('')}
   `;
   openModal(policyModal);
