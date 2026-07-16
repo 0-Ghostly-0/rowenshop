@@ -21,12 +21,22 @@ Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnail
 - **PFPs** (`#pfps`) — "coming soon" panel until real examples are added
 - **Order** (`#order`) — commission form + business contact section; the "What do you need?" field auto-fills based on which service page you arrived from
 
-## Editing content
-Almost everything you'd want to change day-to-day — prices, turnaround times, FAQ answers, policy text, testimonials, social links, the Formspree form ID — lives in `assets/js/config.js`. No build step; just edit and refresh/redeploy.
+## Editing content — how to use `assets/js/config.js`
+This is a plain text file, not a program you run — no coding tools required. Any text editor works (Notepad, VS Code, even editing the file directly on GitHub's web UI).
 
-To add real Ads/PFPs portfolio pieces once you have them: add images under `assets/ads/` or `assets/pfps/` following the existing `ad-01.webp`, `ad-02.webp`... naming pattern, then update that category's `count` and `comingSoon: false` in `config.js`.
+**How to edit it:**
+1. Open `assets/js/config.js` in a text editor.
+2. Find the value you want to change, edit the text between the quotes, save.
+3. See the change: if you're testing locally, just refresh the page. If it's already deployed on Vercel, push the changed file to your GitHub repo and Vercel auto-redeploys in about a minute — no build step, no rebuild command needed.
 
-To add per-project detail (project type, client/personal label, tools used, a short description, or a before/after comparison) to any specific portfolio piece, add an entry to `portfolio.overrides` in `config.js` — see the commented example there.
+**What's still a placeholder you should fill in yourself**, roughly in priority order:
+- Lines marked `// EDIT ME` (turnaround times, revision counts, file formats per service) — these are guesses to keep the pricing section from looking empty. Swap in your real numbers.
+- `testimonials: []` — empty on purpose. Add real ones as `{ quote, name, role }` objects and that section appears on the homepage automatically; leave it empty and it stays hidden. Never invent fake ones.
+- `policies: {...}` (Terms of Service / Commission Policy / Privacy Policy / Refund Policy) — the text is generic boilerplate. Fine to publish short-term, but worth a real read-through (or a lawyer's) before you rely on it.
+- `portfolio.overrides` — empty by default. If you want a specific cover or thumbnail to show its project type, tools used, or a short description in the detail popup, add an entry there — otherwise those fields just stay hidden, no fake info shown.
+- Ads/PFPs galleries — still `count: 0, comingSoon: true`. Once you have real examples, drop the images in `assets/ads/`/`assets/pfps/` following the existing `ad-01.webp`, `ad-02.webp`... naming pattern, bump that category's `count`, and flip `comingSoon` to `false`.
+
+Everything else — business name, email, Discord/social links, budget ranges, the Formspree form ID, FAQ answers — lives in the same file and is safe to tweak anytime the same way.
 
 ## Status
 - Order form: connected to Formspree (form ID `xojgvwbp`), sending submissions to rowenapichardo@gmail.com. Falls back to opening the visitor's email client if Formspree is ever unreachable. Includes a honeypot field for basic spam prevention.
