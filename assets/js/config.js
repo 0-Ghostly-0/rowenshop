@@ -176,7 +176,7 @@ const SITE_CONFIG = {
     },
     {
       q: "Can I use the final files commercially?",
-      a: "Yes — commercial use is included with every service by default unless stated otherwise in your quote. If you need an extended license or something unusual (resale, franchising, etc.), mention it in your brief so it can be quoted accordingly."
+      a: "Yes — commercial use is included with every service by default unless stated otherwise in your quote. If you need an extended license or something unusual (resale, franchising, etc.), mention it in your brief so it can be quoted accordingly. One ask either way: if you make a post that's focused specifically on cover art I made for you (a reveal post, a print, a portfolio feature, etc.), please credit me as the designer — tagging @yoorowen or linking rowen.work is enough. Normal use of the art as your actual release cover across streaming platforms and social doesn't need a credit every time."
     },
     {
       q: "Do I get the source/layered files?",
@@ -246,6 +246,7 @@ const SITE_CONFIG = {
         { h: "Overview", p: "These Terms of Service (“Terms”) govern any commission or purchase made through rowen.work (“the Site”), operated by Rowen (“I”, “me”). By submitting a project request or making a payment, you agree to these Terms." },
         { h: "Commission scope", p: "Each project is scoped individually based on the brief you submit and the quote I send back. Work outside the agreed scope (extra concepts, unrelated revisions, additional deliverables) may be quoted separately." },
         { h: "Ownership & licensing", p: "Unless otherwise agreed in writing, you receive a license to use final delivered files for the purpose described in your brief, including commercial use. I retain the right to display finished work in my portfolio unless you request otherwise in your brief." },
+        { h: "Credit for cover art", p: "Using a cover art piece as your actual album/single/EP cover across streaming platforms and social media doesn't require a credit each time. But if you make a post that's focused specifically on the cover art itself — a reveal post, a print, a portfolio or fan-art feature, etc. — please credit me as the designer, either by tagging/mentioning @yoorowen or linking rowen.work." },
         { h: "Client responsibilities", p: "You're responsible for making sure any reference material, logos, or text you provide doesn't infringe on someone else's rights. I reserve the right to decline projects that involve hate speech, harassment, or clearly illegal content." },
         { h: "Changes to these terms", p: "These Terms may be updated from time to time; the version in effect at the time you submit a request is the one that applies to that project." }
       ]
@@ -257,6 +258,7 @@ const SITE_CONFIG = {
         { h: "Deposits", p: "A deposit is required before work begins. It secures your spot in the queue and goes toward the total cost of your project." },
         { h: "Revisions", p: "Each service includes a set number of revision rounds (listed in the pricing section). Revisions must relate to the original brief — new concepts requested after work has started may be quoted as a separate round." },
         { h: "Timelines", p: "Turnaround estimates are based on the current queue at the time of your quote and are not guaranteed delivery dates. I'll flag it as early as possible if something is going to run long." },
+        { h: "Credit for cover art", p: "Using a cover art piece as your actual release cover across streaming platforms and social media doesn't need a credit every time. But if you make a post focused specifically on the cover art itself — a reveal post, a print, a portfolio feature, etc. — please credit me as the designer (tag/mention @yoorowen or link rowen.work)." },
         { h: "What I won't take on", p: "I reserve the right to decline any commission, including (but not limited to) hate symbols, explicit/NSFW content, plagiarized concepts, or anything that infringes on someone else's copyright or trademark." }
       ]
     },
