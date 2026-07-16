@@ -3,8 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROWEN — Graphic Design Studio</title>
-<meta name="description" content="ROWEN designs cover art, YouTube thumbnails, ads &amp; PFPs for creators who mean it. Made from scratch, priced around your budget — request a project at rowen.work.">
+<title>Rowen — Graphic Design Studio</title>
+<meta name="description" content="Rowen designs cover art, YouTube thumbnails, ads &amp; PFPs for creators who mean it. Made from scratch, priced around your budget — request a project at rowen.work.">
+<meta name="theme-color" content="#08080a">
+<link rel="canonical" href="https://rowen.work/">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rowen">
+<meta property="og:title" content="Rowen — Graphic Design Studio">
+<meta property="og:description" content="Cover art, YouTube thumbnails, ads &amp; PFPs made from scratch, priced around your budget. Made for creators who mean it.">
+<meta property="og:url" content="https://rowen.work/">
+<meta property="og:image" content="https://rowen.work/assets/brand/logo-mark-512.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rowen — Graphic Design Studio">
+<meta name="twitter:description" content="Cover art, YouTube thumbnails, ads &amp; PFPs made from scratch, priced around your budget.">
+<meta name="twitter:image" content="https://rowen.work/assets/brand/logo-mark-512.png">
+
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="assets/brand/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="assets/brand/favicon-16.png" type="image/png" sizes="16x16">
@@ -15,500 +30,44 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --black:#08080a;
-  --black-2:#0e0e11;
-  --card:#111114;
-  --line:rgba(255,255,255,.09);
-  --line-strong:rgba(255,255,255,.18);
-  --white:#f4f4f2;
-  --dim:#8a8a90;
-  --dimmer:#55555c;
-  --accent:#ff2b83;
-  --accent-dim:rgba(255,43,131,.35);
-  --ease:cubic-bezier(.22,1,.36,1);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--black);
-  color:var(--white);
-  font-family:'Inter',sans-serif;
-  overflow-x:hidden;
-  cursor:none;
-}
-::selection{background:var(--white);color:var(--black);}
-a{color:inherit;text-decoration:none;}
-img{max-width:100%;display:block;}
-.mono{font-family:'JetBrains Mono',monospace;}
-h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em;font-weight:500;}
+<link rel="stylesheet" href="assets/css/styles.css">
 
-/* ---------- utility ---------- */
-.wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
-.eyebrow{
-  font-family:'JetBrains Mono',monospace;
-  font-size:12px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--dim);display:flex;align-items:center;gap:10px;
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Rowen",
+  "url": "https://rowen.work/",
+  "image": "https://rowen.work/assets/brand/logo-mark-512.png",
+  "description": "Freelance graphic design studio making cover art, YouTube thumbnails, ads and PFPs for creators.",
+  "priceRange": "$$",
+  "sameAs": [
+    "https://discord.gg/dKVSJuT56u",
+    "https://www.instagram.com/yoorowen/",
+    "https://www.tiktok.com/@yoorowen"
+  ]
 }
-.eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 14px 3px var(--accent-dim);animation:pulse 2.4s ease-in-out infinite;}
-.btn{
-  position:relative;display:inline-flex;align-items:center;gap:10px;
-  padding:16px 30px;border-radius:100px;font-family:'Space Grotesk',sans-serif;
-  font-size:14px;letter-spacing:.03em;font-weight:500;cursor:pointer;
-  border:1px solid var(--line-strong);background:transparent;color:var(--white);
-  overflow:hidden;transition:border-color .4s var(--ease),color .4s var(--ease);
-  z-index:1;
-}
-.btn span{position:relative;z-index:2;}
-.btn::before{
-  content:'';position:absolute;inset:0;background:var(--white);
-  transform:translateY(101%);transition:transform .45s var(--ease);z-index:1;
-}
-.btn:hover{color:var(--black);}
-.btn:hover::before{transform:translateY(0);}
-.btn.solid{background:var(--white);color:var(--black);box-shadow:0 0 0 0 var(--accent-dim);transition:border-color .4s var(--ease),color .4s var(--ease),box-shadow .4s var(--ease);}
-.btn.solid::before{background:var(--black);}
-.btn.solid:hover{color:var(--white);box-shadow:0 0 30px 4px var(--accent-dim);}
-.btn .arrow{transition:transform .4s var(--ease);position:relative;z-index:2;}
-.btn:hover .arrow{transform:translate(3px,-3px);}
-
-/* ---------- preloader (opening animation) ---------- */
-#preloader{
-  position:fixed;inset:0;z-index:500;background:var(--black);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  transition:opacity .7s var(--ease),visibility .7s var(--ease);
-}
-#preloader.hide{opacity:0;visibility:hidden;pointer-events:none;}
-.preloader-mark{width:96px;opacity:0;transform:scale(.6) rotate(-10deg);animation:preloader-in 1s cubic-bezier(.22,1,.36,1) forwards;}
-.preloader-mark img{width:100%;display:block;filter:drop-shadow(0 0 40px rgba(255,43,131,.3));}
-.preloader-word{margin-top:22px;opacity:0;transform:translateY(8px);animation:preloader-word-in .7s var(--ease) .55s forwards;}
-.preloader-word img{height:20px;width:auto;display:block;}
-.preloader-bar{width:120px;height:2px;background:var(--line);margin-top:26px;border-radius:2px;overflow:hidden;opacity:0;animation:preloader-bar-in .4s var(--ease) .5s forwards;}
-.preloader-bar span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--white));animation:preloader-fill 1.1s cubic-bezier(.22,1,.36,1) .6s forwards;}
-@keyframes preloader-in{
-  0%{opacity:0;transform:scale(.6) rotate(-10deg);}
-  55%{opacity:1;transform:scale(1.08) rotate(3deg);}
-  100%{opacity:1;transform:scale(1) rotate(0deg);}
-}
-@keyframes preloader-word-in{to{opacity:1;transform:translateY(0);}}
-@keyframes preloader-bar-in{to{opacity:1;}}
-@keyframes preloader-fill{to{width:100%;}}
-@media (prefers-reduced-motion: reduce){
-  .preloader-mark,.preloader-word,.preloader-bar,.preloader-bar span{animation:none !important;opacity:1 !important;transform:none !important;width:100% !important;}
-}
-
-/* ---------- custom cursor ---------- */
-#cursor-dot,#cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%);}
-#cursor-dot{width:6px;height:6px;background:var(--white);}
-#cursor-ring{width:34px;height:34px;border:1px solid rgba(244,244,242,.5);transition:width .25s var(--ease),height .25s var(--ease),border-color .25s var(--ease),background .25s var(--ease);}
-#cursor-ring.grow{width:64px;height:64px;background:rgba(244,244,242,.08);border-color:rgba(244,244,242,.8);}
-@media (hover:none), (max-width:860px){
-  #cursor-dot,#cursor-ring{display:none;}
-  body{cursor:auto;}
-}
-
-/* ---------- background fx ---------- */
-#bg-image{
-  position:absolute;top:0;left:0;right:0;height:100svh;z-index:0;pointer-events:none;
-  background:url('assets/brand/bg-texture.webp') no-repeat center top/cover;
-  opacity:.55;
-  -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
-}
-#bg-canvas{position:fixed;inset:0;z-index:0;opacity:.55;}
-.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;}
-.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,transparent 40%,var(--black) 100%);}
-
-/* ---------- nav ---------- */
-header{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:22px 0;transition:background .4s var(--ease),border-color .4s var(--ease),padding .4s var(--ease);
-  border-bottom:1px solid transparent;
-}
-header.scrolled{background:rgba(8,8,10,.75);backdrop-filter:blur(14px);border-color:var(--line);padding:16px 0;}
-nav{display:flex;align-items:center;justify-content:space-between;}
-.logo{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
-.logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px 2px var(--accent-dim);animation:pulse 2.4s ease-in-out infinite;}
-.logo img{height:24px;width:auto;display:block;filter:drop-shadow(0 0 10px rgba(244,244,242,.08));}
-.foot-brand .logo img{height:28px;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(1.6);}}
-.nav-links{display:flex;gap:26px;font-size:14px;color:var(--dim);}
-.nav-links a{position:relative;padding:4px 0;transition:color .3s;}
-.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--white);transition:width .35s var(--ease);}
-.nav-links a:hover{color:var(--white);}
-.nav-links a:hover::after{width:100%;}
-.nav-links a.active{color:var(--white);}
-.nav-links a.active::after{width:100%;background:var(--accent);}
-.nav-cta{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;}
-.nav-social{display:flex;align-items:center;gap:12px;padding-right:16px;border-right:1px solid var(--line);flex:0 0 auto;}
-.nav-social a{color:var(--dim);display:flex;transition:color .3s var(--ease),transform .3s var(--ease);}
-.nav-social a:hover{color:var(--white);transform:translateY(-1px);}
-.nav-social-discord{color:var(--accent) !important;}
-.nav-social-discord:hover{color:var(--accent) !important;filter:brightness(1.25);}
-.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
-.burger span{width:22px;height:1px;background:var(--white);}
-@media (max-width:640px){
-  .nav-social{gap:10px;padding-right:12px;}
-  .nav-social svg{width:15px;height:15px;}
-}
-@media (max-width:1040px){
-  .nav-links{display:none;}
-  .nav-cta .btn{display:none;}
-  .burger{display:flex;}
-}
-
-/* ---------- scroll progress + side dots ---------- */
-#scrollProgress{position:fixed;top:0;left:0;height:2.5px;width:0%;
-  background:linear-gradient(90deg,var(--accent),var(--white));
-  z-index:200;transition:width .1s linear;}
-.side-dots{
-  position:fixed;right:26px;top:50%;transform:translateY(-50%);
-  z-index:90;display:flex;flex-direction:column;align-items:center;gap:20px;
-}
-.side-dots::before{
-  content:'';position:absolute;left:50%;top:-30px;bottom:-30px;width:1px;
-  background:var(--line);transform:translateX(-50%);z-index:-1;
-}
-.dot-link{
-  position:relative;width:9px;height:9px;border-radius:50%;
-  border:1px solid var(--line-strong);background:var(--black);
-  transition:all .35s var(--ease);display:block;
-}
-.dot-link:hover{border-color:var(--white);transform:scale(1.3);}
-.dot-link.active{background:var(--accent);border-color:var(--accent);
-  box-shadow:0 0 12px 2px var(--accent-dim);transform:scale(1.35);}
-.dot-tip{
-  position:absolute;right:22px;top:50%;transform:translateY(-50%) translateX(4px);
-  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;
-  color:var(--dim);white-space:nowrap;opacity:0;pointer-events:none;
-  transition:opacity .3s var(--ease),transform .3s var(--ease);
-}
-.dot-link:hover .dot-tip,.dot-link.active .dot-tip{opacity:1;transform:translateY(-50%) translateX(0);}
-.dot-link.active .dot-tip{color:var(--white);}
-@media (max-width:960px){
-  .side-dots{display:none;}
-}
-
-/* ---------- page routing ---------- */
-.page{display:none;}
-.page.active{display:block;animation:page-in .6s var(--ease);}
-@keyframes page-in{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
-
-/* ---------- sub-page hero ---------- */
-.page-hero{padding-top:150px;padding-bottom:56px;position:relative;z-index:2;}
-.page-hero h1{font-size:clamp(38px,5.6vw,64px);line-height:1.03;margin:16px 0 16px;max-width:680px;}
-.page-hero-sub{color:var(--dim);font-size:16px;line-height:1.6;max-width:460px;margin-bottom:30px;}
-
-/* ---------- services grid (home) ---------- */
-.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:44px;}
-@media (max-width:700px){.service-grid{grid-template-columns:1fr;}}
-.service-card{
-  display:block;position:relative;border-radius:16px;overflow:hidden;
-  border:1px solid var(--line);background:var(--card);padding:30px 28px;
-  transition:border-color .35s var(--ease),transform .35s var(--ease),background .35s var(--ease);
-}
-.service-card:hover{border-color:var(--line-strong);transform:translateY(-4px);background:#131316;}
-.service-card .service-icon{
-  width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--line-strong);color:var(--white);margin-bottom:22px;
-}
-.service-card h3{font-size:21px;font-weight:500;margin-bottom:8px;}
-.service-card p{color:var(--dim);font-size:14px;line-height:1.6;max-width:320px;}
-.service-card .service-link{
-  display:inline-flex;align-items:center;gap:6px;margin-top:20px;
-  font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--dim);transition:color .3s,gap .3s;
-}
-.service-card:hover .service-link{color:var(--accent);gap:10px;}
-.service-card .service-preview{
-  position:absolute;top:0;right:0;width:120px;height:100%;display:grid;
-  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;opacity:.5;
-  -webkit-mask-image:linear-gradient(to left,#000,transparent);mask-image:linear-gradient(to left,#000,transparent);
-}
-.service-card .service-preview img{width:100%;height:100%;object-fit:cover;}
-@media (max-width:860px){.service-card .service-preview{display:none;}}
-
-/* ---------- coming soon panel ---------- */
-.coming-soon{
-  margin-top:44px;border:1px dashed var(--line-strong);border-radius:16px;
-  padding:64px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;
-}
-.coming-soon .service-icon{
-  width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--line-strong);color:var(--dim);
-}
-.coming-soon h3{font-size:20px;font-weight:500;}
-.coming-soon p{color:var(--dim);font-size:14.5px;max-width:400px;line-height:1.6;}
-
-/* ---------- pages footer cta ---------- */
-.page-cta-band{
-  border-top:1px solid var(--line);margin-top:80px;padding-top:70px;text-align:center;position:relative;
-}
-.page-cta-band h2{font-size:clamp(28px,4.6vw,48px);line-height:1.05;}
-.page-cta-band .btn{margin-top:30px;}
-.page-cta-band p{margin-top:18px;}
-
-/* ---------- hero ---------- */
-.hero{
-  min-height:100svh;display:flex;flex-direction:column;justify-content:center;
-  position:relative;z-index:2;padding-top:120px;padding-bottom:60px;
-}
-.hero-top-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
-.discord-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.04em;
-  padding:8px 16px;border-radius:100px;color:var(--accent);
-  border:1px solid var(--accent-dim);background:rgba(255,43,131,.06);
-  transition:all .3s var(--ease);
-}
-.discord-badge:hover{background:rgba(255,43,131,.16);border-color:var(--accent);transform:translateY(-1px);}
-.hero-inner{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;}
-.hero-mark{display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:6px;}
-.hero-mark img{width:clamp(120px,15vw,220px);height:auto;opacity:.9;filter:drop-shadow(0 0 46px rgba(255,43,131,.16));animation:hero-mark-float 6s ease-in-out infinite;}
-@keyframes hero-mark-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-@media (max-width:860px){.hero-mark{display:none;}}
-.hero h1{
-  font-size:clamp(46px,7.4vw,108px);line-height:.98;font-weight:500;
-  letter-spacing:-.035em;text-wrap:balance;
-}
-.hero h1 .outline{-webkit-text-stroke:1px var(--white);color:transparent;}
-.hero-sub{max-width:380px;color:var(--dim);font-size:16px;line-height:1.6;padding-bottom:10px;}
-.hero-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:56px;flex-wrap:wrap;gap:28px;}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
-
-/* marquee */
-.marquee-wrap{
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  padding:20px 0;overflow:hidden;position:relative;z-index:2;background:var(--black-2);
-}
-.marquee{display:flex;white-space:nowrap;animation:scroll 26s linear infinite;width:max-content;}
-.marquee span{
-  font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.02em;
-  color:var(--dimmer);padding:0 28px;display:flex;align-items:center;gap:28px;
-}
-.marquee span b{color:var(--white);font-weight:500;}
-@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-
-/* ---------- section shell ---------- */
-section{position:relative;z-index:2;}
-.section-pad{padding:140px 0;}
-.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:64px;flex-wrap:wrap;}
-.section-head h2{font-size:clamp(32px,4.2vw,54px);}
-.section-head p{color:var(--dim);max-width:360px;font-size:15px;line-height:1.6;}
-.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease),transform .9s var(--ease);}
-.reveal.in-view{opacity:1;transform:translateY(0);}
-.reveal-stagger > *{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease);}
-.reveal-stagger.in-view > *{opacity:1;transform:translateY(0);}
-.reveal-stagger.in-view > *:nth-child(1){transition-delay:.03s;}
-.reveal-stagger.in-view > *:nth-child(2){transition-delay:.09s;}
-.reveal-stagger.in-view > *:nth-child(3){transition-delay:.15s;}
-.reveal-stagger.in-view > *:nth-child(4){transition-delay:.21s;}
-.reveal-stagger.in-view > *:nth-child(5){transition-delay:.27s;}
-.reveal-stagger.in-view > *:nth-child(6){transition-delay:.33s;}
-
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px;}
-@media (max-width:960px){.grid{grid-template-columns:repeat(2,1fr);}}
-@media (max-width:600px){.grid{grid-template-columns:1fr;}}
-.grid-16-9.grid{grid-template-columns:repeat(2,1fr);}
-@media (max-width:700px){.grid-16-9.grid{grid-template-columns:1fr;}}
-.grid-16-9 .card{aspect-ratio:16/9;}
-
-.card{
-  position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1/1;
-  border:1px solid var(--line);cursor:pointer;background:var(--card);
-  transition:transform .3s .5s,border-color .4s var(--ease);
-}
-.card:hover{border-color:var(--line-strong);}
-.art{position:absolute;inset:0;transition:transform .7s var(--ease);background:var(--card);}
-.art img{width:100%;height:100%;object-fit:cover;display:block;}
-.card:hover .art{transform:scale(1.06);}
-.card-info{
-  position:absolute;left:0;right:0;bottom:0;padding:20px;z-index:2;
-  transform:translateY(8px);opacity:.92;transition:transform .4s var(--ease);
-}
-.card:hover .card-info{transform:translateY(0);}
-.card-info .g{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
-.card-info h4{font-size:17px;margin-top:4px;font-weight:500;}
-.card-expand{
-  position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;
-  border:1px solid rgba(244,244,242,.35);display:flex;align-items:center;justify-content:center;
-  opacity:0;transform:scale(.7);transition:all .35s var(--ease);z-index:2;background:rgba(8,8,10,.4);backdrop-filter:blur(6px);
-}
-.card:hover .card-expand{opacity:1;transform:scale(1);}
-
-/* ---------- process ---------- */
-.process{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
-@media (max-width:960px){.process{grid-template-columns:repeat(2,1fr);}}
-@media (max-width:560px){.process{grid-template-columns:1fr;}}
-.step{background:var(--black);padding:32px 28px;position:relative;transition:background .35s var(--ease);}
-.step:hover{background:var(--card);}
-.step .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);}
-.step h3{margin-top:16px;font-size:19px;font-weight:500;}
-.step p{margin-top:10px;font-size:13.5px;color:var(--dim);line-height:1.55;}
-.price-line{
-  margin-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
-  padding:20px 28px;border:1px solid var(--line);border-radius:14px;background:var(--black-2);
-}
-.price-line span:first-child{color:var(--dim);font-size:14px;}
-.price-badge{
-  font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.04em;
-  padding:9px 18px;border-radius:100px;background:var(--accent);color:#1a0410;font-weight:500;
-}
-.price-badge b{font-weight:700;}
-
-/* ---------- order ---------- */
-.order-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;}
-@media (max-width:960px){.order-grid{grid-template-columns:1fr;}}
-.order-side h2{font-size:clamp(30px,3.6vw,44px);margin-bottom:18px;}
-.order-side p{color:var(--dim);line-height:1.7;font-size:15px;max-width:420px;}
-.order-list{margin-top:36px;display:flex;flex-direction:column;gap:16px;}
-.order-list li{display:flex;gap:14px;align-items:flex-start;font-size:14px;color:var(--dim);}
-.order-list li .ck{width:18px;height:18px;border:1px solid var(--line-strong);border-radius:5px;flex:0 0 auto;margin-top:2px;position:relative;}
-.order-list li .ck::after{content:'';position:absolute;left:5px;top:2px;width:4px;height:8px;border-right:1px solid var(--white);border-bottom:1px solid var(--white);transform:rotate(45deg);}
-.pay-row{display:flex;align-items:center;gap:10px;margin-top:32px;flex-wrap:wrap;}
-.pay-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);}
-.pay-pill{
-  font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;
-  padding:8px 16px;border-radius:100px;border:1px solid var(--line);color:var(--dim);
-  transition:all .3s var(--ease);
-}
-.pay-pill:hover{color:var(--black);background:var(--white);border-color:var(--white);}
-.pay-pill-cashapp{color:#00D632;border-color:rgba(0,214,50,.35);background:rgba(0,214,50,.06);}
-.pay-pill-cashapp:hover{color:var(--black);background:#00D632;border-color:#00D632;}
-.pay-pill-venmo{color:#3D95CE;border-color:rgba(61,149,206,.35);background:rgba(61,149,206,.06);}
-.pay-pill-venmo:hover{color:var(--black);background:#3D95CE;border-color:#3D95CE;}
-.pay-note{margin-top:12px;font-size:12.5px;color:var(--dimmer);line-height:1.5;max-width:340px;}
-
-form{display:flex;flex-direction:column;gap:18px;}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-@media (max-width:560px){.row2{grid-template-columns:1fr;}}
-.field{display:flex;flex-direction:column;gap:8px;}
-.field label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);}
-.field input,.field select,.field textarea{
-  background:var(--card);border:1px solid var(--line);border-radius:10px;
-  padding:14px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:14.5px;
-  transition:border-color .3s,background .3s;outline:none;
-}
-.field textarea{resize:vertical;min-height:96px;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--line-strong);background:#131316;}
-.field input::placeholder,.field textarea::placeholder{color:var(--dimmer);}
-.file-drop{
-  border:1px dashed var(--line-strong);border-radius:10px;padding:26px;text-align:center;
-  color:var(--dim);font-size:13px;cursor:pointer;transition:border-color .3s,background .3s;
-}
-.file-drop:hover,.file-drop.drag{border-color:var(--white);background:var(--card);color:var(--white);}
-.file-drop input{display:none;}
-.file-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.file-chip{
-  display:flex;align-items:center;gap:8px;max-width:100%;
-  background:var(--card);border:1px solid var(--line);border-radius:100px;
-  padding:6px 8px 6px 14px;font-size:12.5px;color:var(--dim);font-family:'Inter',sans-serif;
-  animation:chip-in .35s var(--ease);
-}
-.file-chip .chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;}
-.file-chip .chip-remove{
-  flex:0 0 auto;width:18px;height:18px;border-radius:50%;
-  background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--dim);font-size:13px;line-height:1;transition:background .2s,color .2s;
-}
-.file-chip .chip-remove:hover{background:var(--accent);color:var(--white);}
-@keyframes chip-in{from{opacity:0;transform:translateY(4px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
-.form-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:6px;}
-.form-note{font-size:12.5px;color:var(--dimmer);max-width:280px;}
-.form-note a{color:var(--accent);border-bottom:1px solid transparent;transition:border-color .3s;}
-.form-note a:hover{border-color:var(--accent);}
-.form-status{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);min-height:16px;}
-
-/* ---------- contact cta ---------- */
-.cta-band{
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  padding:110px 0;text-align:center;position:relative;overflow:hidden;
-}
-.cta-band h2{font-size:clamp(34px,6vw,80px);line-height:1.02;}
-.cta-band .btn{margin-top:38px;}
-.cta-glow{position:absolute;top:50%;left:50%;width:600px;height:600px;transform:translate(-50%,-50%);
-  background:radial-gradient(circle,rgba(244,244,242,.08),transparent 70%);pointer-events:none;}
-.discord-link{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);border-bottom:1px solid transparent;transition:all .3s var(--ease);}
-.discord-link:hover{color:var(--white);border-color:var(--white);}
-
-/* ---------- footer ---------- */
-footer{padding:70px 0 40px;}
-.foot-top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;padding-bottom:50px;border-bottom:1px solid var(--line);}
-.foot-brand .logo{margin-bottom:14px;}
-.foot-brand p{color:var(--dim);font-size:14px;max-width:280px;line-height:1.6;}
-.foot-cols{display:flex;gap:70px;flex-wrap:wrap;}
-.foot-col h5{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);margin-bottom:16px;}
-.foot-col a{display:block;color:var(--dim);font-size:14px;margin-bottom:10px;transition:color .3s;}
-.foot-col a:hover{color:var(--white);}
-.social-row{display:flex;gap:12px;}
-.social-btn{
-  display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;
-  border:1px solid var(--line-strong);color:var(--dim);
-  transition:all .3s var(--ease);
-}
-.social-btn:hover{color:var(--black);background:var(--white);border-color:var(--white);transform:translateY(-3px);}
-.social-btn-discord{color:var(--accent);border-color:var(--accent-dim);background:rgba(255,43,131,.06);}
-.social-btn-discord:hover{color:var(--black);background:var(--accent);border-color:var(--accent);}
-.social-hint{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--dimmer);}
-.foot-bottom{display:flex;justify-content:space-between;padding-top:26px;color:var(--dimmer);font-size:12.5px;flex-wrap:wrap;gap:10px;}
-
-/* ---------- lightbox ---------- */
-.lightbox{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:40px;}
-.lightbox.open{display:flex;}
-.lightbox-bg{position:absolute;inset:0;background:rgba(6,6,7,.9);backdrop-filter:blur(10px);}
-.lightbox-content{position:relative;z-index:2;max-width:680px;width:100%;max-height:88vh;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transform:scale(.94);opacity:0;transition:all .4s var(--ease),max-width .3s var(--ease);}
-.lightbox.open .lightbox-content{transform:scale(1);opacity:1;}
-.lightbox-content.wide{max-width:1000px;}
-.lightbox-art{aspect-ratio:1/1;position:relative;flex:0 1 auto;min-height:0;max-height:70vh;}
-.lightbox-art.wide{aspect-ratio:16/9;}
-.lightbox-art .art img{object-fit:contain;background:var(--black-2);}
-.lightbox-body{padding:26px 28px 30px;flex:0 0 auto;}
-.lightbox-body .g{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.08em;}
-.lightbox-body h3{font-size:24px;margin:8px 0 14px;}
-.lightbox-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(8,8,10,.6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
-
-/* payment confirm modal */
-.payment-modal-content{max-width:460px;}
-.payment-modal-content .lightbox-body{padding:34px 30px 30px;}
-.payment-modal-content h3{font-size:22px;margin:0 0 14px;}
-.payment-modal-text{font-size:14px;line-height:1.6;color:var(--dim);margin-bottom:22px;}
-.payment-modal-methods{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
-.pay-pill-applepay{color:var(--white);border-color:var(--line-strong);background:rgba(255,255,255,.06);cursor:default;}
-.payment-modal-note{font-size:12.5px;line-height:1.55;color:var(--dimmer);margin-bottom:26px;}
-.payment-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-.payment-modal-back{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);cursor:pointer;border-bottom:1px solid transparent;transition:all .3s var(--ease);}
-.payment-modal-back:hover{color:var(--white);border-color:var(--white);}
-
-/* toast */
-#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(calc(100% + 40px));background:var(--white);color:var(--black);
-  padding:14px 22px;border-radius:100px;font-size:13.5px;font-family:'Space Grotesk',sans-serif;font-weight:500;
-  z-index:300;opacity:0;pointer-events:none;transition:transform .5s var(--ease),opacity .5s var(--ease);}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto;}
-
-@media (max-width:560px){
-  .section-pad{padding:90px 0;}
-  .hero{padding-top:100px;}
-}
-</style>
+</script>
 </head>
 <body>
 
-<div id="preloader">
-  <div class="preloader-mark"><img src="assets/brand/logo-mark-hero.webp" alt=""></div>
-  <div class="preloader-word"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"></div>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<div id="preloader" aria-hidden="true">
+  <div class="preloader-mark"><img src="assets/brand/logo-mark-hero.webp" alt="" width="96" height="96"></div>
+  <div class="preloader-word"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="120" height="20"></div>
   <div class="preloader-bar"><span></span></div>
 </div>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-<div id="bg-image"></div>
-<canvas id="bg-canvas"></canvas>
-<svg class="grain" width="0" height="0"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter></svg>
-<div class="grain" style="filter:url(#noiseFilter);"></div>
-<div class="vignette"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="bg-image" aria-hidden="true"></div>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<svg class="grain" width="0" height="0" aria-hidden="true"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter></svg>
+<div class="grain" style="filter:url(#noiseFilter);" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
 
-<div id="scrollProgress"></div>
+<div id="scrollProgress" role="presentation"></div>
 
 <nav class="side-dots" aria-label="Page navigation">
   <a href="#home" class="dot-link" data-page="home"><span class="dot-tip">Home</span></a>
@@ -522,8 +81,8 @@ footer{padding:70px 0 40px;}
 <!-- NAV -->
 <header id="siteHeader">
   <div class="wrap">
-    <nav>
-      <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
+    <nav aria-label="Primary">
+      <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="96" height="24"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
       <div class="nav-links">
         <a href="#cover-art" data-page="cover-art">Cover Art</a>
         <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
@@ -533,24 +92,50 @@ footer{padding:70px 0 40px;}
       </div>
       <div class="nav-cta">
         <div class="nav-social">
-          <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" aria-label="Discord" title="Discord — fastest replies" class="nav-social-discord">
-            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
+          <a data-discord-link href="#" target="_blank" rel="noopener" aria-label="Discord" title="Discord — fastest replies" class="nav-social-discord">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
           </a>
-          <a href="https://www.instagram.com/yoorowen/" target="_blank" rel="noopener" aria-label="Instagram" title="@yoorowen">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+          <a data-instagram-link href="#" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a href="https://www.tiktok.com/@yoorowen" target="_blank" rel="noopener" aria-label="TikTok" title="@yoorowen">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16.6 3h-3.1v12.4a2.7 2.7 0 11-2.7-2.7c.2 0 .5 0 .7.1V9.6a5.9 5.9 0 100 11.8 5.9 5.9 0 005.9-5.9V9.2a8 8 0 004.3 1.3V7.4a4.9 4.9 0 01-5.1-4.4z"/></svg>
+          <a data-tiktok-link href="#" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M16.6 3h-3.1v12.4a2.7 2.7 0 11-2.7-2.7c.2 0 .5 0 .7.1V9.6a5.9 5.9 0 100 11.8 5.9 5.9 0 005.9-5.9V9.2a8 8 0 004.3 1.3V7.4a4.9 4.9 0 01-5.1-4.4z"/></svg>
           </a>
         </div>
-        <a href="#order" class="btn solid" style="padding:12px 22px;font-size:13px;"><span>Start a Project</span></a>
-        <div class="burger" id="burger"><span></span><span></span><span></span></div>
+        <a href="#order" class="btn solid small-hide-mobile" style="padding:12px 22px;font-size:13px;"><span>Start a Project</span></a>
+        <button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu"><span></span><span></span><span></span></button>
       </div>
     </nav>
   </div>
 </header>
 
+<!-- MOBILE NAV DRAWER -->
+<div id="mobileNav" aria-hidden="true">
+  <div class="mobile-nav-bg"></div>
+  <nav class="mobile-nav-panel" aria-label="Mobile">
+    <a href="#home" data-page="home">Home</a>
+    <a href="#cover-art" data-page="cover-art">Cover Art</a>
+    <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
+    <a href="#ads" data-page="ads">Ads</a>
+    <a href="#pfps" data-page="pfps">PFPs</a>
+    <a href="#order" data-page="order">Order</a>
+    <a href="#order" class="btn solid"><span>Start a Project</span></a>
+    <div class="mobile-nav-social">
+      <a data-discord-link href="#" target="_blank" rel="noopener" aria-label="Discord" class="social-btn social-btn-discord">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
+      </a>
+      <a data-instagram-link href="#" target="_blank" rel="noopener" aria-label="Instagram" class="social-btn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a data-tiktok-link href="#" target="_blank" rel="noopener" aria-label="TikTok" class="social-btn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.6 3h-3.1v12.4a2.7 2.7 0 11-2.7-2.7c.2 0 .5 0 .7.1V9.6a5.9 5.9 0 100 11.8 5.9 5.9 0 005.9-5.9V9.2a8 8 0 004.3 1.3V7.4a4.9 4.9 0 01-5.1-4.4z"/></svg>
+      </a>
+    </div>
+  </nav>
+</div>
+
 <main id="pages">
+  <div id="main-content"></div>
 
   <!-- ============ HOME ============ -->
   <section class="page active" data-page="home">
@@ -560,27 +145,35 @@ footer{padding:70px 0 40px;}
       <div class="wrap">
         <div class="hero-top-row reveal">
           <div class="eyebrow" style="margin-bottom:0;">TAKING NEW ORDERS</div>
-          <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-badge">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
+          <a data-discord-link href="#" target="_blank" rel="noopener" class="discord-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
             <span>Fastest replies on Discord</span>
           </a>
         </div>
         <div class="hero-inner" style="margin-top:24px;">
           <h1 class="reveal">Graphic design<br>for creators who<br><span class="outline">mean it.</span></h1>
-          <div class="hero-mark reveal"><img src="assets/brand/logo-mark-hero.webp" alt="ROWEN mark"></div>
+          <div class="hero-mark reveal"><img src="assets/brand/logo-mark-hero.webp" alt="" width="220" height="220"></div>
         </div>
         <div class="hero-meta reveal">
-          <p class="hero-sub">Cover art, thumbnails, ads &amp; PFPs. Made from scratch, priced around your budget.</p>
+          <p class="hero-sub">I design cover art, YouTube thumbnails, ad creative &amp; PFPs — made from scratch and priced around your budget, not a one-size-fits-all rate card.</p>
           <div class="hero-cta">
-            <a href="#cover-art" class="btn"><span>View Work</span></a>
             <a href="#order" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
+            <a href="#cover-art" class="btn"><span>View My Work</span></a>
           </div>
+        </div>
+
+        <div class="hero-strip reveal">
+          <div class="hero-strip-head">
+            <span>Selected work</span>
+            <a href="#cover-art" data-page="cover-art">See the full portfolio ↗</a>
+          </div>
+          <div class="hero-strip-track" id="heroStripTrack"><!-- injected by JS --></div>
         </div>
       </div>
     </section>
 
     <div class="marquee-wrap">
-      <div class="marquee" id="marquee">
+      <div class="marquee" id="marquee" aria-hidden="true">
         <span><b>Cover Art</b> · <b>Thumbnails</b> · <b>Ads</b> · <b>PFPs</b> · <b>Every Budget Welcome</b> · Now Booking · </span>
         <span><b>Cover Art</b> · <b>Thumbnails</b> · <b>Ads</b> · <b>PFPs</b> · <b>Every Budget Welcome</b> · Now Booking · </span>
       </div>
@@ -596,13 +189,13 @@ footer{padding:70px 0 40px;}
 
         <div class="service-grid reveal-stagger">
           <a href="#cover-art" class="service-card">
-            <div class="service-preview">
-              <img src="assets/covers/cover-01.webp" alt="">
-              <img src="assets/covers/cover-02.webp" alt="">
-              <img src="assets/covers/cover-03.webp" alt="">
-              <img src="assets/covers/cover-04.webp" alt="">
+            <div class="service-preview" aria-hidden="true">
+              <img src="assets/covers/cover-01.webp" alt="" loading="lazy">
+              <img src="assets/covers/cover-02.webp" alt="" loading="lazy">
+              <img src="assets/covers/cover-03.webp" alt="" loading="lazy">
+              <img src="assets/covers/cover-04.webp" alt="" loading="lazy">
             </div>
-            <div class="service-icon">
+            <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
             </div>
             <h3>Cover Art</h3>
@@ -611,13 +204,13 @@ footer{padding:70px 0 40px;}
           </a>
 
           <a href="#thumbnails" class="service-card">
-            <div class="service-preview">
-              <img src="assets/thumbnails/thumb-01.webp" alt="">
-              <img src="assets/thumbnails/thumb-02.webp" alt="">
-              <img src="assets/thumbnails/thumb-03.webp" alt="">
-              <img src="assets/thumbnails/thumb-04.webp" alt="">
+            <div class="service-preview" aria-hidden="true">
+              <img src="assets/thumbnails/thumb-01.webp" alt="" loading="lazy">
+              <img src="assets/thumbnails/thumb-02.webp" alt="" loading="lazy">
+              <img src="assets/thumbnails/thumb-03.webp" alt="" loading="lazy">
+              <img src="assets/thumbnails/thumb-04.webp" alt="" loading="lazy">
             </div>
-            <div class="service-icon">
+            <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M10 9l6 3-6 3V9z" fill="currentColor" stroke="none"/></svg>
             </div>
             <h3>YouTube Thumbnails</h3>
@@ -626,7 +219,7 @@ footer{padding:70px 0 40px;}
           </a>
 
           <a href="#ads" class="service-card">
-            <div class="service-icon">
+            <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9.5v5a1 1 0 001 1h2.2l5.3 3.5v-14L6.2 8.5H4a1 1 0 00-1 1z"/><path d="M15.5 9a3.2 3.2 0 010 6"/><path d="M17.8 6.3a6.6 6.6 0 010 11.4"/></svg>
             </div>
             <h3>Ads</h3>
@@ -635,7 +228,7 @@ footer{padding:70px 0 40px;}
           </a>
 
           <a href="#pfps" class="service-card">
-            <div class="service-icon">
+            <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
             </div>
             <h3>PFPs</h3>
@@ -646,38 +239,49 @@ footer{padding:70px 0 40px;}
       </div>
     </section>
 
-    <!-- PROCESS -->
+    <!-- PRICING -->
+    <section class="section-pad" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>Pricing</h2>
+          <p>Every project gets a custom quote — no fixed rate card. Here's what's included with each service, and what shapes your price.</p>
+        </div>
+        <div class="pricing-grid reveal-stagger" id="pricingGrid"><!-- injected by JS --></div>
+        <div class="quote-factors reveal" id="pricingFactors"><!-- injected by JS --></div>
+        <div class="pricing-note reveal" data-min-budget-line>$25 minimum on every project — final pricing is always a custom quote, never a fixed rate.</div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
     <section class="section-pad" style="padding-top:0;">
       <div class="wrap">
         <div class="section-head reveal">
           <h2>How it works</h2>
+          <p>Every commission — big or small — follows the same five steps.</p>
         </div>
-        <div class="process reveal">
-          <div class="step">
-            <div class="num">01</div>
-            <h3>Brief me</h3>
-            <p>Tell me what you want, send examples, or just say "creative freedom."</p>
-          </div>
-          <div class="step">
-            <div class="num">02</div>
-            <h3>Get a quote</h3>
-            <p>I reply with a quote and timeframe based on your budget — usually within a day or two.</p>
-          </div>
-          <div class="step">
-            <div class="num">03</div>
-            <h3>Pay your way</h3>
-            <p>Before or after, your call — paying upfront just means I start sooner.</p>
-          </div>
-          <div class="step">
-            <div class="num">04</div>
-            <h3>Get your files</h3>
-            <p>Delivered ready to use, revisions included.</p>
-          </div>
+        <div class="process reveal" id="processSteps"><!-- injected by JS --></div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS (auto-hidden when empty) -->
+    <section class="section-pad" style="padding-top:0;" id="testimonialsSection" hidden>
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>What clients say</h2>
+          <p>Real feedback from real projects.</p>
         </div>
-        <div class="price-line reveal">
-          <span>Got a budget in mind?</span>
-          <span class="price-badge">Tell me — I'll work with it</span>
+        <div class="testimonial-grid reveal-stagger" id="testimonialGrid"><!-- injected by JS --></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-pad" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>Frequently asked</h2>
+          <p>The short version of my Commission &amp; Refund policies — full text is linked in the footer.</p>
         </div>
+        <div class="faq-list reveal" id="faqList"><!-- injected by JS --></div>
       </div>
     </section>
 
@@ -688,7 +292,7 @@ footer{padding:70px 0 40px;}
           <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
           <h2>Let's make<br>something.</h2>
           <a href="#order" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
-          <p><a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+          <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
         </div>
       </div>
     </section>
@@ -703,9 +307,10 @@ footer{padding:70px 0 40px;}
         <h1>Cover art that<br>stops the scroll.</h1>
         <p class="page-hero-sub">Albums, EPs, singles &amp; visualizers — made from scratch, priced around your budget.</p>
         <a href="#order/cover-art" class="btn solid"><span>Start a Cover Art Project</span> <span class="arrow">↗</span></a>
+        <nav class="filter-tabs" aria-label="Portfolio categories"><!-- injected by JS --></nav>
       </div>
 
-      <div class="grid reveal-stagger" id="grid">
+      <div class="grid reveal-stagger" id="grid" aria-label="Cover art portfolio">
         <!-- cards injected by JS -->
       </div>
 
@@ -713,7 +318,7 @@ footer{padding:70px 0 40px;}
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
         <h2>Let's make your<br>next cover.</h2>
         <a href="#order/cover-art" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
-        <p><a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+        <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
       </div>
     </div>
   </section>
@@ -726,9 +331,10 @@ footer{padding:70px 0 40px;}
         <h1>Thumbnails built<br>to get the click.</h1>
         <p class="page-hero-sub">High-contrast, high-CTR thumbnails made from scratch, priced around your budget.</p>
         <a href="#order/thumbnails" class="btn solid"><span>Start a Thumbnail Project</span> <span class="arrow">↗</span></a>
+        <nav class="filter-tabs" aria-label="Portfolio categories"><!-- injected by JS --></nav>
       </div>
 
-      <div class="grid grid-16-9 reveal-stagger" id="grid-thumbnails">
+      <div class="grid grid-16-9 reveal-stagger" id="grid-thumbnails" aria-label="Thumbnail portfolio">
         <!-- cards injected by JS -->
       </div>
 
@@ -736,7 +342,7 @@ footer{padding:70px 0 40px;}
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
         <h2>Let's design your<br>next thumbnail.</h2>
         <a href="#order/thumbnails" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
-        <p><a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+        <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
       </div>
     </div>
   </section>
@@ -749,22 +355,23 @@ footer{padding:70px 0 40px;}
         <h1>Scroll-stopping<br>ad creative.</h1>
         <p class="page-hero-sub">Static &amp; social ad graphics made from scratch, priced around your budget.</p>
         <a href="#order/ads" class="btn solid"><span>Start an Ad Project</span> <span class="arrow">↗</span></a>
+        <nav class="filter-tabs" aria-label="Portfolio categories"><!-- injected by JS --></nav>
       </div>
 
       <div class="coming-soon reveal">
-        <div class="service-icon">
+        <div class="service-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9.5v5a1 1 0 001 1h2.2l5.3 3.5v-14L6.2 8.5H4a1 1 0 00-1 1z"/><path d="M15.5 9a3.2 3.2 0 010 6"/><path d="M17.8 6.3a6.6 6.6 0 010 11.4"/></svg>
         </div>
         <h3>Ad portfolio coming soon</h3>
         <p>I'm still building out this gallery. DM me on Discord to see recent examples in the meantime.</p>
-        <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Ask on Discord</span></a>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Ask on Discord</span></a>
       </div>
 
       <div class="page-cta-band reveal">
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
         <h2>Let's make your<br>next ad.</h2>
         <a href="#order/ads" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
-        <p><a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+        <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
       </div>
     </div>
   </section>
@@ -777,22 +384,23 @@ footer{padding:70px 0 40px;}
         <h1>Profile pics with<br>personality.</h1>
         <p class="page-hero-sub">Custom profile pictures made from scratch, priced around your budget.</p>
         <a href="#order/pfps" class="btn solid"><span>Start a PFP Project</span> <span class="arrow">↗</span></a>
+        <nav class="filter-tabs" aria-label="Portfolio categories"><!-- injected by JS --></nav>
       </div>
 
       <div class="coming-soon reveal">
-        <div class="service-icon">
+        <div class="service-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
         </div>
         <h3>PFP portfolio coming soon</h3>
         <p>I'm still building out this gallery. DM me on Discord to see recent examples in the meantime.</p>
-        <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Ask on Discord</span></a>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Ask on Discord</span></a>
       </div>
 
       <div class="page-cta-band reveal">
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
         <h2>Let's make your<br>next PFP.</h2>
         <a href="#order/pfps" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
-        <p><a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+        <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
       </div>
     </div>
   </section>
@@ -806,39 +414,61 @@ footer{padding:70px 0 40px;}
           <h2>Tell me about<br>your project.</h2>
           <p>Fill out the form — I'll reply with a timeframe and quote.</p>
           <ul class="order-list">
-            <li><span class="ck"></span>Made from scratch, any style</li>
-            <li><span class="ck"></span>Revisions until it's right</li>
-            <li><span class="ck"></span>Delivered ready to use</li>
+            <li><span class="ck" aria-hidden="true"></span>Made from scratch, any style</li>
+            <li><span class="ck" aria-hidden="true"></span>Revisions included on every project</li>
+            <li><span class="ck" aria-hidden="true"></span>Watermarked preview before final files</li>
           </ul>
           <div class="pay-row">
-            <span class="pay-label">Pay via</span>
-            <a href="https://cash.app/$rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
-            <a href="https://venmo.com/u/rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
+            <span class="pay-label">Deposit &amp; final payment via</span>
+            <a data-cashapp-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
+            <a data-venmo-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
+            <span class="pay-pill pay-pill-applepay">Apple Pay (via Discord)</span>
           </div>
-          <p class="pay-note">Pay before or after — your call. Paying upfront just means I start sooner.</p>
+          <p class="pay-note">A deposit books your spot in the queue; the balance is due after you approve your watermarked preview. See the <button type="button" class="mono" style="background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0;font-size:12.5px;" data-policy="commission">Commission Policy</button> for details.</p>
         </div>
 
         <div class="reveal">
-          <form id="orderForm">
+          <form id="orderForm" novalidate>
+            <!-- honeypot — real visitors never see or fill this in -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off">
+            </div>
+
             <div class="field">
               <label for="service">What do you need?</label>
               <select id="service" name="service">
                 <option value="">Not sure yet</option>
                 <option value="Cover Art">Cover Art</option>
                 <option value="YouTube Thumbnail">YouTube Thumbnail</option>
-                <option value="Ad">Ad</option>
-                <option value="PFP">PFP</option>
+                <option value="Advertisement Design">Advertisement Design</option>
+                <option value="Profile Picture">Profile Picture</option>
                 <option value="Other">Other</option>
               </select>
             </div>
             <div class="row2">
               <div class="field">
-                <label for="name">Your Name</label>
-                <input type="text" id="name" name="name" placeholder="Jane Doe" required>
+                <label for="name">Your Name <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="name" name="name" placeholder="Jane Doe" required aria-required="true">
+                <span class="field-error" role="alert"></span>
               </div>
               <div class="field">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="jane@email.com" required>
+                <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+                <input type="email" id="email" name="email" placeholder="jane@email.com" required aria-required="true">
+                <span class="field-error" role="alert"></span>
+              </div>
+            </div>
+            <div class="row2">
+              <div class="field">
+                <label for="discord">Discord Username</label>
+                <input type="text" id="discord" name="discord" placeholder="e.g. janedoe" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="contactMethod">Preferred Contact Method</label>
+                <select id="contactMethod" name="contactMethod">
+                  <option value="Discord">Discord</option>
+                  <option value="Email">Email</option>
+                </select>
               </div>
             </div>
             <div class="row2">
@@ -852,36 +482,87 @@ footer{padding:70px 0 40px;}
               </div>
             </div>
             <div class="field">
-              <label for="budget">Budget <span style="color:var(--dimmer);font-weight:400;">($25 minimum)</span></label>
-              <input type="text" id="budget" name="budget" placeholder="e.g. $25–50, flexible (min $25), or a range you have in mind" required>
+              <label for="budget">Budget Range <span class="req" aria-hidden="true">*</span> <span style="color:var(--dimmer);font-weight:400;text-transform:none;">(all projects have a $<span data-min-budget>25</span> minimum)</span></label>
+              <select id="budget" name="budget" required aria-required="true">
+                <option value="" disabled selected>Select a budget range</option>
+                <!-- more options injected by JS from config.budgetRanges -->
+              </select>
+              <span class="field-hint">Final pricing is a custom quote based on scope, complexity, deadline, revisions, and intended use — not a fixed price.</span>
+              <span class="field-error" role="alert"></span>
             </div>
             <div class="field">
-              <label for="brief">What do you want it to have?</label>
+              <label for="brief">Project Description</label>
               <textarea id="brief" name="brief" placeholder="Describe it, drop reference links — or just say 'creative freedom.'"></textarea>
             </div>
             <div class="field">
-              <label>Reference Images (optional)</label>
-              <label class="file-drop" id="fileDrop">
+              <label for="referenceLinks">Reference Links (optional)</label>
+              <input type="text" id="referenceLinks" name="referenceLinks" placeholder="Paste links to reference images, styles you like, past work, etc.">
+              <span class="field-hint">Separate multiple links with a comma or space.</span>
+            </div>
+            <div class="field">
+              <label for="fileInput">Reference Files (optional)</label>
+              <label class="file-drop" id="fileDrop" for="fileInput">
                 <span id="fileDropText">Drop images here or click to browse</span>
-                <input type="file" id="fileInput" name="attachment" multiple accept="image/*">
+                <input type="file" id="fileInput" name="attachment" multiple accept="image/png,image/jpeg,image/webp,image/gif">
               </label>
+              <span class="field-hint">Images only (PNG, JPG, WEBP, GIF) — up to 15MB each, 6 files max.</span>
+              <span class="field-error" id="fileError" role="alert" style="display:block;" hidden></span>
               <div class="file-list" id="fileList"></div>
             </div>
 
-            <div class="form-foot">
-              <div class="form-note">Sent it? Feel free to <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener">DM me on Discord</a> too, just so I know it came through.</div>
-              <button type="submit" class="btn solid"><span id="submitText">Send Request</span> <span class="arrow">↗</span></button>
+            <div class="field field-checkbox">
+              <input type="checkbox" id="agreeTerms" name="agreeTerms" required aria-required="true">
+              <label for="agreeTerms">I agree to the <button type="button" data-policy="commission">Commission Policy</button> and <button type="button" data-policy="tos">Terms of Service</button>, including the deposit &amp; revision terms. <span class="req" aria-hidden="true">*</span></label>
+              <span class="field-error" role="alert"></span>
             </div>
-            <div class="form-status" id="formStatus"></div>
+
+            <div class="form-foot">
+              <div class="form-note">Sent it? Feel free to <a data-discord-link href="#" target="_blank" rel="noopener">DM me on Discord</a> too, just so I know it came through.</div>
+              <button type="submit" class="btn solid" id="submitBtn"><span id="submitText">Send Request</span> <span class="arrow">↗</span></button>
+            </div>
+            <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
           </form>
+        </div>
+      </div>
+
+      <!-- BUSINESS-FACING CONTACT -->
+      <div class="section-pad" style="padding-bottom:0;">
+        <div class="section-head reveal">
+          <h2>Other ways to reach me</h2>
+          <p>No need to fill out a form if you'd rather just talk first.</p>
+        </div>
+        <div class="contact-grid reveal-stagger">
+          <div class="contact-card">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
+            </div>
+            <h3>Discord (fastest)</h3>
+            <p>Best for quick questions, sharing references, and getting the fastest replies.</p>
+            <a data-discord-link href="#" target="_blank" rel="noopener" class="btn small"><span>Join the Discord</span></a>
+          </div>
+          <div class="contact-card">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </div>
+            <h3>Email</h3>
+            <p>Good for longer briefs or if you'd rather not use Discord.</p>
+            <a data-email-link href="#" class="btn small"><span data-email-text>Email</span></a>
+          </div>
+          <div class="contact-card">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
+            </div>
+            <h3>Payment</h3>
+            <p>CashApp, Venmo &amp; Apple Pay — sent only after you've received and accepted a quote, never before.</p>
+          </div>
         </div>
       </div>
 
       <div class="page-cta-band reveal">
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Prefer to just chat first?</div>
         <h2>Discord is fastest.</h2>
-        <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" class="btn solid"><span>Join the Discord</span> <span class="arrow">↗</span></a>
-        <p><a href="mailto:rowenapichardo@gmail.com?subject=Design%20Inquiry" class="discord-link">or email Rowen ↗</a></p>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn solid"><span>Join the Discord</span> <span class="arrow">↗</span></a>
+        <p><a data-email-link href="#" class="discord-link">or email Rowen ↗</a></p>
       </div>
     </div>
   </section>
@@ -892,7 +573,7 @@ footer{padding:70px 0 40px;}
   <div class="wrap">
     <div class="foot-top">
       <div class="foot-brand">
-        <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="ROWEN"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
+        <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="112" height="28"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
         <p>Cover art, thumbnails, ads &amp; PFPs.</p>
       </div>
       <div class="foot-cols">
@@ -905,20 +586,27 @@ footer{padding:70px 0 40px;}
         </div>
         <div class="foot-col">
           <h5>Contact</h5>
-          <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener">Discord (preferred)</a>
-          <a href="mailto:rowenapichardo@gmail.com">rowenapichardo@gmail.com</a>
+          <a data-discord-link href="#" target="_blank" rel="noopener">Discord (preferred)</a>
+          <a data-email-link href="#"><span data-email-text>email</span></a>
+        </div>
+        <div class="foot-col">
+          <h5>Legal</h5>
+          <button type="button" data-policy="tos">Terms of Service</button>
+          <button type="button" data-policy="commission">Commission Policy</button>
+          <button type="button" data-policy="privacy">Privacy Policy</button>
+          <button type="button" data-policy="refund">Refund Policy</button>
         </div>
         <div class="foot-col">
           <h5>Follow</h5>
           <div class="social-row">
-            <a href="https://discord.gg/dKVSJuT56u" target="_blank" rel="noopener" aria-label="Discord" title="Join the server — fastest replies" class="social-btn social-btn-discord">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
+            <a data-discord-link href="#" target="_blank" rel="noopener" aria-label="Discord" title="Join the server — fastest replies" class="social-btn social-btn-discord">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M18.9 5.7A15.9 15.9 0 0015.2 4.5a.06.06 0 00-.06.03c-.16.28-.34.66-.46.95a14.7 14.7 0 00-4.4 0 9.6 9.6 0 00-.47-.95.06.06 0 00-.06-.03c-1.3.22-2.5.6-3.7 1.2a.05.05 0 00-.03.02C3.9 8.6 3.3 11.4 3.6 14.2a.07.07 0 00.03.05 16 16 0 004.8 2.4.06.06 0 00.07-.02c.37-.5.7-1.05.98-1.62a.06.06 0 00-.03-.08 10.5 10.5 0 01-1.5-.72.06.06 0 010-.1c.1-.08.2-.16.3-.24a.06.06 0 01.06 0c3.15 1.44 6.56 1.44 9.68 0a.06.06 0 01.06 0l.3.24a.06.06 0 010 .1c-.48.28-.98.52-1.5.72a.06.06 0 00-.03.08c.29.57.62 1.11.98 1.62a.06.06 0 00.07.02 15.9 15.9 0 004.8-2.4.06.06 0 00.03-.05c.36-3.2-.47-6-2.03-8.48a.05.05 0 00-.02-.02zM9.7 12.9c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85zm5.6 0c-.9 0-1.65-.83-1.65-1.85 0-1.02.73-1.85 1.65-1.85s1.67.84 1.65 1.85c0 1.02-.73 1.85-1.65 1.85z"/></svg>
             </a>
-            <a href="https://www.instagram.com/yoorowen/" target="_blank" rel="noopener" aria-label="Instagram" title="@yoorowen" class="social-btn">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+            <a data-instagram-link href="#" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram" class="social-btn">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
             </a>
-            <a href="https://www.tiktok.com/@yoorowen" target="_blank" rel="noopener" aria-label="TikTok" title="@yoorowen" class="social-btn">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.6 3h-3.1v12.4a2.7 2.7 0 11-2.7-2.7c.2 0 .5 0 .7.1V9.6a5.9 5.9 0 100 11.8 5.9 5.9 0 005.9-5.9V9.2a8 8 0 004.3 1.3V7.4a4.9 4.9 0 01-5.1-4.4z"/></svg>
+            <a data-tiktok-link href="#" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok" class="social-btn">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M16.6 3h-3.1v12.4a2.7 2.7 0 11-2.7-2.7c.2 0 .5 0 .7.1V9.6a5.9 5.9 0 100 11.8 5.9 5.9 0 005.9-5.9V9.2a8 8 0 004.3 1.3V7.4a4.9 4.9 0 01-5.1-4.4z"/></svg>
             </a>
           </div>
           <div class="social-hint">Discord = fastest reply</div>
@@ -932,456 +620,63 @@ footer{padding:70px 0 40px;}
   </div>
 </footer>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
+<!-- PROJECT DETAIL LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-hidden="true">
   <div class="lightbox-bg" id="lightboxBg"></div>
   <div class="lightbox-content">
-    <div class="lightbox-close" id="lightboxClose">✕</div>
+    <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
     <div class="lightbox-art" id="lightboxArt"></div>
     <div class="lightbox-body">
+      <span class="g">Project detail</span>
       <h3 id="lightboxTitle"></h3>
-      <a href="#order/cover-art" class="btn solid" id="lightboxCta" style="width:100%;justify-content:center;"><span>Request Something Like This</span></a>
+      <div class="detail-meta" id="lightboxMeta"></div>
+      <p class="detail-desc" id="lightboxDesc" hidden></p>
+      <a href="#order/cover-art" class="btn solid" id="lightboxCta" style="width:100%;justify-content:center;margin-top:8px;"><span>Request Something Like This</span></a>
     </div>
   </div>
 </div>
 
 <!-- PAYMENT CONFIRM MODAL -->
-<div class="lightbox" id="paymentModal">
+<div class="lightbox" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle" aria-hidden="true">
   <div class="lightbox-bg" id="paymentModalBg"></div>
   <div class="lightbox-content payment-modal-content">
-    <div class="lightbox-close" id="paymentModalClose">✕</div>
+    <button type="button" class="lightbox-close" id="paymentModalClose" aria-label="Close">✕</button>
     <div class="lightbox-body">
       <div class="eyebrow" style="margin-bottom:14px;">Before you send it</div>
-      <h3>How payment works</h3>
-      <p class="payment-modal-text">No payment is due right now — this just sends your request. Once I reply with a timeframe and quote, you can pay whenever works for you: upfront, or after it's done. Paying upfront just means I start sooner.</p>
+      <h3 id="paymentModalTitle">How payment works</h3>
+      <p class="payment-modal-text">No payment is due right now — this just sends your request. Once I reply with a quote and estimated completion date, a deposit is required to book your project. You'll review a watermarked preview before the final balance and final files are due.</p>
       <div class="payment-modal-methods">
-        <a href="https://cash.app/$rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
-        <a href="https://venmo.com/u/rowenarts" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
+        <a data-cashapp-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
+        <a data-venmo-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
         <span class="pay-pill pay-pill-applepay">Apple Pay</span>
       </div>
-      <p class="payment-modal-note">I also take Apple Pay — just DM me on Discord for that one, it's not set up for auto-links like the others.</p>
+      <p class="payment-modal-note">Apple Pay isn't set up for auto-links like the others — just DM me on Discord for that one when it's time to pay.</p>
       <div class="payment-modal-actions">
-        <div class="payment-modal-back" id="paymentModalBack">Go back</div>
+        <button type="button" class="payment-modal-back" id="paymentModalBack">Go back</button>
         <button type="button" class="btn solid" id="paymentModalConfirm" style="justify-content:center;"><span>Got it — Send Request</span> <span class="arrow">↗</span></button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-
-<script>
-/* =========================================================
-   CONFIG — replace with your own Formspree endpoint
-   1. Create a free form at https://formspree.io using
-      rowenapichardo@gmail.com
-   2. Paste the form ID below (looks like "abcdwxyz")
-   ========================================================= */
-const FORMSPREE_ID = "xojgvwbp";
-
-/* ---------- year ---------- */
-document.getElementById('year').textContent = new Date().getFullYear();
-
-/* ---------- preloader (opening animation) ---------- */
-(function(){
-  const preloader = document.getElementById('preloader');
-  if(!preloader) return;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const dismiss = () => preloader.classList.add('hide');
-  if(reduceMotion){
-    setTimeout(dismiss, 50);
-  } else {
-    const start = Date.now();
-    const minShow = 1500;
-    window.addEventListener('load', ()=>{
-      const elapsed = Date.now() - start;
-      setTimeout(dismiss, Math.max(0, minShow - elapsed));
-    });
-    // fallback in case 'load' fires very late or something goes wrong
-    setTimeout(dismiss, 4000);
-  }
-  preloader.addEventListener('transitionend', (e)=>{
-    if(e.propertyName === 'opacity') preloader.remove();
-  });
-})();
-
-/* ---------- custom cursor ---------- */
-const dot = document.getElementById('cursor-dot');
-const ring = document.getElementById('cursor-ring');
-let rx=0, ry=0, mx=0, my=0;
-window.addEventListener('mousemove', e=>{
-  mx=e.clientX; my=e.clientY;
-  dot.style.left=mx+'px'; dot.style.top=my+'px';
-});
-function loop(){
-  rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(loop);
-}
-loop();
-document.querySelectorAll('a,button,.card,input,textarea,select,.file-drop').forEach(el=>{
-  el.addEventListener('mouseenter', ()=>ring.classList.add('grow'));
-  el.addEventListener('mouseleave', ()=>ring.classList.remove('grow'));
-});
-
-/* ---------- header scroll state + progress bar ---------- */
-const header = document.getElementById('siteHeader');
-const progressBar = document.getElementById('scrollProgress');
-window.addEventListener('scroll', ()=>{
-  header.classList.toggle('scrolled', window.scrollY>30);
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = max>0 ? (window.scrollY/max)*100 : 0;
-  progressBar.style.width = pct+'%';
-},{passive:true});
-
-/* ---------- page router: swaps which .page is visible, feels like separate pages
-   on one site (Caard-style) while staying a single HTML document ---------- */
-const PAGE_KEYS = ['home','cover-art','thumbnails','ads','pfps','order'];
-const pageEls = {};
-PAGE_KEYS.forEach(k=>{ pageEls[k] = document.querySelector(`.page[data-page="${k}"]`); });
-const navLinkEls = document.querySelectorAll('.nav-links a[data-page]');
-const dotLinkEls = document.querySelectorAll('.dot-link[data-page]');
-const PAGE_TITLES = {
-  'home':'ROWEN — Graphic Design Studio',
-  'cover-art':'Cover Art — ROWEN',
-  'thumbnails':'YouTube Thumbnails — ROWEN',
-  'ads':'Ad Creative — ROWEN',
-  'pfps':'PFPs — ROWEN',
-  'order':'Start a Project — ROWEN'
-};
-const serviceSelect = document.getElementById('service');
-
-function setActivePage(key, serviceParam){
-  if(!pageEls[key]) key = 'home';
-  PAGE_KEYS.forEach(k=>{
-    if(!pageEls[k]) return;
-    pageEls[k].classList.toggle('active', k===key);
-  });
-  navLinkEls.forEach(a=>a.classList.toggle('active', a.dataset.page===key));
-  dotLinkEls.forEach(d=>d.classList.toggle('active', d.dataset.page===key));
-  document.title = PAGE_TITLES[key] || PAGE_TITLES.home;
-  window.scrollTo(0,0);
-  const links = document.querySelector('.nav-links');
-  if(links) links.style.cssText='';
-  if(key==='order' && serviceSelect){
-    serviceSelect.value = serviceParam ? (SERVICE_LABELS[serviceParam] || '') : '';
-  }
-}
-
-const SERVICE_LABELS = {
-  'cover-art':'Cover Art',
-  'thumbnails':'YouTube Thumbnail',
-  'ads':'Ad',
-  'pfps':'PFP'
-};
-
-function routeFromHash(){
-  const raw = location.hash.replace('#','');
-  const [pageKey, serviceParam] = raw.split('/');
-  setActivePage(pageKey || 'home', serviceParam);
-}
-window.addEventListener('hashchange', routeFromHash);
-routeFromHash();
-
-/* ---------- scroll reveal ---------- */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(en=>{
-    if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); }
-  });
-},{threshold:0.15});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-/* long/tall containers (like the portfolio grid) can exceed the viewport height,
-   so a 15%-of-element threshold may never be reachable on narrow screens.
-   Use a near-zero threshold for these instead. */
-const ioTall = new IntersectionObserver((entries)=>{
-  entries.forEach(en=>{
-    if(en.isIntersecting){ en.target.classList.add('in-view'); ioTall.unobserve(en.target); }
-  });
-},{threshold:0.01});
-document.querySelectorAll('.reveal-stagger').forEach(el=>ioTall.observe(el));
-
-/* ---------- magnetic buttons ---------- */
-document.querySelectorAll('.btn').forEach(btn=>{
-  btn.addEventListener('mousemove', e=>{
-    const r = btn.getBoundingClientRect();
-    const x = e.clientX - r.left - r.width/2;
-    const y = e.clientY - r.top - r.height/2;
-    btn.style.transform = `translate(${x*0.18}px, ${y*0.35}px)`;
-  });
-  btn.addEventListener('mouseleave', ()=>{ btn.style.transform='translate(0,0)'; });
-});
-
-/* ---------- background canvas: drifting blueprint grid + particles ---------- */
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let w,h,particles=[];
-function resize(){
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight * (document.body.scrollHeight/window.innerHeight > 3 ? 1 : 1);
-  h = canvas.height = window.innerHeight;
-}
-function initParticles(){
-  particles = Array.from({length:46}, ()=>({
-    x: Math.random()*w, y: Math.random()*h,
-    r: Math.random()*1.4+0.3,
-    vx:(Math.random()-0.5)*0.15, vy:(Math.random()-0.5)*0.15,
-    a: Math.random()*0.5+0.1
-  }));
-}
-resize(); initParticles();
-window.addEventListener('resize', ()=>{ resize(); });
-
-let t=0;
-function draw(){
-  t += 0.002;
-  ctx.clearRect(0,0,w,h);
-  // grid
-  ctx.strokeStyle='rgba(244,244,242,0.045)';
-  ctx.lineWidth=1;
-  const gap=64;
-  const offset=(t*20)%gap;
-  for(let x=-gap; x<w+gap; x+=gap){
-    ctx.beginPath(); ctx.moveTo(x+offset,0); ctx.lineTo(x+offset,h); ctx.stroke();
-  }
-  for(let y=-gap; y<h+gap; y+=gap){
-    ctx.beginPath(); ctx.moveTo(0,y+offset*0.4); ctx.lineTo(w,y+offset*0.4); ctx.stroke();
-  }
-  // particles
-  particles.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0)p.x=w; if(p.x>w)p.x=0;
-    if(p.y<0)p.y=h; if(p.y>h)p.y=0;
-    ctx.beginPath();
-    ctx.fillStyle=`rgba(244,244,242,${p.a})`;
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fill();
-  });
-  requestAnimationFrame(draw);
-}
-draw();
-
-/* ---------- portfolio grids ---------- */
-function buildGrid(gridEl, items, category){
-  if(!gridEl) return;
-  gridEl.innerHTML = items.map(c=>`
-    <div class="card">
-      <div class="art"><img src="${c.src}" alt="${c.title}" loading="lazy"></div>
-      <div class="card-expand">↗</div>
-    </div>
-  `).join('');
-  gridEl.querySelectorAll('.card').forEach((card,i)=>{
-    card.addEventListener('mouseenter', ()=>ring.classList.add('grow'));
-    card.addEventListener('mouseleave', ()=>ring.classList.remove('grow'));
-    card.addEventListener('click', ()=>openLightbox(items[i], category));
-  });
-}
-
-const coverCount = 26;
-const covers = Array.from({length: coverCount}, (_, i) => {
-  const n = String(i + 1).padStart(2, '0');
-  return { title: `Cover ${n}`, src: `assets/covers/cover-${n}.webp` };
-});
-buildGrid(document.getElementById('grid'), covers, 'cover-art');
-
-const thumbCount = 32;
-const thumbnails = Array.from({length: thumbCount}, (_, i) => {
-  const n = String(i + 1).padStart(2, '0');
-  return { title: `Thumbnail ${n}`, src: `assets/thumbnails/thumb-${n}.webp` };
-});
-buildGrid(document.getElementById('grid-thumbnails'), thumbnails, 'thumbnails');
-
-/* ---------- reference file manager (order form) ----------
-   Keeps its own list of File objects so newly added files (whether
-   dropped, picked, or auto-attached from a portfolio piece) ADD to
-   what's already there instead of replacing it — the native file
-   input alone always replaces on a new picker selection, so we
-   rebuild input.files from our own array via DataTransfer. ---------- */
-const fileDrop = document.getElementById('fileDrop');
-const fileInput = document.getElementById('fileInput');
-const fileDropText = document.getElementById('fileDropText');
-const fileList = document.getElementById('fileList');
-let referenceFiles = [];
-
-function syncFileInput(){
-  const dt = new DataTransfer();
-  referenceFiles.forEach(f=>dt.items.add(f));
-  fileInput.files = dt.files;
-  updateFileText();
-}
-function appendReferenceFiles(newFiles){
-  referenceFiles = referenceFiles.concat(Array.from(newFiles));
-  syncFileInput();
-}
-function removeReferenceFile(index){
-  referenceFiles.splice(index, 1);
-  syncFileInput();
-}
-function updateFileText(){
-  const n = referenceFiles.length;
-  fileDropText.textContent = n ? `${n} file${n>1?'s':''} selected` : 'Drop images here or click to browse';
-  if(fileList){
-    fileList.innerHTML = referenceFiles.map((f,i)=>`
-      <div class="file-chip">
-        <span class="chip-name" title="${f.name}">${f.name}</span>
-        <span class="chip-remove" data-index="${i}" title="Remove">✕</span>
+<!-- POLICY MODAL (ToS / Commission / Privacy / Refund) -->
+<div class="lightbox" id="policyModal" role="dialog" aria-modal="true" aria-labelledby="policyModalTitle" aria-hidden="true">
+  <div class="lightbox-bg" id="policyModalBg"></div>
+  <div class="lightbox-content doc policy-modal-content">
+    <button type="button" class="lightbox-close" id="policyModalClose" aria-label="Close">✕</button>
+    <div class="lightbox-scroll">
+      <div class="lightbox-body">
+        <span class="g">Policy</span>
+        <h3 id="policyModalTitle"></h3>
+        <div class="policy-body" id="policyModalBody"></div>
       </div>
-    `).join('');
-  }
-}
-if(fileList){
-  fileList.addEventListener('click', e=>{
-    const btn = e.target.closest('.chip-remove');
-    if(!btn) return;
-    removeReferenceFile(Number(btn.dataset.index));
-  });
-}
-['dragenter','dragover'].forEach(evt=>fileDrop.addEventListener(evt,e=>{e.preventDefault();fileDrop.classList.add('drag');}));
-['dragleave','drop'].forEach(evt=>fileDrop.addEventListener(evt,e=>{e.preventDefault();fileDrop.classList.remove('drag');}));
-fileDrop.addEventListener('drop', e=>{
-  appendReferenceFiles(e.dataTransfer.files);
-});
-fileInput.addEventListener('change', ()=>{
-  // fileInput.files here is just the newest native picker selection —
-  // merge it into referenceFiles rather than treating it as the whole set.
-  appendReferenceFiles(fileInput.files);
-});
+    </div>
+  </div>
+</div>
 
-/* ---------- lightbox ---------- */
-const lightbox = document.getElementById('lightbox');
-const lbArt = document.getElementById('lightboxArt');
-const lbTitle = document.getElementById('lightboxTitle');
-const lbCta = document.getElementById('lightboxCta');
-let currentLightboxItem = null;
-function openLightbox(c, category){
-  const wide = category === 'thumbnails';
-  currentLightboxItem = {...c, category};
-  lbArt.innerHTML = `<div class="art" style="position:absolute;inset:0;"><img src="${c.src}" alt="${c.title}"></div>`;
-  lbArt.classList.toggle('wide', wide);
-  document.querySelector('.lightbox-content').classList.toggle('wide', wide);
-  lbTitle.textContent = c.title;
-  if(lbCta) lbCta.href = `#order/${category}`;
-  lightbox.classList.add('open');
-}
-document.getElementById('lightboxClose').addEventListener('click', ()=>lightbox.classList.remove('open'));
-document.getElementById('lightboxBg').addEventListener('click', ()=>lightbox.classList.remove('open'));
+<div id="toast" role="status" aria-live="polite"></div>
 
-/* "Request Something Like This" — closes the popup, jumps to Order with
-   the right service preselected, and attaches the piece itself as a
-   reference image so the form is basically ready to send. */
-if(lbCta){
-  lbCta.addEventListener('click', (e)=>{
-    e.preventDefault();
-    const item = currentLightboxItem;
-    const targetHash = lbCta.getAttribute('href');
-    lightbox.classList.remove('open');
-    location.hash = targetHash;
-    if(item){
-      (async ()=>{
-        try{
-          const res = await fetch(item.src);
-          const blob = await res.blob();
-          const ext = (blob.type.split('/')[1] || 'webp').replace('jpeg','jpg');
-          const filename = `${item.title.replace(/\s+/g,'-').toLowerCase()}.${ext}`;
-          const file = new File([blob], filename, {type: blob.type || 'image/webp'});
-          appendReferenceFiles([file]);
-          showToast(`Added "${item.title}" as a reference image`);
-        }catch(err){
-          console.warn('Could not auto-attach reference image', err);
-        }
-      })();
-    }
-  });
-}
-
-/* ---------- payment confirm modal ---------- */
-const paymentModal = document.getElementById('paymentModal');
-document.getElementById('paymentModalClose').addEventListener('click', ()=>paymentModal.classList.remove('open'));
-document.getElementById('paymentModalBg').addEventListener('click', ()=>paymentModal.classList.remove('open'));
-document.getElementById('paymentModalBack').addEventListener('click', ()=>paymentModal.classList.remove('open'));
-document.getElementById('paymentModalConfirm').addEventListener('click', ()=>{
-  paymentModal.classList.remove('open');
-  submitOrderForm();
-});
-
-/* ---------- order form submit ---------- */
-const orderForm = document.getElementById('orderForm');
-const formStatus = document.getElementById('formStatus');
-const submitText = document.getElementById('submitText');
-
-/* Budget field allows free text ("flexible", a range, etc.) but if the
-   visitor types a plain number, enforce a $25 minimum via the native
-   validation bubble (same mechanism as the required-field checks). */
-const budgetInput = document.getElementById('budget');
-const MIN_BUDGET = 25;
-function validateBudget(){
-  const match = budgetInput.value.match(/(\d+(\.\d+)?)/);
-  if(match && parseFloat(match[1]) < MIN_BUDGET){
-    budgetInput.setCustomValidity(`My minimum budget is $${MIN_BUDGET}. Enter $${MIN_BUDGET} or more (or describe a range).`);
-  } else {
-    budgetInput.setCustomValidity('');
-  }
-}
-budgetInput.addEventListener('input', validateBudget);
-
-orderForm.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  validateBudget();
-  if(!orderForm.reportValidity()) return;
-  paymentModal.classList.add('open');
-});
-
-async function submitOrderForm(){
-  submitText.textContent = 'Sending...';
-  formStatus.textContent = '';
-
-  if(FORMSPREE_ID === 'YOUR_FORM_ID'){
-    // Fallback: no backend configured yet — open a pre-filled email instead.
-    const data = new FormData(orderForm);
-    const body = encodeURIComponent(
-      `Service: ${data.get('service')||'Not sure yet'}\nName: ${data.get('name')}\nEmail: ${data.get('email')}\nProject/Channel: ${data.get('artist')}\nDeadline: ${data.get('deadline')}\nBudget: ${data.get('budget')}\n\nWhat they want:\n${data.get('brief')}`
-    );
-    window.location.href = `mailto:rowenapichardo@gmail.com?subject=${encodeURIComponent('New Design Request: '+(data.get('service')||'General')+' — '+(data.get('artist')||data.get('name')))}&body=${body}`;
-    submitText.textContent = 'Send Request';
-    showToast('Opening your email client to send this request…');
-    return;
-  }
-
-  try{
-    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-      method:'POST',
-      headers:{'Accept':'application/json'},
-      body:new FormData(orderForm)
-    });
-    if(res.ok){
-      orderForm.reset();
-      referenceFiles = [];
-      updateFileText();
-      showToast("Request sent — I'll be in touch soon!");
-    } else {
-      formStatus.textContent = 'Something went wrong. Please try the email link below instead.';
-    }
-  }catch(err){
-    formStatus.textContent = 'Network error — please try the email link below instead.';
-  }
-  submitText.textContent = 'Send Request';
-}
-
-function showToast(msg){
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'), 3600);
-}
-
-/* ---------- mobile menu (simple: scroll to links via nav-links toggle) ---------- */
-const burger = document.getElementById('burger');
-burger.addEventListener('click', ()=>{
-  const links = document.querySelector('.nav-links');
-  const isOpen = links.style.display === 'flex';
-  links.style.cssText = isOpen ? '' : 'display:flex;flex-direction:column;position:fixed;top:64px;right:24px;background:#111114;border:1px solid var(--line);padding:20px 26px;border-radius:14px;gap:16px;z-index:150;';
-});
-</script>
-
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
