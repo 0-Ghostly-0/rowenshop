@@ -760,19 +760,44 @@ async function submitOrderForm(){
     return;
   }
 
+  const hadFiles = referenceFiles.length > 0;
+
   try{
-    const res = await fetch(`https://formspree.io/f/${CFG.formspreeId}`, {
+    let res = await fetch(`https://formspree.io/f/${CFG.formspreeId}`, {
       method:'POST',
       headers:{'Accept':'application/json'},
       body:new FormData(orderForm)
     });
+
+    let sentWithoutFiles = false;
+
+    // Some Formspree plans don't support file attachments, which makes the
+    // whole submission fail even though the text fields are fine. If a
+    // submission with attached files gets rejected, retry once without the
+    // files so the request still gets through — the visitor is told to send
+    // the files another way instead of losing the whole message.
+    if(!res.ok && hadFiles){
+      const retryData = new FormData(orderForm);
+      retryData.delete('attachment');
+      retryData.set('filesNote', `This visitor attached ${referenceFiles.length} reference file(s) that could not be delivered automatically (file uploads may require a Formspree plan upgrade). Ask them to resend via Discord or email.`);
+      res = await fetch(`https://formspree.io/f/${CFG.formspreeId}`, {
+        method:'POST',
+        headers:{'Accept':'application/json'},
+        body: retryData
+      });
+      sentWithoutFiles = res.ok;
+    }
+
     if(res.ok){
       orderForm.reset();
       referenceFiles = [];
       updateFileText();
-      formStatus.textContent = "Request sent — I'll be in touch soon!";
+      const successMsg = sentWithoutFiles
+        ? "Request sent! Your attached files couldn't come through automatically — please DM them to me on Discord so I have everything."
+        : "Request sent — I'll be in touch soon!";
+      formStatus.textContent = successMsg;
       formStatus.classList.add('is-success');
-      showToast("Request sent — I'll be in touch soon!");
+      showToast(successMsg);
     } else {
       formStatus.textContent = 'Something went wrong sending that. Please try the email link below instead.';
       formStatus.classList.add('is-error');
