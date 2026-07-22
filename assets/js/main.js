@@ -100,7 +100,7 @@ const PAGE_KEYS = ['home','cover-art','thumbnails','ads','pfps','beats','vsts','
 const pageEls = {};
 PAGE_KEYS.forEach(k=>{ pageEls[k] = document.querySelector(`.page[data-page="${k}"]`); });
 const navLinkEls = document.querySelectorAll('.nav-links a[data-page], .mobile-nav-panel a[data-page]');
-const dotLinkEls = document.querySelectorAll('.dot-link[data-page]');
+const dotLinkEls = document.querySelectorAll('.side-dots a[data-page]');
 const PAGE_TITLES = {
   'home': `${CFG.business.name} — Graphic Design Studio`,
   'cover-art': `Cover Art — ${CFG.business.name}`,
@@ -112,6 +112,16 @@ const PAGE_TITLES = {
   'reviews': `Reviews — ${CFG.business.name}`,
   'order': `Start a Project — ${CFG.business.name}`
 };
+
+/* Groups pages into the nav's "Graphic Design" / "Music" dropdowns
+   (header, side-dots, and mobile drawer). Any element carrying
+   data-nav-group="design"/"music" gets .active whenever the current
+   page is one of its members — see setActivePage below. */
+const NAV_GROUPS = {
+  design: ['cover-art','thumbnails','ads','pfps'],
+  music: ['beats','vsts']
+};
+const navGroupEls = document.querySelectorAll('[data-nav-group]');
 const serviceSelect = document.getElementById('service');
 const SERVICE_LABELS = {
   'cover-art': 'Cover Art',
@@ -128,6 +138,16 @@ function setActivePage(key, serviceParam){
   });
   navLinkEls.forEach(a=>a.classList.toggle('active', a.dataset.page===key));
   dotLinkEls.forEach(d=>d.classList.toggle('active', d.dataset.page===key));
+  navGroupEls.forEach(el=>{
+    const isActive = (NAV_GROUPS[el.dataset.navGroup] || []).includes(key);
+    el.classList.toggle('active', isActive);
+    // landing directly on a page inside a mobile-nav group (e.g. #beats)
+    // should auto-expand that group so it's not hidden behind a collapsed
+    // toggle — but never auto-collapse a group the visitor opened by hand.
+    if (isActive && el.classList.contains('mobile-nav-group-toggle')) {
+      setMobileGroupOpen(el.closest('.mobile-nav-group'), true);
+    }
+  });
   document.querySelectorAll('.filter-tab').forEach(t=>t.classList.toggle('active', t.dataset.page===key));
   document.title = PAGE_TITLES[key] || PAGE_TITLES.home;
   window.scrollTo(0,0);
@@ -848,6 +868,14 @@ function openMobileNav(){
   mobileNav.classList.add('open');
   burger.setAttribute('aria-expanded','true');
   document.body.style.overflow = 'hidden';
+  // A group can get auto-expanded (via setActivePage, e.g. landing on
+  // #beats) while the drawer is still display:none — scrollHeight reads
+  // as 0 in that state, so the max-height set at the time didn't actually
+  // reveal anything. Recompute it now that the drawer has real layout.
+  document.querySelectorAll('.mobile-nav-group[data-open="true"]').forEach(group=>{
+    const panel = group.querySelector('.mobile-nav-subpanel');
+    if (panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+  });
   const firstLink = mobileNav.querySelector('a');
   if (firstLink) firstLink.focus();
 }
@@ -865,6 +893,26 @@ if (burger && mobileNav) {
   document.querySelector('.mobile-nav-bg')?.addEventListener('click', closeMobileNav);
   document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closeMobileNav(); });
 }
+
+/* "Graphic Design" / "Music" accordion groups inside the mobile drawer —
+   same open/close mechanics as the FAQ accordion above (max-height
+   transition driven from JS, since the true content height isn't knowable
+   from CSS alone). Toggling a group never closes the drawer itself, since
+   these are <button>s, not the <a> elements closeMobileNav is bound to. */
+function setMobileGroupOpen(groupEl, open){
+  if (!groupEl) return;
+  const btn = groupEl.querySelector('.mobile-nav-group-toggle');
+  const panel = groupEl.querySelector('.mobile-nav-subpanel');
+  groupEl.dataset.open = open ? 'true' : 'false';
+  if (btn) btn.setAttribute('aria-expanded', String(open));
+  if (panel) panel.style.maxHeight = open ? panel.scrollHeight + 'px' : '0px';
+}
+document.querySelectorAll('.mobile-nav-group-toggle').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const group = btn.closest('.mobile-nav-group');
+    setMobileGroupOpen(group, group.dataset.open !== 'true');
+  });
+});
 
 /* =========================================================
    ORDER FORM — validation, honeypot, submit

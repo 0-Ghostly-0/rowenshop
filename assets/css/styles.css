@@ -178,6 +178,37 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 .nav-links a:hover::after{width:100%;}
 .nav-links a.active{color:var(--white);}
 .nav-links a.active::after{width:100%;background:var(--accent);}
+
+/* "Graphic Design" / "Music" dropdowns — hover (or keyboard focus) reveals
+   a small panel of that category's pages, grouping Cover Art/Thumbnails/
+   Ads/PFPs under Design and Beats/VSTs under Music. */
+.nav-dropdown{position:relative;display:flex;align-items:center;}
+.nav-dropdown-trigger{
+  position:relative;display:inline-flex;align-items:center;gap:5px;
+  background:none;border:0;padding:4px 0;margin:0;font:inherit;color:inherit;cursor:pointer;
+  transition:color .3s;
+}
+.nav-dropdown-trigger::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--white);transition:width .35s var(--ease);}
+.nav-dropdown-trigger:hover,.nav-dropdown-trigger.active{color:var(--white);}
+.nav-dropdown-trigger:hover::after,.nav-dropdown-trigger.active::after{width:100%;}
+.nav-dropdown-trigger.active::after{background:var(--accent);}
+.nav-caret{font-size:9px;color:var(--dimmer);transition:transform .3s var(--ease);}
+.nav-dropdown:hover .nav-caret,.nav-dropdown:focus-within .nav-caret{transform:rotate(180deg);}
+.nav-dropdown-panel{
+  position:absolute;top:100%;left:50%;margin-top:14px;min-width:170px;padding:10px;
+  background:var(--black-2);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;gap:2px;
+  opacity:0;pointer-events:none;transform:translate(-50%,4px);
+  transition:opacity .25s var(--ease),transform .25s var(--ease);
+}
+.nav-dropdown:hover .nav-dropdown-panel,.nav-dropdown:focus-within .nav-dropdown-panel{
+  opacity:1;pointer-events:auto;transform:translate(-50%,0);
+}
+.nav-dropdown-panel a{padding:9px 12px;border-radius:8px;font-size:13.5px;white-space:nowrap;}
+.nav-dropdown-panel a::after{content:none !important;}
+.nav-dropdown-panel a:hover,.nav-dropdown-panel a.active{background:rgba(255,255,255,.06);color:var(--white);}
+@media (prefers-reduced-motion: reduce){ .nav-dropdown-panel,.nav-caret{transition:none;} }
 .nav-cta{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;}
 .nav-social{display:flex;align-items:center;gap:12px;padding-right:16px;border-right:1px solid var(--line);flex:0 0 auto;}
 .nav-social a{color:var(--dim);display:flex;transition:color .3s var(--ease),transform .3s var(--ease);}
@@ -213,6 +244,28 @@ nav{display:flex;align-items:center;justify-content:space-between;}
   border-bottom:1px solid var(--line);color:var(--dim);transition:color .25s;
 }
 .mobile-nav-panel a.active,.mobile-nav-panel a:hover{color:var(--white);}
+
+/* "Graphic Design" / "Music" accordion groups — tap to expand, reusing the
+   FAQ's plus/minus icon and max-height animation for a consistent feel. */
+.mobile-nav-group{border-bottom:1px solid var(--line);}
+.mobile-nav-group-toggle{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:none;border:0;padding:14px 0;margin:0;cursor:pointer;text-align:left;
+  font-family:'Space Grotesk',sans-serif;font-size:22px;color:var(--dim);transition:color .25s;
+}
+.mobile-nav-group-toggle:hover,.mobile-nav-group-toggle.active{color:var(--white);}
+.mobile-nav-group-toggle .faq-icon{flex:0 0 auto;width:16px;height:16px;position:relative;transition:transform .35s var(--ease);}
+.mobile-nav-group-toggle .faq-icon::before,.mobile-nav-group-toggle .faq-icon::after{content:'';position:absolute;background:currentColor;top:50%;left:50%;}
+.mobile-nav-group-toggle .faq-icon::before{width:12px;height:1.5px;transform:translate(-50%,-50%);}
+.mobile-nav-group-toggle .faq-icon::after{width:1.5px;height:12px;transform:translate(-50%,-50%);transition:transform .3s var(--ease);}
+.mobile-nav-group[data-open="true"] .faq-icon::after{transform:translate(-50%,-50%) rotate(90deg) scaleX(0);}
+.mobile-nav-subpanel{
+  max-height:0;overflow:hidden;display:flex;flex-direction:column;padding-left:8px;
+  transition:max-height .4s var(--ease);
+}
+.mobile-nav-group[data-open="true"] .mobile-nav-subpanel{padding-bottom:8px;}
+.mobile-nav-subpanel a{font-size:17px;padding:9px 0;border-bottom:0;}
+@media (prefers-reduced-motion: reduce){ .mobile-nav-subpanel{transition:none;} }
 .mobile-nav-panel .btn{margin-top:22px;justify-content:center;}
 .mobile-nav-social{display:flex;gap:14px;margin-top:26px;}
 @media (max-width:640px){
@@ -254,6 +307,34 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 }
 .dot-link:hover .dot-tip,.dot-link.active .dot-tip,.dot-link:focus-visible .dot-tip{opacity:1;transform:translateY(-50%) translateX(0);}
 .dot-link.active .dot-tip{color:var(--white);}
+
+/* "Graphic Design" / "Music" dots — a single dot standing in for a group
+   of pages; hovering (or focusing) it reveals a small flyout list of that
+   category's pages instead of navigating directly. */
+.dot-group{position:relative;}
+.dot-group-trigger{appearance:none;padding:0;cursor:pointer;}
+.dot-flyout{
+  position:absolute;right:22px;top:50%;transform:translateY(-50%) translateX(6px);
+  background:var(--black-2);border:1px solid var(--line);border-radius:12px;
+  padding:8px;min-width:150px;display:flex;flex-direction:column;gap:2px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease),transform .25s var(--ease);
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+}
+.dot-group:hover .dot-flyout,.dot-group:focus-within .dot-flyout{
+  opacity:1;pointer-events:auto;transform:translateY(-50%) translateX(0);
+}
+.dot-flyout-label{
+  display:block;padding:6px 10px 8px;margin-bottom:4px;border-bottom:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dimmer);white-space:nowrap;
+}
+.dot-flyout a{
+  padding:8px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:.06em;color:var(--dim);white-space:nowrap;transition:background .2s,color .2s;
+}
+.dot-flyout a:hover,.dot-flyout a.active{background:rgba(255,255,255,.06);color:var(--white);}
+@media (prefers-reduced-motion: reduce){ .dot-flyout{transition:none;} }
 @media (max-width:960px){
   .side-dots{display:none;}
 }

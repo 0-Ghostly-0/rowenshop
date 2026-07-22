@@ -71,12 +71,27 @@
 
 <nav class="side-dots" aria-label="Page navigation">
   <a href="#home" class="dot-link" data-page="home"><span class="dot-tip">Home</span></a>
-  <a href="#cover-art" class="dot-link" data-page="cover-art"><span class="dot-tip">Cover Art</span></a>
-  <a href="#thumbnails" class="dot-link" data-page="thumbnails"><span class="dot-tip">Thumbnails</span></a>
-  <a href="#ads" class="dot-link" data-page="ads"><span class="dot-tip">Ads</span></a>
-  <a href="#pfps" class="dot-link" data-page="pfps"><span class="dot-tip">PFPs</span></a>
-  <a href="#beats" class="dot-link" data-page="beats"><span class="dot-tip">Beats</span></a>
-  <a href="#vsts" class="dot-link" data-page="vsts"><span class="dot-tip">VSTs</span></a>
+
+  <div class="dot-group">
+    <button type="button" class="dot-link dot-group-trigger" data-nav-group="design" aria-haspopup="true" aria-label="Graphic Design pages"></button>
+    <div class="dot-flyout">
+      <span class="dot-flyout-label">Graphic Design</span>
+      <a href="#cover-art" data-page="cover-art">Cover Art</a>
+      <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
+      <a href="#ads" data-page="ads">Ads</a>
+      <a href="#pfps" data-page="pfps">PFPs</a>
+    </div>
+  </div>
+
+  <div class="dot-group">
+    <button type="button" class="dot-link dot-group-trigger" data-nav-group="music" aria-haspopup="true" aria-label="Music pages"></button>
+    <div class="dot-flyout">
+      <span class="dot-flyout-label">Music</span>
+      <a href="#beats" data-page="beats">Beats</a>
+      <a href="#vsts" data-page="vsts">VSTs</a>
+    </div>
+  </div>
+
   <a href="#reviews" class="dot-link" data-page="reviews"><span class="dot-tip">Reviews</span></a>
   <a href="#order" class="dot-link" data-page="order"><span class="dot-tip">Order</span></a>
 </nav>
@@ -87,12 +102,22 @@
     <nav aria-label="Primary">
       <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="96" height="24"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
       <div class="nav-links">
-        <a href="#cover-art" data-page="cover-art">Cover Art</a>
-        <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
-        <a href="#ads" data-page="ads">Ads</a>
-        <a href="#pfps" data-page="pfps">PFPs</a>
-        <a href="#beats" data-page="beats">Beats</a>
-        <a href="#vsts" data-page="vsts">VSTs</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-trigger" data-nav-group="design" aria-haspopup="true"><span>Graphic Design</span> <span class="nav-caret" aria-hidden="true">▾</span></button>
+          <div class="nav-dropdown-panel">
+            <a href="#cover-art" data-page="cover-art">Cover Art</a>
+            <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
+            <a href="#ads" data-page="ads">Ads</a>
+            <a href="#pfps" data-page="pfps">PFPs</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-trigger" data-nav-group="music" aria-haspopup="true"><span>Music</span> <span class="nav-caret" aria-hidden="true">▾</span></button>
+          <div class="nav-dropdown-panel">
+            <a href="#beats" data-page="beats">Beats</a>
+            <a href="#vsts" data-page="vsts">VSTs</a>
+          </div>
+        </div>
         <a href="#reviews" data-page="reviews">Reviews</a>
         <a href="#order" data-page="order">Order</a>
       </div>
@@ -120,12 +145,31 @@
   <div class="mobile-nav-bg"></div>
   <nav class="mobile-nav-panel" aria-label="Mobile">
     <a href="#home" data-page="home">Home</a>
-    <a href="#cover-art" data-page="cover-art">Cover Art</a>
-    <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
-    <a href="#ads" data-page="ads">Ads</a>
-    <a href="#pfps" data-page="pfps">PFPs</a>
-    <a href="#beats" data-page="beats">Beats</a>
-    <a href="#vsts" data-page="vsts">VSTs</a>
+
+    <div class="mobile-nav-group" data-open="false">
+      <button type="button" class="mobile-nav-group-toggle" data-nav-group="design" aria-expanded="false" aria-controls="mobileNavDesign">
+        <span>Graphic Design</span>
+        <span class="faq-icon" aria-hidden="true"></span>
+      </button>
+      <div class="mobile-nav-subpanel" id="mobileNavDesign">
+        <a href="#cover-art" data-page="cover-art">Cover Art</a>
+        <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
+        <a href="#ads" data-page="ads">Ads</a>
+        <a href="#pfps" data-page="pfps">PFPs</a>
+      </div>
+    </div>
+
+    <div class="mobile-nav-group" data-open="false">
+      <button type="button" class="mobile-nav-group-toggle" data-nav-group="music" aria-expanded="false" aria-controls="mobileNavMusic">
+        <span>Music</span>
+        <span class="faq-icon" aria-hidden="true"></span>
+      </button>
+      <div class="mobile-nav-subpanel" id="mobileNavMusic">
+        <a href="#beats" data-page="beats">Beats</a>
+        <a href="#vsts" data-page="vsts">VSTs</a>
+      </div>
+    </div>
+
     <a href="#reviews" data-page="reviews">Reviews</a>
     <a href="#order" data-page="order">Order</a>
     <a href="#order" class="btn solid"><span>Start a Project</span></a>
@@ -787,19 +831,22 @@
       </div>
       <div class="foot-cols">
         <div class="foot-col">
-          <h5>Services</h5>
+          <h5>Graphic Design</h5>
           <a href="#cover-art">Cover Art</a>
           <a href="#thumbnails">Thumbnails</a>
           <a href="#ads">Ads</a>
           <a href="#pfps">PFPs</a>
+        </div>
+        <div class="foot-col">
+          <h5>Music</h5>
           <a href="#beats">Beats</a>
           <a href="#vsts">VSTs</a>
-          <a href="#reviews">Reviews</a>
         </div>
         <div class="foot-col">
           <h5>Contact</h5>
           <a data-discord-link href="#" target="_blank" rel="noopener">Discord (preferred)</a>
           <a data-email-link href="#"><span data-email-text>email</span></a>
+          <a href="#reviews">Reviews</a>
         </div>
         <div class="foot-col">
           <h5>Legal</h5>
