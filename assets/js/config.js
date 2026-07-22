@@ -171,7 +171,7 @@ const SITE_CONFIG = {
   faq: [
     {
       q: "How does payment work?",
-      a: "A deposit is required to book your project once you accept a quote. The remaining balance is due after you approve the watermarked preview and before final (unwatermarked) files are sent. This protects both of us — you see the direction before paying in full, and the deposit secures your spot in the queue."
+      a: "A deposit is required to book your project once you accept a quote. The remaining balance is due after you approve the watermarked preview and before final (unwatermarked) files are sent. This protects both of us — you see the direction before paying in full, and the deposit secures your spot in the queue. If you'd rather not wait for a quote, you're also welcome to pay in full or a deposit upfront using any of the payment options on the order page — just note your project name or Discord username so I can match it to your request."
     },
     {
       q: "How many revisions do I get?",

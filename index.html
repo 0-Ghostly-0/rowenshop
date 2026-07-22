@@ -412,20 +412,12 @@
         <div class="order-side reveal">
           <div class="eyebrow" style="margin-bottom:18px;">Start a Project</div>
           <h2>Tell me about<br>your project.</h2>
-          <p>Fill out the form — I'll reply with a timeframe and quote.</p>
+          <p>A few quick questions, one at a time — I'll reply with a timeframe and quote. How payment works is covered near the end.</p>
           <ul class="order-list">
             <li><span class="ck" aria-hidden="true"></span>Made from scratch, any style</li>
             <li><span class="ck" aria-hidden="true"></span>Revisions included on every project</li>
             <li><span class="ck" aria-hidden="true"></span>Watermarked preview before final files</li>
           </ul>
-          <div class="pay-row">
-            <span class="pay-label">Deposit &amp; final payment via</span>
-            <a data-cashapp-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
-            <a data-venmo-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
-            <span class="pay-pill pay-pill-applepay">Apple Pay (via Discord)</span>
-            <a data-stripe-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-stripe" hidden>Card (Stripe)</a>
-          </div>
-          <p class="pay-note">A deposit books your spot in the queue; the balance is due after you approve your watermarked preview. See the <button type="button" class="mono" style="background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0;font-size:12.5px;" data-policy="commission">Commission Policy</button> for details.</p>
         </div>
 
         <div class="reveal">
@@ -436,90 +428,146 @@
               <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off">
             </div>
 
-            <div class="field">
-              <label for="service">What do you need?</label>
-              <select id="service" name="service">
-                <option value="">Not sure yet</option>
-                <option value="Cover Art">Cover Art</option>
-                <option value="YouTube Thumbnail">YouTube Thumbnail</option>
-                <option value="Advertisement Design">Advertisement Design</option>
-                <option value="Profile Picture">Profile Picture</option>
-                <option value="Other">Other</option>
-              </select>
+            <div class="form-progress-wrap" aria-hidden="true">
+              <div class="form-progress-bar"><div class="form-progress-fill" id="formProgressFill"></div></div>
             </div>
-            <div class="row2">
-              <div class="field">
-                <label for="name">Your Name <span class="req" aria-hidden="true">*</span></label>
-                <input type="text" id="name" name="name" placeholder="Jane Doe" required aria-required="true">
-                <span class="field-error" role="alert"></span>
+            <p class="form-step-count" id="formStepCount" aria-live="polite">Step 1 of 9</p>
+
+            <div class="form-steps" id="formSteps">
+
+              <div class="form-step active" data-step="0">
+                <h3 class="form-step-heading" tabindex="-1">What do you need?</h3>
+                <div class="field">
+                  <label for="service">Service</label>
+                  <select id="service" name="service">
+                    <option value="">Not sure yet</option>
+                    <option value="Cover Art">Cover Art</option>
+                    <option value="YouTube Thumbnail">YouTube Thumbnail</option>
+                    <option value="Advertisement Design">Advertisement Design</option>
+                    <option value="Profile Picture">Profile Picture</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
               </div>
-              <div class="field">
-                <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
-                <input type="email" id="email" name="email" placeholder="jane@email.com" required aria-required="true">
-                <span class="field-error" role="alert"></span>
+
+              <div class="form-step" data-step="1">
+                <h3 class="form-step-heading" tabindex="-1">Who are you?</h3>
+                <div class="row2">
+                  <div class="field">
+                    <label for="name">Your Name <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="Jane Doe" required aria-required="true">
+                    <span class="field-error" role="alert"></span>
+                  </div>
+                  <div class="field">
+                    <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="jane@email.com" required aria-required="true">
+                    <span class="field-error" role="alert"></span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="row2">
-              <div class="field">
-                <label for="discord">Discord Username</label>
-                <input type="text" id="discord" name="discord" placeholder="e.g. janedoe" autocomplete="off">
+
+              <div class="form-step" data-step="2">
+                <h3 class="form-step-heading" tabindex="-1">How should I reach you?</h3>
+                <div class="row2">
+                  <div class="field">
+                    <label for="discord">Discord Username</label>
+                    <input type="text" id="discord" name="discord" placeholder="e.g. janedoe" autocomplete="off">
+                  </div>
+                  <div class="field">
+                    <label for="contactMethod">Preferred Contact Method</label>
+                    <select id="contactMethod" name="contactMethod">
+                      <option value="Discord">Discord</option>
+                      <option value="Email">Email</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="field">
-                <label for="contactMethod">Preferred Contact Method</label>
-                <select id="contactMethod" name="contactMethod">
-                  <option value="Discord">Discord</option>
-                  <option value="Email">Email</option>
-                </select>
+
+              <div class="form-step" data-step="3">
+                <h3 class="form-step-heading" tabindex="-1">Tell me about the timing</h3>
+                <div class="row2">
+                  <div class="field">
+                    <label for="artist">Project / Channel Name</label>
+                    <input type="text" id="artist" name="artist" placeholder="e.g. Midnight Runners, or your channel name">
+                  </div>
+                  <div class="field">
+                    <label for="deadline">Deadline (optional)</label>
+                    <input type="text" id="deadline" name="deadline" placeholder="e.g. March 5, or 'flexible'">
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="row2">
-              <div class="field">
-                <label for="artist">Project / Channel Name</label>
-                <input type="text" id="artist" name="artist" placeholder="e.g. Midnight Runners, or your channel name">
+
+              <div class="form-step" data-step="4">
+                <h3 class="form-step-heading" tabindex="-1">What's your budget?</h3>
+                <div class="field">
+                  <label for="budget">Budget Range <span class="req" aria-hidden="true">*</span> <span style="color:var(--dimmer);font-weight:400;text-transform:none;">(all projects have a $<span data-min-budget>25</span> minimum)</span></label>
+                  <select id="budget" name="budget" required aria-required="true">
+                    <option value="" disabled selected>Select a budget range</option>
+                    <!-- more options injected by JS from config.budgetRanges -->
+                  </select>
+                  <span class="field-hint">Final pricing is a custom quote based on scope, complexity, deadline, revisions, and intended use — not a fixed price.</span>
+                  <span class="field-error" role="alert"></span>
+                </div>
               </div>
-              <div class="field">
-                <label for="deadline">Deadline (optional)</label>
-                <input type="text" id="deadline" name="deadline" placeholder="e.g. March 5, or 'flexible'">
+
+              <div class="form-step" data-step="5">
+                <h3 class="form-step-heading" tabindex="-1">Describe your project</h3>
+                <div class="field">
+                  <label for="brief">Project Description</label>
+                  <textarea id="brief" name="brief" placeholder="Describe it, drop reference links — or just say 'creative freedom.'"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="field">
-              <label for="budget">Budget Range <span class="req" aria-hidden="true">*</span> <span style="color:var(--dimmer);font-weight:400;text-transform:none;">(all projects have a $<span data-min-budget>25</span> minimum)</span></label>
-              <select id="budget" name="budget" required aria-required="true">
-                <option value="" disabled selected>Select a budget range</option>
-                <!-- more options injected by JS from config.budgetRanges -->
-              </select>
-              <span class="field-hint">Final pricing is a custom quote based on scope, complexity, deadline, revisions, and intended use — not a fixed price.</span>
-              <span class="field-error" role="alert"></span>
-            </div>
-            <div class="field">
-              <label for="brief">Project Description</label>
-              <textarea id="brief" name="brief" placeholder="Describe it, drop reference links — or just say 'creative freedom.'"></textarea>
-            </div>
-            <div class="field">
-              <label for="referenceLinks">Reference Links (optional)</label>
-              <input type="text" id="referenceLinks" name="referenceLinks" placeholder="Paste links to reference images, styles you like, past work, etc.">
-              <span class="field-hint">Separate multiple links with a comma or space.</span>
-            </div>
-            <div class="field">
-              <label for="fileInput">Reference Files (optional)</label>
-              <label class="file-drop" id="fileDrop" for="fileInput">
-                <span id="fileDropText">Drop images here or click to browse</span>
-                <input type="file" id="fileInput" name="attachment" multiple accept="image/png,image/jpeg,image/webp,image/gif">
-              </label>
-              <span class="field-hint">Images only (PNG, JPG, WEBP, GIF) — up to 15MB each, 6 files max.</span>
-              <span class="field-error" id="fileError" role="alert" style="display:block;" hidden></span>
-              <div class="file-list" id="fileList"></div>
+
+              <div class="form-step" data-step="6">
+                <h3 class="form-step-heading" tabindex="-1">Got any references?</h3>
+                <div class="field">
+                  <label for="referenceLinks">Reference Links (optional)</label>
+                  <input type="text" id="referenceLinks" name="referenceLinks" placeholder="Paste links to reference images, styles you like, past work, etc.">
+                  <span class="field-hint">Separate multiple links with a comma or space.</span>
+                </div>
+                <div class="field">
+                  <label for="fileInput">Reference Files (optional)</label>
+                  <label class="file-drop" id="fileDrop" for="fileInput">
+                    <span id="fileDropText">Drop images here or click to browse</span>
+                    <input type="file" id="fileInput" name="attachment" multiple accept="image/png,image/jpeg,image/webp,image/gif">
+                  </label>
+                  <span class="field-hint">Images only (PNG, JPG, WEBP, GIF) — up to 15MB each, 6 files max.</span>
+                  <span class="field-error" id="fileError" role="alert" style="display:block;" hidden></span>
+                  <div class="file-list" id="fileList"></div>
+                </div>
+              </div>
+
+              <div class="form-step" data-step="7">
+                <h3 class="form-step-heading" tabindex="-1">How payment works</h3>
+                <p class="payment-step-text">No payment is required to send this request — I'll review it and follow up with a quote, estimated completion date, and deposit amount. Once you accept, a <strong>deposit</strong> books your spot in the queue, you'll see a <strong>watermarked preview</strong> before anything final, and the <strong>remaining balance</strong> is due before unwatermarked files are sent.</p>
+                <p class="payment-step-text"><strong>Prefer not to wait?</strong> You're welcome to pay now instead — in full or as a deposit, whatever amount you're comfortable with — using any option below.</p>
+                <div class="payment-step-methods">
+                  <a data-cashapp-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
+                  <a data-venmo-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
+                  <span class="pay-pill pay-pill-applepay">Apple Pay</span>
+                  <a data-stripe-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-stripe" hidden>Pay with Card</a>
+                </div>
+                <p class="payment-step-note">Paying now is completely optional — CashApp, Venmo, and card via Stripe all work whether you're covering a deposit or the full project cost upfront, and the Stripe checkout lets you type in whatever amount that is. Whichever way you pay, include your project name or Discord username (Stripe has a field for this) so I can match it to your request. Apple Pay isn't set up for an auto-link — DM me on Discord for that one instead.</p>
+                <p class="payment-step-note">Full terms are in the <button type="button" class="mono" style="background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0;font-size:12.5px;" data-policy="commission">Commission Policy</button>.</p>
+              </div>
+
+              <div class="form-step" data-step="8">
+                <h3 class="form-step-heading" tabindex="-1">Review &amp; send</h3>
+                <dl class="review-summary" id="reviewSummary"></dl>
+                <div class="field field-checkbox">
+                  <input type="checkbox" id="agreeTerms" name="agreeTerms" required aria-required="true">
+                  <label for="agreeTerms">I agree to the <button type="button" data-policy="commission">Commission Policy</button> and <button type="button" data-policy="tos">Terms of Service</button>, including the deposit &amp; revision terms. <span class="req" aria-hidden="true">*</span></label>
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="form-note">Sent it? Feel free to <a data-discord-link href="#" target="_blank" rel="noopener">DM me on Discord</a> too, just so I know it came through.</div>
+              </div>
+
             </div>
 
-            <div class="field field-checkbox">
-              <input type="checkbox" id="agreeTerms" name="agreeTerms" required aria-required="true">
-              <label for="agreeTerms">I agree to the <button type="button" data-policy="commission">Commission Policy</button> and <button type="button" data-policy="tos">Terms of Service</button>, including the deposit &amp; revision terms. <span class="req" aria-hidden="true">*</span></label>
-              <span class="field-error" role="alert"></span>
-            </div>
-
-            <div class="form-foot">
-              <div class="form-note">Sent it? Feel free to <a data-discord-link href="#" target="_blank" rel="noopener">DM me on Discord</a> too, just so I know it came through.</div>
-              <button type="submit" class="btn solid" id="submitBtn"><span id="submitText">Send Request</span> <span class="arrow">↗</span></button>
+            <div class="form-nav">
+              <button type="button" class="btn ghost" id="stepBack" hidden>Back</button>
+              <button type="button" class="btn solid" id="stepNext">Continue <span class="arrow">→</span></button>
+              <button type="submit" class="btn solid" id="submitBtn" hidden><span id="submitText">Send Request</span> <span class="arrow">↗</span></button>
             </div>
             <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
           </form>
@@ -554,7 +602,7 @@
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
             </div>
             <h3>Payment</h3>
-            <p>CashApp, Venmo &amp; Apple Pay — sent only after you've received and accepted a quote, never before.</p>
+            <p>CashApp, Venmo, Apple Pay, or card via Stripe. Usually a deposit after your quote — but you're also welcome to pay upfront if you'd rather not wait.</p>
           </div>
         </div>
       </div>
@@ -633,30 +681,6 @@
       <div class="detail-meta" id="lightboxMeta"></div>
       <p class="detail-desc" id="lightboxDesc" hidden></p>
       <a href="#order/cover-art" class="btn solid" id="lightboxCta" style="width:100%;justify-content:center;margin-top:8px;"><span>Request Something Like This</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- PAYMENT CONFIRM MODAL -->
-<div class="lightbox" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle" aria-hidden="true">
-  <div class="lightbox-bg" id="paymentModalBg"></div>
-  <div class="lightbox-content payment-modal-content">
-    <button type="button" class="lightbox-close" id="paymentModalClose" aria-label="Close">✕</button>
-    <div class="lightbox-body">
-      <div class="eyebrow" style="margin-bottom:14px;">Before you send it</div>
-      <h3 id="paymentModalTitle">How payment works</h3>
-      <p class="payment-modal-text">No payment is due right now — this just sends your request. Once I reply with a quote and estimated completion date, a deposit is required to book your project. You'll review a watermarked preview before the final balance and final files are due.</p>
-      <div class="payment-modal-methods">
-        <a data-cashapp-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-cashapp">CashApp</a>
-        <a data-venmo-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-venmo">Venmo</a>
-        <span class="pay-pill pay-pill-applepay">Apple Pay</span>
-        <a data-stripe-link href="#" target="_blank" rel="noopener" class="pay-pill pay-pill-stripe" hidden>Card (Stripe)</a>
-      </div>
-      <p class="payment-modal-note">Apple Pay isn't set up for auto-links like the others — just DM me on Discord for that one when it's time to pay. Prefer a card? Use the Stripe option above once it's live — you'll enter the exact amount I quoted you at checkout.</p>
-      <div class="payment-modal-actions">
-        <button type="button" class="payment-modal-back" id="paymentModalBack">Go back</button>
-        <button type="button" class="btn solid" id="paymentModalConfirm" style="justify-content:center;"><span>Got it — Send Request</span> <span class="arrow">↗</span></button>
-      </div>
     </div>
   </div>
 </div>

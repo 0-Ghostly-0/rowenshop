@@ -19,7 +19,7 @@ Monochrome graphic design studio site for Rowen — cover art, YouTube thumbnail
 - **Thumbnails** (`#thumbnails`) — full portfolio grid (32 real pieces)
 - **Ads** (`#ads`) — "coming soon" panel until real examples are added
 - **PFPs** (`#pfps`) — "coming soon" panel until real examples are added
-- **Order** (`#order`) — commission form + business contact section; the "What do you need?" field auto-fills based on which service page you arrived from
+- **Order** (`#order`) — commission form + business contact section; the "What do you need?" field auto-fills based on which service page you arrived from. The form is a one-question-at-a-time wizard (`assets/js/main.js`, "ORDER FORM — one-question-at-a-time wizard" section): each `.form-step` in `index.html` is a screen, a shared Back/Continue/Send Request bar at the bottom drives navigation, and the second-to-last step explains how payment works before a final review screen. If you ever add or remove a field, add/remove its `.form-step` (or add it to an existing one) and update `renderReviewSummary()` in main.js so the review screen picks it up.
 
 ## Editing content — how to use `assets/js/config.js`
 This is a plain text file, not a program you run — no coding tools required. Any text editor works (Notepad, VS Code, even editing the file directly on GitHub's web UI).

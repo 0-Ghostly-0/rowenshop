@@ -514,19 +514,6 @@ if(lbCta){
 }
 
 /* =========================================================
-   PAYMENT CONFIRM MODAL
-   ========================================================= */
-const paymentModal = document.getElementById('paymentModal');
-wireModalDismiss(paymentModal, 'paymentModalBg', 'paymentModalClose');
-const paymentModalBack = document.getElementById('paymentModalBack');
-if (paymentModalBack) paymentModalBack.addEventListener('click', ()=>closeModal(paymentModal));
-const paymentModalConfirm = document.getElementById('paymentModalConfirm');
-if (paymentModalConfirm) paymentModalConfirm.addEventListener('click', ()=>{
-  closeModal(paymentModal);
-  submitOrderForm();
-});
-
-/* =========================================================
    POLICY MODALS
    ========================================================= */
 const policyModal = document.getElementById('policyModal');
@@ -712,10 +699,12 @@ function setFieldError(fieldEl, message){
   }
 }
 
-function validateForm(){
-  if (!orderForm) return true;
+/* Validates the required fields within a container (a single step, or the
+   whole form). Returns the first invalid field, or null if all pass. */
+function validateStep(container){
+  if (!container) return null;
   let firstInvalid = null;
-  const required = orderForm.querySelectorAll('[required]');
+  const required = container.querySelectorAll('[required]');
   required.forEach(field=>{
     let message = '';
     if (field.type === 'checkbox') {
@@ -728,8 +717,20 @@ function validateForm(){
     setFieldError(field, message);
     if (message && !firstInvalid) firstInvalid = field;
   });
+  return firstInvalid;
+}
+
+/* Final safety-net validation across the whole form (in case a field
+   somehow ends up invalid without going through the step Next button).
+   If something fails, jumps to the step that contains it before focusing
+   — focusing a field inside a currently-hidden step is a no-op. */
+function validateForm(){
+  if (!orderForm) return true;
+  const firstInvalid = validateStep(orderForm);
   if (firstInvalid) {
-    firstInvalid.focus();
+    const stepEl = firstInvalid.closest('.form-step');
+    if (stepEl) goToStep(Number(stepEl.dataset.step), { focusField: firstInvalid });
+    else firstInvalid.focus();
     return false;
   }
   return true;
@@ -741,16 +742,104 @@ if (orderForm) {
   });
 }
 
+/* =========================================================
+   ORDER FORM — one-question-at-a-time wizard
+   ========================================================= */
+const formSteps = orderForm ? Array.from(orderForm.querySelectorAll('#formSteps .form-step')) : [];
+const TOTAL_STEPS = formSteps.length;
+const REVIEW_STEP_INDEX = TOTAL_STEPS - 1;
+let currentStep = 0;
+const stepBackBtn = document.getElementById('stepBack');
+const stepNextBtn = document.getElementById('stepNext');
+const formProgressFill = document.getElementById('formProgressFill');
+const formStepCount = document.getElementById('formStepCount');
+const reviewSummaryEl = document.getElementById('reviewSummary');
+
+function goToStep(index, opts){
+  if (!formSteps.length) return;
+  opts = opts || {};
+  currentStep = Math.max(0, Math.min(index, TOTAL_STEPS - 1));
+  formSteps.forEach((el,i)=> el.classList.toggle('active', i === currentStep));
+  const isReview = currentStep === REVIEW_STEP_INDEX;
+  if (stepBackBtn) stepBackBtn.hidden = currentStep === 0;
+  if (stepNextBtn) stepNextBtn.hidden = isReview;
+  if (submitBtn) submitBtn.hidden = !isReview;
+  const pct = Math.round(((currentStep + 1) / TOTAL_STEPS) * 100);
+  if (formProgressFill) formProgressFill.style.width = pct + '%';
+  if (formStepCount) formStepCount.textContent = `Step ${currentStep + 1} of ${TOTAL_STEPS}`;
+  if (isReview) renderReviewSummary();
+  if (opts.focusField) {
+    opts.focusField.focus();
+  } else {
+    const heading = formSteps[currentStep].querySelector('.form-step-heading');
+    if (heading) heading.focus({ preventScroll: false });
+  }
+}
+
+if (stepNextBtn) {
+  stepNextBtn.addEventListener('click', ()=>{
+    const firstInvalid = validateStep(formSteps[currentStep]);
+    if (firstInvalid) { firstInvalid.focus(); return; }
+    goToStep(currentStep + 1);
+  });
+}
+if (stepBackBtn) {
+  stepBackBtn.addEventListener('click', ()=> goToStep(currentStep - 1));
+}
+if (orderForm) {
+  // Enter advances to the next step instead of doing nothing — except in a
+  // textarea, where it should just insert a newline like normal.
+  orderForm.addEventListener('keydown', (e)=>{
+    if (e.key !== 'Enter' || e.target.tagName === 'TEXTAREA') return;
+    if (currentStep === REVIEW_STEP_INDEX) return; // let the Send Request button handle this step
+    e.preventDefault();
+    if (stepNextBtn) stepNextBtn.click();
+  });
+}
+
+/* Builds a plain-text summary of every answer on the final review step.
+   Uses textContent (not innerHTML) throughout so nothing a visitor typed
+   can be interpreted as markup. */
+function reviewRow(dl, label, value){
+  const dt = document.createElement('dt');
+  dt.textContent = label;
+  const dd = document.createElement('dd');
+  dd.textContent = value;
+  dl.appendChild(dt);
+  dl.appendChild(dd);
+}
+function renderReviewSummary(){
+  if (!reviewSummaryEl) return;
+  reviewSummaryEl.innerHTML = '';
+  const serviceEl = document.getElementById('service');
+  const serviceLabel = serviceEl && serviceEl.selectedIndex >= 0 ? serviceEl.options[serviceEl.selectedIndex].text : 'Not sure yet';
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  reviewRow(reviewSummaryEl, 'What you need', serviceLabel || 'Not sure yet');
+  reviewRow(reviewSummaryEl, 'Name', val('name') || '—');
+  reviewRow(reviewSummaryEl, 'Email', val('email') || '—');
+  reviewRow(reviewSummaryEl, 'Discord username', val('discord') || '—');
+  reviewRow(reviewSummaryEl, 'Preferred contact', val('contactMethod') || '—');
+  reviewRow(reviewSummaryEl, 'Project / channel', val('artist') || '—');
+  reviewRow(reviewSummaryEl, 'Deadline', val('deadline') || 'Flexible');
+  reviewRow(reviewSummaryEl, 'Budget range', val('budget') || '—');
+  reviewRow(reviewSummaryEl, 'Project description', val('brief') || '—');
+  reviewRow(reviewSummaryEl, 'Reference links', val('referenceLinks') || '—');
+  reviewRow(reviewSummaryEl, 'Reference files', referenceFiles.length ? `${referenceFiles.length} file${referenceFiles.length > 1 ? 's' : ''} attached` : 'None');
+}
+
 if (orderForm) {
   orderForm.addEventListener('submit', (e)=>{
     e.preventDefault();
     if(!validateForm()) return;
-    // basic bot check: honeypot filled, or submitted implausibly fast (<2.5s)
+    // basic bot check: honeypot filled, or submitted implausibly fast
     const honeypot = orderForm.querySelector('input[name="_gotcha"]');
-    if (honeypot && honeypot.value) { return; } // silently drop — likely a bot
-    openModal(paymentModal);
+    const elapsed = Date.now() - formLoadedAt;
+    if ((honeypot && honeypot.value) || elapsed < 2500) { return; } // silently drop — likely a bot
+    submitOrderForm();
   });
 }
+
+goToStep(0);
 
 async function submitOrderForm(){
   if (!orderForm) return;
