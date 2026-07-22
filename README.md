@@ -35,12 +35,25 @@ This is a plain text file, not a program you run — no coding tools required. A
 - `policies: {...}` (Terms of Service / Commission Policy / Privacy Policy / Refund Policy) — the text is generic boilerplate. Fine to publish short-term, but worth a real read-through (or a lawyer's) before you rely on it.
 - `portfolio.overrides` — empty by default. If you want a specific cover or thumbnail to show its project type, tools used, or a short description in the detail popup, add an entry there — otherwise those fields just stay hidden, no fake info shown.
 - Ads/PFPs galleries — still `count: 0, comingSoon: true`. Once you have real examples, drop the images in `assets/ads/`/`assets/pfps/` following the existing `ad-01.webp`, `ad-02.webp`... naming pattern, bump that category's `count`, and flip `comingSoon` to `false`.
+- `business.stripe` — set to a **test-mode** Stripe Payment Link right now. Swap it for a live-mode link before you launch, or the "Card" button will only accept Stripe test cards. See "Setting up the Stripe 'Card' payment option" above.
 
 Everything else — business name, email, Discord/social links, budget ranges, the Formspree form ID, FAQ answers — lives in the same file and is safe to tweak anytime the same way.
 
+### Setting up the Stripe "Card" payment option
+The site has a spot for a Stripe payment option next to CashApp/Venmo/Apple Pay. It's already wired up with a real Payment Link (product: "Design Commission Payment," customer chooses the amount at checkout — min $25, preset $50, max $1,000 — plus a required "Project name or Discord username" field so you can match a payment to a commission).
+
+**⚠ It's currently a TEST MODE link.** It was created through your connected Stripe account, which is a sandbox — so right now it only accepts Stripe's test cards (like `4242 4242 4242 4242`, any future expiry, any CVC), not real money. Before you launch:
+1. In your Stripe Dashboard, switch from Sandbox/Test to **Live mode** (toggle top-left).
+2. Recreate the same payment link there — Payment links → Create payment link → a product with price type **"Customer chooses price"** (this matters because your pricing is a custom quote, not fixed) → same $25 min / $1,000 max if you want. Or just ask me to do it once your Stripe connection points at the live account and I can set it up the same way.
+3. Copy the new `https://buy.stripe.com/xxxxxxxx` URL (no `test_` in it — that's how you know it's live).
+4. Open `assets/js/config.js`, find `stripe:` near the top (under `business:`), and replace the test URL with the live one.
+5. Save and push to GitHub — the button keeps working, just now for real payments.
+
+The button stays hidden automatically if this field is ever emptied out, so it's safe to deploy at any point. When a client pays, they land on Stripe's own secure checkout page (not something hosted on rowen.work) — Stripe handles all the card data, receipts, and security; your site never touches payment info.
+
 ## Status
-- Order form: connected to Formspree (form ID `xojgvwbp`), sending submissions to rowenapichardo@gmail.com. Falls back to opening the visitor's email client if Formspree is ever unreachable. Includes a honeypot field for basic spam prevention.
-- Contact: Discord is the featured/preferred channel throughout (nav, hero badge, footer, order page); email and CashApp/Venmo/Apple Pay are secondary, framed as "pay after you accept a quote," not instant checkout.
+- Order form: connected to Formspree (form ID `xojgvwbp`), sending submissions to rowenapichardo@gmail.com. Falls back to opening the visitor's email client if Formspree is ever unreachable. Includes a honeypot field for basic spam prevention. If a submission has reference files attached and Formspree rejects it (e.g. file uploads aren't included on your current Formspree plan), the form automatically retries without the files so the message still gets through, and tells the visitor to DM the files on Discord instead.
+- Contact: Discord is the featured/preferred channel throughout (nav, hero badge, footer, order page); email, CashApp/Venmo/Apple Pay, and card via Stripe are secondary, framed as "pay after you accept a quote," not instant checkout.
 - Opening animation: a short logo intro plays once on every page load, then fades out (respects `prefers-reduced-motion`).
 - Portfolio: filterable by category via the tabs above each portfolio grid; clicking any piece opens an accessible project detail modal (type, client label, tools, description, optional before/after slider where configured).
 - Policies (Terms of Service, Commission Policy, Privacy Policy, Refund & Cancellation Policy) open as modals from the footer — placeholder text, flagged for legal review before publishing.

@@ -26,6 +26,17 @@ const SITE_CONFIG = {
     cashapp: "https://cash.app/$rowenarts",
     venmo: "https://venmo.com/u/rowenarts",
     // Apple Pay has no shareable link — collected manually over Discord/email.
+    // Stripe Payment Link — "Design Commission Payment," customer chooses
+    // the amount at checkout (min $25, preset $50, max $1,000), collects a
+    // "Project name or Discord username" field so you can match payments to
+    // commissions.
+    // ⚠ TEST MODE LINK — this was created in your Stripe sandbox, so it only
+    // accepts Stripe's test cards (e.g. 4242 4242 4242 4242), not real money.
+    // Before launch: switch your Stripe Dashboard to Live mode (top-left
+    // toggle), recreate the same payment link there (or ask me to, once the
+    // connection points at your live account), and paste the live
+    // https://buy.stripe.com/... URL here in place of this test one.
+    stripe: "https://buy.stripe.com/test_9B69AU3LN2sy1R2gHR0gw00",
     minBudget: 25
   },
 
@@ -267,7 +278,7 @@ const SITE_CONFIG = {
       body: [
         { h: "What I collect", p: "When you submit the order form, I receive whatever you enter: your name, email, Discord username, project details, budget, deadline, reference links, and any files you upload. This is sent via Formspree (see below) directly to my email inbox." },
         { h: "How reference files are used", p: "Reference images or files you upload are used only to inform your commission. They are not shared publicly, sold, or reused for other clients' projects without your permission." },
-        { h: "Third-party processors", p: "The order form is processed by Formspree (formspree.io), a third-party form backend. Their privacy policy governs how form submissions are transmitted and briefly stored on their end before forwarding to my inbox. No payment information is ever collected through the form — payment happens directly through CashApp, Venmo, or Apple Pay." },
+        { h: "Third-party processors", p: "The order form is processed by Formspree (formspree.io), a third-party form backend. Their privacy policy governs how form submissions are transmitted and briefly stored on their end before forwarding to my inbox. No payment information is ever collected through the form or stored on this site — payment happens directly through CashApp, Venmo, Apple Pay, or card via Stripe, each governed by that provider's own privacy policy." },
         { h: "Data retention", p: "I keep project-related emails and files for as long as reasonably needed for the commission and basic recordkeeping, then delete them periodically. You can request deletion of your information at any time by emailing me." },
         { h: "Contact", p: "Questions about this policy can be sent to rowenapichardo@gmail.com." }
       ]

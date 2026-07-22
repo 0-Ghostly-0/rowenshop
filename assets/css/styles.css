@@ -538,6 +538,8 @@ section{position:relative;z-index:2;}
 .pay-pill-cashapp:hover{color:var(--black);background:#00D632;border-color:#00D632;}
 .pay-pill-venmo{color:#3D95CE;border-color:rgba(61,149,206,.35);background:rgba(61,149,206,.06);}
 .pay-pill-venmo:hover{color:var(--black);background:#3D95CE;border-color:#3D95CE;}
+.pay-pill-stripe{color:#8b8cff;border-color:rgba(99,91,255,.35);background:rgba(99,91,255,.08);}
+.pay-pill-stripe:hover{color:var(--black);background:#635BFF;border-color:#635BFF;}
 .pay-note{margin-top:12px;font-size:12.5px;color:var(--dimmer);line-height:1.5;max-width:340px;}
 
 form{display:flex;flex-direction:column;gap:18px;}

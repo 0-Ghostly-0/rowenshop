@@ -25,6 +25,17 @@ document.querySelectorAll('[data-cashapp-link]').forEach(el => el.href = CFG.bus
 document.querySelectorAll('[data-venmo-link]').forEach(el => el.href = CFG.business.venmo);
 document.querySelectorAll('[data-min-budget]').forEach(el => el.textContent = CFG.business.minBudget);
 
+// Stripe pay link is optional — only show it once a real Payment Link URL
+// is set in config.js (avoids a dead/broken "Card" button before setup).
+document.querySelectorAll('[data-stripe-link]').forEach(el => {
+  if (CFG.business.stripe) {
+    el.href = CFG.business.stripe;
+    el.hidden = false;
+  } else {
+    el.hidden = true;
+  }
+});
+
 /* ---------- preloader (opening animation) ---------- */
 (function(){
   const preloader = document.getElementById('preloader');
