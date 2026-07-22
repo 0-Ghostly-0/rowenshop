@@ -75,6 +75,9 @@
   <a href="#thumbnails" class="dot-link" data-page="thumbnails"><span class="dot-tip">Thumbnails</span></a>
   <a href="#ads" class="dot-link" data-page="ads"><span class="dot-tip">Ads</span></a>
   <a href="#pfps" class="dot-link" data-page="pfps"><span class="dot-tip">PFPs</span></a>
+  <a href="#beats" class="dot-link" data-page="beats"><span class="dot-tip">Beats</span></a>
+  <a href="#vsts" class="dot-link" data-page="vsts"><span class="dot-tip">VSTs</span></a>
+  <a href="#reviews" class="dot-link" data-page="reviews"><span class="dot-tip">Reviews</span></a>
   <a href="#order" class="dot-link" data-page="order"><span class="dot-tip">Order</span></a>
 </nav>
 
@@ -88,6 +91,9 @@
         <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
         <a href="#ads" data-page="ads">Ads</a>
         <a href="#pfps" data-page="pfps">PFPs</a>
+        <a href="#beats" data-page="beats">Beats</a>
+        <a href="#vsts" data-page="vsts">VSTs</a>
+        <a href="#reviews" data-page="reviews">Reviews</a>
         <a href="#order" data-page="order">Order</a>
       </div>
       <div class="nav-cta">
@@ -118,6 +124,9 @@
     <a href="#thumbnails" data-page="thumbnails">Thumbnails</a>
     <a href="#ads" data-page="ads">Ads</a>
     <a href="#pfps" data-page="pfps">PFPs</a>
+    <a href="#beats" data-page="beats">Beats</a>
+    <a href="#vsts" data-page="vsts">VSTs</a>
+    <a href="#reviews" data-page="reviews">Reviews</a>
     <a href="#order" data-page="order">Order</a>
     <a href="#order" class="btn solid"><span>Start a Project</span></a>
     <div class="mobile-nav-social">
@@ -263,14 +272,19 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS (auto-hidden when empty) -->
-    <section class="section-pad" style="padding-top:0;" id="testimonialsSection" hidden>
+    <!-- REVIEWS (auto-hidden when empty) -->
+    <section class="section-pad" style="padding-top:0;" id="reviewsSection" hidden>
       <div class="wrap">
         <div class="section-head reveal">
           <h2>What clients say</h2>
           <p>Real feedback from real projects.</p>
         </div>
-        <div class="testimonial-grid reveal-stagger" id="testimonialGrid"><!-- injected by JS --></div>
+        <div class="reviews-rating-banner reveal" id="homeRatingBanner"><!-- injected by JS --></div>
+        <div class="review-grid reveal-stagger" id="homeReviewGrid"><!-- injected by JS --></div>
+        <div class="reviews-see-all reveal">
+          <a href="#reviews" class="btn small"><span>See all reviews</span></a>
+          <a href="#reviews" class="btn ghost small"><span>Leave a review</span></a>
+        </div>
       </div>
     </section>
 
@@ -400,6 +414,152 @@
         <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Fastest way to reach me</div>
         <h2>Let's make your<br>next PFP.</h2>
         <a href="#order/pfps" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
+        <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BEATS ============ -->
+  <section class="page" data-page="beats">
+    <div class="wrap">
+      <div class="page-hero reveal">
+        <div class="eyebrow" style="margin-bottom:0;">Beats</div>
+        <h1>Beats that<br>hit different.</h1>
+        <p class="page-hero-sub">Original instrumentals, ready to license. Preview below, buy instantly with a card.</p>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn solid"><span>Ask About a Custom Beat</span> <span class="arrow">↗</span></a>
+      </div>
+
+      <div class="coming-soon reveal" id="beatsEmpty">
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <h3>New beats dropping soon</h3>
+        <p>I'm getting the catalog up. DM me on Discord if you want to hear something now.</p>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Ask on Discord</span></a>
+      </div>
+
+      <div class="beats-grid reveal-stagger" id="beatsGrid" aria-label="Beats catalog" hidden></div>
+
+      <div class="page-cta-band reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Looking for something specific?</div>
+        <h2>I make custom<br>beats too.</h2>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn solid"><span>Ask on Discord</span> <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VSTS ============ -->
+  <section class="page" data-page="vsts">
+    <div class="wrap">
+      <div class="page-hero reveal">
+        <div class="eyebrow" style="margin-bottom:0;">VSTs</div>
+        <h1>Plugins &amp;<br>sound tools.</h1>
+        <p class="page-hero-sub">Custom VSTs for producers, built from scratch.</p>
+      </div>
+
+      <div class="coming-soon reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M9 15h.01M15 9h.01M15 15h.01"/></svg>
+        </div>
+        <h3>VSTs coming soon</h3>
+        <p>Still building these — join the Discord to get notified the moment they're ready.</p>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn" style="margin-top:6px;"><span>Join the Discord</span></a>
+      </div>
+
+      <div class="page-cta-band reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Want early access?</div>
+        <h2>Get notified<br>when they launch.</h2>
+        <a data-discord-link href="#" target="_blank" rel="noopener" class="btn solid"><span>Join the Discord</span> <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="page" data-page="reviews">
+    <div class="wrap">
+      <div class="page-hero reveal">
+        <div class="eyebrow" style="margin-bottom:0;">Reviews</div>
+        <h1>What clients<br>are saying.</h1>
+        <p class="page-hero-sub">Real feedback from real projects — and a spot to leave your own if we've worked together.</p>
+      </div>
+
+      <div class="reviews-rating-banner reveal" id="reviewsRatingBanner" hidden><!-- injected by JS --></div>
+
+      <div class="coming-soon reveal" id="reviewsEmpty">
+        <div class="service-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 17.3l-6.2 3.6 1.6-6.9L2 9.2l7-.6L12 2l3 6.6 7 .6-5.4 4.8 1.6 6.9z"/></svg>
+        </div>
+        <h3>No reviews yet</h3>
+        <p>Be the first to leave one below once we've worked together.</p>
+      </div>
+
+      <div class="review-grid reveal-stagger" id="reviewsGrid" aria-label="Client reviews" hidden></div>
+
+      <div class="section-pad" style="padding-bottom:0;">
+        <div class="section-head reveal">
+          <h2>Leave a review</h2>
+          <p>Worked with me before? I'd love to hear how it went. Reviews are checked by hand before they're posted, so it may take a little while to show up.</p>
+        </div>
+
+        <div class="reveal" style="max-width:560px;">
+          <form id="reviewForm" novalidate>
+            <!-- honeypot — real visitors never see or fill this in -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="reviewCompany">Company</label>
+              <input type="text" id="reviewCompany" name="_gotcha" tabindex="-1" autocomplete="off">
+            </div>
+            <input type="hidden" name="_subject" value="New Review Submission">
+
+            <div class="field" style="margin-bottom:18px;">
+              <label>Your Rating <span class="req" aria-hidden="true">*</span></label>
+              <div class="star-input" role="radiogroup" aria-label="Your rating">
+                <input type="radio" id="rate5" name="rating" value="5" required aria-required="true"><label for="rate5" aria-label="5 stars">★</label>
+                <input type="radio" id="rate4" name="rating" value="4"><label for="rate4" aria-label="4 stars">★</label>
+                <input type="radio" id="rate3" name="rating" value="3"><label for="rate3" aria-label="3 stars">★</label>
+                <input type="radio" id="rate2" name="rating" value="2"><label for="rate2" aria-label="2 stars">★</label>
+                <input type="radio" id="rate1" name="rating" value="1"><label for="rate1" aria-label="1 star">★</label>
+              </div>
+              <span class="field-error" id="ratingError" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="reviewQuote">Your Review <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="reviewQuote" name="quote" placeholder="What was it like working together?" required aria-required="true"></textarea>
+              <span class="field-error" role="alert"></span>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label for="reviewName">Your Name <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="reviewName" name="name" placeholder="Jane Doe" required aria-required="true">
+                <span class="field-error" role="alert"></span>
+              </div>
+              <div class="field">
+                <label for="reviewEmail">Email <span class="req" aria-hidden="true">*</span></label>
+                <input type="email" id="reviewEmail" name="email" placeholder="jane@email.com" required aria-required="true">
+                <span class="field-error" role="alert"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="reviewRole">Project / Channel Name (optional)</label>
+              <input type="text" id="reviewRole" name="role" placeholder="e.g. Midnight Runners, or your channel name">
+              <span class="field-hint">Shown alongside your review if it's published — leave blank and it'll just show your name.</span>
+            </div>
+
+            <div class="form-nav">
+              <button type="submit" class="btn solid" id="reviewSubmitBtn"><span id="reviewSubmitText">Submit Review</span> <span class="arrow">↗</span></button>
+            </div>
+            <div class="form-status" id="reviewFormStatus" role="status" aria-live="polite"></div>
+            <p class="form-note" style="margin-top:6px;max-width:100%;">Your email is only used to follow up if needed — it's never shown publicly. Submitting doesn't publish automatically; I add approved reviews by hand.</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="page-cta-band reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:20px;">Ready to start your own?</div>
+        <h2>Let's make<br>something.</h2>
+        <a href="#order" class="btn solid"><span>Start a Project</span> <span class="arrow">↗</span></a>
         <p><a data-discord-link href="#" target="_blank" rel="noopener" class="discord-link">or join the Discord ↗</a></p>
       </div>
     </div>
@@ -623,7 +783,7 @@
     <div class="foot-top">
       <div class="foot-brand">
         <a href="#home" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="112" height="28"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
-        <p>Cover art, thumbnails, ads &amp; PFPs.</p>
+        <p>Cover art, thumbnails, ads, PFPs &amp; beats.</p>
       </div>
       <div class="foot-cols">
         <div class="foot-col">
@@ -632,6 +792,9 @@
           <a href="#thumbnails">Thumbnails</a>
           <a href="#ads">Ads</a>
           <a href="#pfps">PFPs</a>
+          <a href="#beats">Beats</a>
+          <a href="#vsts">VSTs</a>
+          <a href="#reviews">Reviews</a>
         </div>
         <div class="foot-col">
           <h5>Contact</h5>

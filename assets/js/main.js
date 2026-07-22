@@ -3,7 +3,7 @@
    Reads content from SITE_CONFIG (assets/js/config.js, loaded
    before this file) and wires up every interactive piece:
    router, portfolio grids + filters, project detail modal,
-   pricing/how-it-works/FAQ/testimonials rendering, policy
+   pricing/how-it-works/FAQ/reviews rendering, policy
    modals, mobile nav, and the commission form.
    ========================================================= */
 (function(){
@@ -96,7 +96,7 @@ window.addEventListener('scroll', ()=>{
 },{passive:true});
 
 /* ---------- page router ---------- */
-const PAGE_KEYS = ['home','cover-art','thumbnails','ads','pfps','order'];
+const PAGE_KEYS = ['home','cover-art','thumbnails','ads','pfps','beats','vsts','reviews','order'];
 const pageEls = {};
 PAGE_KEYS.forEach(k=>{ pageEls[k] = document.querySelector(`.page[data-page="${k}"]`); });
 const navLinkEls = document.querySelectorAll('.nav-links a[data-page], .mobile-nav-panel a[data-page]');
@@ -107,6 +107,9 @@ const PAGE_TITLES = {
   'thumbnails': `YouTube Thumbnails — ${CFG.business.name}`,
   'ads': `Ad Creative — ${CFG.business.name}`,
   'pfps': `PFPs — ${CFG.business.name}`,
+  'beats': `Beats — ${CFG.business.name}`,
+  'vsts': `VSTs — ${CFG.business.name}`,
+  'reviews': `Reviews — ${CFG.business.name}`,
   'order': `Start a Project — ${CFG.business.name}`
 };
 const serviceSelect = document.getElementById('service');
@@ -284,6 +287,145 @@ document.querySelectorAll('.filter-tabs').forEach(tabsEl=>{
     `<a href="#${cat.key}" class="filter-tab" data-page="${cat.key}">${cat.shortLabel}</a>`
   ).join('');
 });
+
+/* =========================================================
+   BEATS — audio catalog (hidden automatically when empty)
+   Reads from CFG.beats — see config.js and the README for how
+   to add a new one. Only one beat preview plays at a time.
+   ========================================================= */
+const ICON_PLAY = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M6 4.5v15l14-7.5z"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>';
+let currentlyPlayingAudio = null;
+
+function buildBeatCard(beat){
+  const card = document.createElement('div');
+  card.className = 'beat-card';
+
+  const cover = document.createElement('div');
+  cover.className = 'beat-cover';
+  if (beat.cover) {
+    const img = document.createElement('img');
+    img.src = beat.cover; img.alt = ''; img.loading = 'lazy';
+    cover.appendChild(img);
+  } else {
+    cover.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+  }
+  card.appendChild(cover);
+
+  const title = document.createElement('h3');
+  title.className = 'beat-title';
+  title.textContent = beat.title || 'Untitled Beat';
+  card.appendChild(title);
+
+  const metaBits = [];
+  if (beat.bpm) metaBits.push(`${beat.bpm} BPM`);
+  if (beat.key) metaBits.push(beat.key);
+  (beat.tags || []).forEach(t => metaBits.push(t));
+  if (metaBits.length) {
+    const meta = document.createElement('div');
+    meta.className = 'beat-meta';
+    meta.innerHTML = metaBits.map(b => `<span class="beat-tag">${b}</span>`).join('');
+    card.appendChild(meta);
+  }
+
+  if (beat.audio) {
+    const player = document.createElement('div');
+    player.className = 'beat-player';
+    const audio = new Audio(beat.audio);
+    audio.preload = 'none';
+
+    const playBtn = document.createElement('button');
+    playBtn.type = 'button';
+    playBtn.className = 'beat-play-btn';
+    playBtn.setAttribute('aria-label', `Play preview of ${beat.title || 'this beat'}`);
+    playBtn.innerHTML = ICON_PLAY;
+
+    const progress = document.createElement('div');
+    progress.className = 'beat-progress';
+    progress.setAttribute('role', 'slider');
+    progress.setAttribute('aria-label', 'Playback position');
+    progress.setAttribute('tabindex', '0');
+    progress.setAttribute('aria-valuemin', '0');
+    progress.setAttribute('aria-valuemax', '100');
+    const progressFill = document.createElement('div');
+    progressFill.className = 'beat-progress-fill';
+    progress.appendChild(progressFill);
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) currentlyPlayingAudio.pause();
+        audio.play().catch(() => {});
+        currentlyPlayingAudio = audio;
+      } else {
+        audio.pause();
+      }
+    });
+    audio.addEventListener('play', () => playBtn.innerHTML = ICON_PAUSE);
+    audio.addEventListener('pause', () => playBtn.innerHTML = ICON_PLAY);
+    audio.addEventListener('ended', () => { playBtn.innerHTML = ICON_PLAY; progressFill.style.width = '0%'; });
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = pct + '%';
+        progress.setAttribute('aria-valuenow', String(Math.round(pct)));
+      }
+    });
+    function seek(clientX){
+      const rect = progress.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      if (audio.duration) audio.currentTime = ratio * audio.duration;
+    }
+    progress.addEventListener('click', e => seek(e.clientX));
+    progress.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+      if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+    });
+
+    player.appendChild(playBtn);
+    player.appendChild(progress);
+    card.appendChild(player);
+  }
+
+  const foot = document.createElement('div');
+  foot.className = 'beat-foot';
+  const price = document.createElement('span');
+  price.className = 'beat-price';
+  price.textContent = beat.price != null ? `$${beat.price}` : 'Ask for price';
+  foot.appendChild(price);
+
+  const buy = document.createElement('a');
+  buy.target = '_blank'; buy.rel = 'noopener';
+  if (beat.stripeLink) {
+    buy.href = beat.stripeLink;
+    buy.className = 'btn solid small beat-buy';
+    buy.innerHTML = '<span>Buy</span>';
+  } else {
+    buy.href = CFG.business.discordInvite;
+    buy.className = 'btn ghost small beat-buy';
+    buy.innerHTML = '<span>Ask on Discord</span>';
+  }
+  foot.appendChild(buy);
+  card.appendChild(foot);
+
+  return card;
+}
+
+function renderBeats(){
+  const beatsEmptyEl = document.getElementById('beatsEmpty');
+  const beatsGridEl = document.getElementById('beatsGrid');
+  if (!beatsEmptyEl || !beatsGridEl) return;
+  const beats = CFG.beats || [];
+  if (!beats.length) {
+    beatsEmptyEl.hidden = false;
+    beatsGridEl.hidden = true;
+    return;
+  }
+  beatsEmptyEl.hidden = true;
+  beatsGridEl.hidden = false;
+  beatsGridEl.innerHTML = '';
+  beats.forEach(beat => beatsGridEl.appendChild(buildBeatCard(beat)));
+}
+renderBeats();
 
 /* hero "selected work" strip — first few cover-art pieces */
 const heroStrip = document.getElementById('heroStripTrack');
@@ -582,29 +724,89 @@ if (processEl) {
 }
 
 /* =========================================================
-   TESTIMONIALS (hidden automatically when empty)
+   REVIEWS — homepage teaser + dedicated Reviews page.
+   Hidden automatically when CFG.reviews is empty (homepage teaser
+   only — the Reviews page's submission form always stays visible
+   so the first review has somewhere to come from). Average rating
+   is computed here, not stored in config, so it's always accurate.
    ========================================================= */
-const testimonialSection = document.getElementById('testimonialsSection');
-const testimonialGrid = document.getElementById('testimonialGrid');
-if (testimonialSection && testimonialGrid) {
-  if (CFG.testimonials && CFG.testimonials.length) {
-    testimonialGrid.innerHTML = CFG.testimonials.map(t => `
-      <div class="testimonial-card">
-        <p class="testimonial-quote">${t.quote}</p>
-        <div class="testimonial-who">
-          ${t.avatar ? `<img class="testimonial-avatar" src="${t.avatar}" alt="" loading="lazy">` : `<span class="testimonial-avatar-fallback" aria-hidden="true">${(t.name||'?').charAt(0)}</span>`}
-          <div>
-            <div class="testimonial-name">${t.name}</div>
-            ${t.role ? `<div class="testimonial-role">${t.role}</div>` : ''}
-          </div>
+
+/* Two-stacked-row star display: a background row of 5 empty stars
+   with a filled row on top, clipped to (rating/5) width via a CSS
+   custom property. Works for both whole numbers (a single review)
+   and fractional averages (e.g. 4.9) with one implementation. */
+function buildStarRatingHTML(rating, size){
+  const r = Math.max(0, Math.min(5, Number(rating) || 0));
+  const sizeStyle = size ? `--star-size:${size};` : '';
+  return `<span class="star-rating" style="--rating:${r};${sizeStyle}" role="img" aria-label="${r.toFixed(1)} out of 5 stars">
+    <span class="star-row star-row-empty" aria-hidden="true">★★★★★</span>
+    <span class="star-row star-row-filled" aria-hidden="true">★★★★★</span>
+  </span>`;
+}
+function buildReviewCard(r){
+  return `
+    <div class="review-card">
+      ${buildStarRatingHTML(r.rating, '14px')}
+      <p class="review-quote">${r.quote}</p>
+      <div class="review-who">
+        ${r.avatar ? `<img class="review-avatar" src="${r.avatar}" alt="" loading="lazy">` : `<span class="review-avatar-fallback" aria-hidden="true">${(r.name||'?').charAt(0)}</span>`}
+        <div>
+          <div class="review-name">${r.name}</div>
+          ${r.role ? `<div class="review-role">${r.role}</div>` : ''}
         </div>
       </div>
-    `).join('');
-    testimonialSection.hidden = false;
-  } else {
-    testimonialSection.hidden = true;
+    </div>
+  `;
+}
+function buildRatingBannerHTML(reviews){
+  const avg = reviews.reduce((sum,r)=> sum + (Number(r.rating)||0), 0) / reviews.length;
+  return `
+    ${buildStarRatingHTML(avg, '22px')}
+    <span class="rating-number">${avg.toFixed(1)}</span>
+    <span class="rating-detail">from ${reviews.length} review${reviews.length===1?'':'s'}</span>
+  `;
+}
+
+const reviewsSection = document.getElementById('reviewsSection');
+const homeRatingBanner = document.getElementById('homeRatingBanner');
+const homeReviewGrid = document.getElementById('homeReviewGrid');
+const reviewsRatingBanner = document.getElementById('reviewsRatingBanner');
+const reviewsEmptyEl = document.getElementById('reviewsEmpty');
+const reviewsGridEl = document.getElementById('reviewsGrid');
+
+function renderReviews(){
+  const reviews = CFG.reviews || [];
+
+  // Homepage teaser — the whole section hides when there's nothing to show yet.
+  if (reviewsSection && homeRatingBanner && homeReviewGrid) {
+    if (reviews.length) {
+      homeRatingBanner.innerHTML = buildRatingBannerHTML(reviews);
+      homeReviewGrid.innerHTML = reviews.slice(0, 6).map(buildReviewCard).join('');
+      reviewsSection.hidden = false;
+    } else {
+      reviewsSection.hidden = true;
+    }
+  }
+
+  // Dedicated Reviews page — the "leave a review" form further down the
+  // page always stays visible regardless of this; only the rating banner
+  // and grid vs. the "no reviews yet" panel toggle here.
+  if (reviewsRatingBanner && reviewsEmptyEl && reviewsGridEl) {
+    if (reviews.length) {
+      reviewsRatingBanner.innerHTML = buildRatingBannerHTML(reviews);
+      reviewsRatingBanner.hidden = false;
+      reviewsEmptyEl.hidden = true;
+      reviewsGridEl.hidden = false;
+      reviewsGridEl.innerHTML = reviews.map(buildReviewCard).join('');
+    } else {
+      reviewsRatingBanner.hidden = true;
+      reviewsEmptyEl.hidden = false;
+      reviewsGridEl.hidden = true;
+      reviewsGridEl.innerHTML = '';
+    }
   }
 }
+renderReviews();
 
 /* =========================================================
    FAQ ACCORDION (rendered from config)
@@ -914,6 +1116,121 @@ function resetSubmitButton(){
   submitBtn.disabled = false;
   submitBtn.removeAttribute('aria-disabled');
   submitText.textContent = 'Send Request';
+}
+
+/* =========================================================
+   REVIEW SUBMISSION FORM (Reviews page) — separate, single-screen
+   form; not part of the order form wizard above. Submissions never
+   publish automatically — they land in the inbox the same way
+   commission requests do, and get added to CFG.reviews by hand.
+   ========================================================= */
+const reviewForm = document.getElementById('reviewForm');
+const reviewFormStatus = document.getElementById('reviewFormStatus');
+const reviewSubmitBtn = document.getElementById('reviewSubmitBtn');
+const reviewSubmitText = document.getElementById('reviewSubmitText');
+const reviewFormLoadedAt = Date.now();
+
+function setRatingError(message){
+  const starInput = reviewForm && reviewForm.querySelector('.star-input');
+  const wrap = starInput ? starInput.closest('.field') : null;
+  const errorEl = document.getElementById('ratingError');
+  if (message) {
+    if (wrap) wrap.classList.add('has-error');
+    if (errorEl) errorEl.textContent = message;
+  } else {
+    if (wrap) wrap.classList.remove('has-error');
+    if (errorEl) errorEl.textContent = '';
+  }
+}
+
+/* Validates the text fields first (reusing the order form's generic
+   validateStep, which no-ops harmlessly on the rating radios since they
+   always carry a static, non-empty value), then checks the rating group
+   separately last so its error state isn't immediately cleared again by
+   validateStep's own pass over the same container. */
+function validateReviewForm(){
+  if (!reviewForm) return null;
+  const textInvalid = validateStep(reviewForm);
+  const ratingChecked = reviewForm.querySelector('input[name="rating"]:checked');
+  let ratingInvalid = null;
+  if (!ratingChecked) {
+    setRatingError('Pick a star rating.');
+    ratingInvalid = reviewForm.querySelector('input[name="rating"]');
+  } else {
+    setRatingError('');
+  }
+  return ratingInvalid || textInvalid;
+}
+
+if (reviewForm) {
+  reviewForm.querySelectorAll('input[name="rating"]').forEach(r=>{
+    r.addEventListener('change', ()=>setRatingError(''));
+  });
+  reviewForm.querySelectorAll('[required]').forEach(f=>{
+    f.addEventListener('input', ()=>setFieldError(f, ''));
+    f.addEventListener('change', ()=>setFieldError(f, ''));
+  });
+
+  reviewForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const firstInvalid = validateReviewForm();
+    if (firstInvalid) { firstInvalid.focus(); return; }
+    // basic bot check: honeypot filled, or submitted implausibly fast
+    const honeypot = reviewForm.querySelector('input[name="_gotcha"]');
+    const elapsed = Date.now() - reviewFormLoadedAt;
+    if ((honeypot && honeypot.value) || elapsed < 2000) { return; } // silently drop — likely a bot
+    submitReviewForm();
+  });
+}
+
+async function submitReviewForm(){
+  if (!reviewForm) return;
+  const formspreeId = CFG.reviewsFormspreeId || CFG.formspreeId;
+  reviewSubmitBtn.disabled = true;
+  reviewSubmitBtn.setAttribute('aria-disabled','true');
+  reviewSubmitText.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…';
+  reviewFormStatus.textContent = '';
+  reviewFormStatus.className = 'form-status';
+
+  if (!formspreeId || formspreeId === 'YOUR_FORM_ID') {
+    const data = new FormData(reviewForm);
+    const body = encodeURIComponent(
+      `Rating: ${data.get('rating')}/5\nName: ${data.get('name')}\nEmail: ${data.get('email')}\nProject/Channel: ${data.get('role')||'—'}\n\nReview:\n${data.get('quote')}`
+    );
+    window.location.href = `mailto:${CFG.business.email}?subject=${encodeURIComponent('New Review Submission')}&body=${body}`;
+    resetReviewSubmitButton();
+    showToast('Opening your email client to send this review…');
+    return;
+  }
+
+  try{
+    const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:new FormData(reviewForm)
+    });
+    if(res.ok){
+      reviewForm.reset();
+      const successMsg = "Review submitted — thank you! It'll show up on the site once it's been added.";
+      reviewFormStatus.textContent = successMsg;
+      reviewFormStatus.classList.add('is-success');
+      showToast(successMsg);
+    } else {
+      reviewFormStatus.textContent = 'Something went wrong sending that. Please try again or email instead.';
+      reviewFormStatus.classList.add('is-error');
+      showToast('Could not send — please try again or email instead.', true);
+    }
+  }catch(err){
+    reviewFormStatus.textContent = 'Network error — please try again or email instead.';
+    reviewFormStatus.classList.add('is-error');
+    showToast('Network error — please try again.', true);
+  }
+  resetReviewSubmitButton();
+}
+function resetReviewSubmitButton(){
+  reviewSubmitBtn.disabled = false;
+  reviewSubmitBtn.removeAttribute('aria-disabled');
+  reviewSubmitText.textContent = 'Submit Review';
 }
 
 function showToast(msg, isError){

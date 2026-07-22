@@ -3,7 +3,7 @@
    ---------------------------------------------------------
    This is the ONE file you should need to touch for day-to-day
    updates: prices, turnaround times, FAQ answers, policy text,
-   testimonials, social links, etc. Nothing here needs a build
+   reviews, social links, etc. Nothing here needs a build
    step — just edit and refresh.
 
    Anything marked "EDIT ME" is a placeholder value that was
@@ -235,14 +235,68 @@ const SITE_CONFIG = {
     }
   },
 
-  /* ---------- testimonials ----------
-     Leave this empty until you have real client testimonials —
-     the section hides itself automatically when this array is empty.
-     To add one: { quote, name, role (optional), avatar (optional
-     image path). Never invent testimonials that didn't happen. */
-  testimonials: [
-    // { quote: "…", name: "…", role: "…", avatar: "assets/testimonials/example.webp" }
+  /* ---------- beats ----------
+     Leave this empty until you have real beats to sell — the Beats
+     page shows a friendly "coming soon" panel automatically when
+     this array is empty, and switches to the real catalog the moment
+     you add an entry. See the README section "Adding a new beat" for
+     the full walkthrough (uploading the audio file + creating its
+     Stripe payment link). Each entry:
+       title       - beat name, shown on the card
+       bpm         - optional, shown as a small tag (e.g. 140)
+       key         - optional, shown as a small tag (e.g. "F# Minor")
+       tags        - optional array of extra small tags (e.g. ["Trap","Dark"])
+       price       - number, shown as "$12" — standing default: all
+                     beats are listed at $12 unless you decide
+                     otherwise for a specific one
+       audio       - path to the preview/full audio file, e.g.
+                     "assets/beats/midnight-drive.mp3"
+       cover       - optional square artwork path; a default icon is
+                     shown if you leave this out
+       stripeLink  - fixed-price Stripe Payment Link for this exact
+                     beat (NOT the customer-chooses-price one used for
+                     deposits) — leave blank and the button becomes
+                     "Ask on Discord" instead of "Buy" until it's set */
+  beats: [
+    // {
+    //   title: "Midnight Drive",
+    //   bpm: 140,
+    //   key: "F# Minor",
+    //   tags: ["Trap", "Dark"],
+    //   price: 12,
+    //   audio: "assets/beats/midnight-drive.mp3",
+    //   cover: "assets/beats/midnight-drive-cover.jpg",
+    //   stripeLink: "https://buy.stripe.com/xxxxxxxx"
+    // }
   ],
+
+  /* ---------- reviews ----------
+     Leave this empty until you have real reviews — the "What clients
+     say" section on the homepage and the whole Reviews page hide/show
+     automatically based on whether this array is empty. Customers can
+     submit a review from the Reviews page (rating + quote + name),
+     but nothing publishes automatically: submissions land in your
+     inbox the same way commission requests do, and you add the ones
+     you approve here yourself. See the README "Approving a submitted
+     review" section for the full walkthrough. Never invent one that
+     didn't happen.
+       quote   - the review text
+       name    - reviewer's name
+       role    - optional, e.g. "Cover Art client" or a channel name
+       rating  - required, a whole number 1–5
+       avatar  - optional image path; falls back to an initial-letter
+                 avatar if omitted */
+  reviews: [
+    // { quote: "…", name: "…", role: "…", rating: 5, avatar: "assets/reviews/example.webp" }
+  ],
+
+  /* ---------- review submissions (Reviews page form) ----------
+     Leave blank to send review submissions to the SAME Formspree form
+     as commission requests (formspreeId above) — they'll still be
+     clearly labeled "New Review Submission" in your inbox so you can
+     tell them apart. Set this to a second Formspree form's ID instead
+     if you'd rather keep reviews in a completely separate inbox view. */
+  reviewsFormspreeId: "",
 
   /* ---------- policies ----------
      Placeholder legal-style text so the site doesn't feel unfinished.
@@ -255,10 +309,13 @@ const SITE_CONFIG = {
       title: "Terms of Service",
       body: [
         { h: "Overview", p: "These Terms of Service (“Terms”) govern any commission or purchase made through rowen.work (“the Site”), operated by Rowen (“I”, “me”). By submitting a project request or making a payment, you agree to these Terms." },
+        { h: "Eligibility", p: "By submitting a project request or making a payment, you confirm that you're legally able to enter into this agreement, or that you have permission from a parent or legal guardian to do so." },
         { h: "Commission scope", p: "Each project is scoped individually based on the brief you submit and the quote I send back. Work outside the agreed scope (extra concepts, unrelated revisions, additional deliverables) may be quoted separately." },
-        { h: "Ownership & licensing", p: "Unless otherwise agreed in writing, you receive a license to use final delivered files for the purpose described in your brief, including commercial use. I retain the right to display finished work in my portfolio unless you request otherwise in your brief." },
-        { h: "Credit for cover art", p: "Using a cover art piece as your actual album/single/EP cover across streaming platforms and social media doesn't require a credit each time. But if you make a post that's focused specifically on the cover art itself — a reveal post, a print, a portfolio or fan-art feature, etc. — please credit me as the designer, either by tagging/mentioning @yoorowen or linking rowen.work." },
+        { h: "Ownership & licensing", p: "Upon full payment, you receive an exclusive, worldwide license to use the final delivered files for the purpose described in your brief, including commercial use, unless otherwise agreed in writing. Beat purchases are licensed differently — see the Refund & Cancellation Policy. I retain the right to display finished work in my portfolio unless you request otherwise in your brief. (See the Commission Policy for cover art crediting guidelines.)" },
+        { h: "Drafts & previews", p: "Preliminary concepts, drafts, sketches, and watermarked previews remain my intellectual property until full payment has been received. They aren't licensed for use, publication, or distribution until the final files have been delivered and paid for in full." },
         { h: "Client responsibilities", p: "You're responsible for making sure any reference material, logos, or text you provide doesn't infringe on someone else's rights. I reserve the right to decline projects that involve hate speech, harassment, or clearly illegal content." },
+        { h: "Delays outside my control", p: "I'm not responsible for delays caused by circumstances outside my reasonable control — illness, internet or power outages, platform outages (Discord, Stripe, Formspree, etc.), natural disasters, and similar events. I'll let you know as soon as possible if something like this affects your timeline." },
+        { h: "Governing law", p: "These Terms are governed by the laws of the Commonwealth of Pennsylvania, United States, and any disputes arising from them will be handled under that law." },
         { h: "Changes to these terms", p: "These Terms may be updated from time to time; the version in effect at the time you submit a request is the one that applies to that project." }
       ]
     },
@@ -267,19 +324,23 @@ const SITE_CONFIG = {
       body: [
         { h: "Process", p: "Every commission follows the same flow: brief → quote & estimated date → deposit → watermarked preview → final files after approval and final payment. See the “How It Works” section on the home page for details." },
         { h: "Deposits", p: "A deposit is required before work begins. It secures your spot in the queue and goes toward the total cost of your project." },
+        { h: "Final payment", p: "The remaining balance must be paid in full before final, unwatermarked files are delivered. Watermarked previews are provided for review in the meantime, but final files are only sent once payment is complete." },
         { h: "Revisions", p: "Each service includes a set number of revision rounds (listed in the pricing section). Revisions must relate to the original brief — new concepts requested after work has started may be quoted as a separate round." },
-        { h: "Timelines", p: "Turnaround estimates are based on the current queue at the time of your quote and are not guaranteed delivery dates. I'll flag it as early as possible if something is going to run long." },
-        { h: "Credit for cover art", p: "Using a cover art piece as your actual release cover across streaming platforms and social media doesn't need a credit every time. But if you make a post focused specifically on the cover art itself — a reveal post, a print, a portfolio feature, etc. — please credit me as the designer (tag/mention @yoorowen or link rowen.work)." },
+        { h: "Timelines", p: "Turnaround estimates are based on the current queue at the time of your quote and are not guaranteed delivery dates. I'll flag it as early as possible if something is going to run long, including for delays outside my control (see the Terms of Service)." },
+        { h: "Credit for cover art", p: "Using a cover art piece as your actual album/single/EP cover across streaming platforms and social media doesn't require a credit each time. But if you make a post that's focused specifically on the cover art itself — a reveal post, a print, a portfolio or fan-art feature, etc. — please credit me as the designer, either by tagging/mentioning @yoorowen or linking rowen.work." },
         { h: "What I won't take on", p: "I reserve the right to decline any commission, including (but not limited to) hate symbols, explicit/NSFW content, plagiarized concepts, or anything that infringes on someone else's copyright or trademark." }
       ]
     },
     privacy: {
       title: "Privacy Policy",
       body: [
-        { h: "What I collect", p: "When you submit the order form, I receive whatever you enter: your name, email, Discord username, project details, budget, deadline, reference links, and any files you upload. This is sent via Formspree (see below) directly to my email inbox." },
+        { h: "What I collect", p: "When you submit the order form, I receive whatever you enter: your name, email, Discord username, project details, budget, deadline, reference links, and any files you upload. If you submit a review, I receive your rating, review text, name, email, and optional project/channel name. Everything is sent via Formspree (see below) directly to my email inbox." },
         { h: "How reference files are used", p: "Reference images or files you upload are used only to inform your commission. They are not shared publicly, sold, or reused for other clients' projects without your permission." },
-        { h: "Third-party processors", p: "The order form is processed by Formspree (formspree.io), a third-party form backend. Their privacy policy governs how form submissions are transmitted and briefly stored on their end before forwarding to my inbox. No payment information is ever collected through the form or stored on this site — payment happens directly through CashApp, Venmo, Apple Pay, or card via Stripe, each governed by that provider's own privacy policy." },
-        { h: "Data retention", p: "I keep project-related emails and files for as long as reasonably needed for the commission and basic recordkeeping, then delete them periodically. You can request deletion of your information at any time by emailing me." },
+        { h: "Review submissions", p: "Reviews are moderated — submitting one doesn't publish it automatically. If I approve your review, your rating, review text, name, and optional project/channel name may be published on the site. Your email is never published; it's only used if I need to follow up with you." },
+        { h: "Third-party processors", p: "The order form and review submissions are both processed by Formspree (formspree.io), a third-party form backend. Their privacy policy governs how submissions are transmitted and briefly stored on their end before forwarding to my inbox." },
+        { h: "Payment processing", p: "Payments are made directly through Stripe, CashApp, Venmo, or Apple Pay — I never receive or store your card or bank details on this site. Stripe payments happen on Stripe's own secure checkout page, not on rowen.work; CashApp, Venmo, and Apple Pay payments happen directly in those apps. Each provider is governed by its own privacy policy." },
+        { h: "Cookies & third-party content", p: "rowen.work doesn't use cookies, analytics, or advertising trackers. The site loads fonts from Google Fonts, which may receive standard technical information (like your IP address) as part of serving those files — this is normal for any font hosted this way and isn't used to track you. If you follow a link to Discord, Instagram, TikTok, or a payment provider, that site's own cookies and privacy policy apply once you're there." },
+        { h: "Data retention", p: "I keep project-related emails and files for up to 24 months after your project is completed, then delete them. You can request earlier deletion of your information at any time by emailing me." },
         { h: "Contact", p: "Questions about this policy can be sent to rowenapichardo@gmail.com." }
       ]
     },
@@ -289,7 +350,8 @@ const SITE_CONFIG = {
         { h: "Before work starts", p: "If you cancel before any work has begun, your deposit is refunded minus any non-recoverable processing fees (e.g. payment platform fees)." },
         { h: "After work starts", p: "Once work has started, the deposit becomes non-refundable, since it covers time already spent on your project. If you're unhappy with the direction, tell me — revisions within scope are included, and I'd rather fix it than keep a refund." },
         { h: "After final delivery", p: "Refunds are not offered after final (unwatermarked) files have been delivered and the remaining balance paid, except in cases where delivered work clearly does not match the agreed brief." },
-        { h: "Cancellations by me", p: "If I need to cancel a project (illness, no longer able to take it on, etc.) before delivering final files, you'll receive a full refund of any amount paid." }
+        { h: "Cancellations by me", p: "If I need to cancel a project (illness, no longer able to take it on, etc.) before delivering final files, you'll receive a full refund of any amount paid." },
+        { h: "Beats", p: "Beat purchases are instant digital downloads and are generally non-refundable once the files have been sent, except in cases of a clear technical issue (e.g. a corrupted or wrong file). Each beat is licensed for your use as described at checkout — it isn't sold exclusively unless we've separately agreed to that in writing." }
       ]
     }
   }
