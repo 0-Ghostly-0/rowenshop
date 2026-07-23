@@ -12,31 +12,29 @@
    ========================================================= */
 const Stripe = require('stripe');
 const catalog = require('./_lib/catalog');
+const { parseJsonBody, sendJson } = require('./_lib/http');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed.' });
+    sendJson(res, 405, { error: 'Method not allowed.' });
     return;
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    res.status(500).json({ error: 'Checkout isn’t configured yet — missing STRIPE_SECRET_KEY.' });
+    sendJson(res, 500, { error: 'Checkout isn’t configured yet — missing STRIPE_SECRET_KEY.' });
     return;
   }
   const stripe = new Stripe(secretKey);
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch (err) { body = {}; }
-  }
+  const body = await parseJsonBody(req);
   const items = Array.isArray(body && body.items) ? body.items : [];
   if (!items.length) {
-    res.status(400).json({ error: 'Your cart is empty.' });
+    sendJson(res, 400, { error: 'Your cart is empty.' });
     return;
   }
   if (items.length > 20) {
-    res.status(400).json({ error: 'Too many distinct items in one order.' });
+    sendJson(res, 400, { error: 'Too many distinct items in one order.' });
     return;
   }
 
@@ -46,7 +44,7 @@ module.exports = async (req, res) => {
     const qty = Math.max(1, Math.min(99, Math.floor(Number(item && item.qty)) || 1));
     const product = key ? catalog[key] : null;
     if (!product || !product.priceId) {
-      res.status(400).json({ error: `"${key || 'One of the items'}" isn’t available for purchase right now.` });
+      sendJson(res, 400, { error: `"${key || 'One of the items'}" isn’t available for purchase right now.` });
       return;
     }
     line_items.push({ price: product.priceId, quantity: qty });
@@ -63,9 +61,9 @@ module.exports = async (req, res) => {
       customer_creation: 'always',
       billing_address_collection: 'auto'
     });
-    res.status(200).json({ url: session.url });
+    sendJson(res, 200, { url: session.url });
   } catch (err) {
     console.error('create-checkout-session error:', err);
-    res.status(500).json({ error: 'Could not start checkout — please try again in a moment.' });
+    sendJson(res, 500, { error: 'Could not start checkout — please try again in a moment.' });
   }
 };

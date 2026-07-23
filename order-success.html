@@ -155,7 +155,7 @@ if (sessionId) {
       const sub = document.createElement('p');
       sub.style.color = 'var(--dim)';
       sub.style.marginTop = '10px';
-      sub.textContent = 'Your license key' + (data.products.length > 1 ? 's are' : ' is') + ' below — bookmark this page or save it somewhere safe.';
+      sub.textContent = 'Your license key' + (data.products.length > 1 ? 's are' : ' is') + ' below, and we’ve also emailed' + (data.email ? ' ' + data.email : ' you') + ' a copy with your download link' + (data.products.length > 1 ? 's' : '') + ' — just in case.';
       contentEl.appendChild(sub);
       (data.products || []).forEach(p => contentEl.appendChild(renderProductCard(p)));
       if (!data.products || !data.products.length) {

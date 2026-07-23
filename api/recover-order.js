@@ -6,31 +6,30 @@
    system needed. Uses only Stripe's standard Customer + Checkout
    Session list endpoints (both created automatically at checkout
    via customer_creation: 'always'), so there's nothing separate
-   to keep in sync.
+   to keep in sync. Mainly a backup for the automatic email —
+   see api/stripe-webhook.js.
    ========================================================= */
 const Stripe = require('stripe');
 const catalog = require('./_lib/catalog');
 const { generateLicenseKey } = require('./_lib/license');
+const { parseJsonBody, sendJson } = require('./_lib/http');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed.' });
+    sendJson(res, 405, { error: 'Method not allowed.' });
     return;
   }
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    res.status(500).json({ error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
+    sendJson(res, 500, { error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
     return;
   }
   const stripe = new Stripe(secretKey);
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch (err) { body = {}; }
-  }
+  const body = await parseJsonBody(req);
   const email = body && typeof body.email === 'string' ? body.email.trim() : '';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    res.status(400).json({ error: 'Enter a valid email address.' });
+    sendJson(res, 400, { error: 'Enter a valid email address.' });
     return;
   }
 
@@ -60,9 +59,9 @@ module.exports = async (req, res) => {
         if (products.length) orders.push({ sessionId: session.id, products });
       }
     }
-    res.status(200).json({ orders });
+    sendJson(res, 200, { orders });
   } catch (err) {
     console.error('recover-order error:', err);
-    res.status(500).json({ error: 'Could not look up your orders — please try again in a moment.' });
+    sendJson(res, 500, { error: 'Could not look up your orders — please try again in a moment.' });
   }
 };

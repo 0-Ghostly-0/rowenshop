@@ -5,22 +5,28 @@
    the Checkout Session with Stripe directly (never trusts the
    redirect alone — a URL can be visited without paying), and
    only then returns a license key + download link per product.
+
+   Note: this is a convenience for showing the key on-screen right
+   away. The email sent from api/stripe-webhook.js is the delivery
+   that doesn't depend on the customer ever loading this page.
    ========================================================= */
 const Stripe = require('stripe');
 const catalog = require('./_lib/catalog');
 const { generateLicenseKey } = require('./_lib/license');
+const { parseQuery, sendJson } = require('./_lib/http');
 
 module.exports = async (req, res) => {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    res.status(500).json({ error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
+    sendJson(res, 500, { error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
     return;
   }
   const stripe = new Stripe(secretKey);
 
-  const sessionId = req.query && req.query.session_id;
-  if (!sessionId || typeof sessionId !== 'string') {
-    res.status(400).json({ error: 'Missing session_id.' });
+  const query = parseQuery(req);
+  const sessionId = query.session_id;
+  if (!sessionId) {
+    sendJson(res, 400, { error: 'Missing session_id.' });
     return;
   }
 
@@ -29,7 +35,7 @@ module.exports = async (req, res) => {
       expand: ['line_items.data.price']
     });
     if (session.payment_status !== 'paid') {
-      res.status(402).json({ error: 'This order hasn’t completed payment yet.' });
+      sendJson(res, 402, { error: 'This order hasn’t completed payment yet.' });
       return;
     }
     const products = [];
@@ -45,12 +51,12 @@ module.exports = async (req, res) => {
         downloadUrl: product.downloadUrl
       });
     }
-    res.status(200).json({
+    sendJson(res, 200, {
       email: (session.customer_details && session.customer_details.email) || null,
       products
     });
   } catch (err) {
     console.error('order-status error:', err);
-    res.status(404).json({ error: 'Order not found.' });
+    sendJson(res, 404, { error: 'Order not found.' });
   }
 };
