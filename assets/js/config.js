@@ -313,24 +313,24 @@ const SITE_CONFIG = {
      readable in the browser. See the README for exactly how to wire
      a new product's download up once it's ready. */
   vsts: [
-    // {
-    //   key: "vocal-polish",
-    //   name: "Rowen Vocal Polish",
-    //   tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
-    //   description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
-    //   features: [
-    //     "One main knob — Polish — plus Clarity, Smooth, Space & Width",
-    //     "10 factory presets, from a light touch-up to the full treatment",
-    //     "VST3, Windows — AU planned for a later phase"
-    //   ],
-    //   images: [
-    //     "assets/vsts/vocal-polish/screenshot-1.webp",
-    //     "assets/vsts/vocal-polish/screenshot-2.webp"
-    //   ],
-    //   price: 49,
-    //   priceId: "price_xxxxxxxxxxxxx",
-    //   badge: "New"
-    // }
+     {
+       key: "vocal-polish",
+       name: "Rowen Vocal Polish",
+       tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
+       description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
+       features: [
+         "One main knob — Polish — plus Clarity, Smooth, Space & Width",
+         "10 factory presets, from a light touch-up to the full treatment",
+         "VST3, Windows — AU planned for a later phase"
+       ],
+       images: [
+         "assets/vsts/vocal-polish/screenshot-1.webp",
+         "assets/vsts/vocal-polish/screenshot-2.webp"
+       ],
+       price: 25,
+       priceId: "price_1TwNucLkl1wjSsm07HPhwqjt",
+       badge: "New"
+     }
   ],
 
   /* ---------- reviews ----------
