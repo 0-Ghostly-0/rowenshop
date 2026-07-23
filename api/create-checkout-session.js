@@ -74,7 +74,7 @@ module.exports = async function handler(req, res) {
 
   if (!process.env.STRIPE_SECRET_KEY) {
     console.error('create-checkout-session: STRIPE_SECRET_KEY is not set in this environment.');
-    return sendJson(res, 500, { error: 'Checkout is not configured yet.' });
+    sendJson(res, 500, { error: "Checkout isn't configured yet — missing STRIPE_SECRET_KEY." });
   }
 
   let body;
