@@ -328,7 +328,7 @@ const SITE_CONFIG = {
          "assets/vsts/vocal-polish/screenshot-2.webp"
        ],
        price: 25,
-       priceId: "price_1TwNucLkl1wjSsm07HPhwqjt",
+       priceId: "price_1TwTBOL5jHly4mj0pEsXIVpO",
        badge: "New"
      }
   ],
