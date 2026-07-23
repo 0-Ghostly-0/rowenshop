@@ -22,3 +22,4 @@ module.exports = {
   priceId: 'price_1TwNucLkl1wjSsm07HPhwqjt',
   downloadUrl: 'https://sqq3du9z1jhiaayr.public.blob.vercel-storage.com/Rowen-Vocal-Polish-Installer%20PRO.zip'
 }
+};
