@@ -80,6 +80,38 @@ Everything below can be done straight from **github.com** in your browser — no
    `bpm`, `key`, `tags`, and `cover` are all optional — leave any of them out and that part just doesn't show. Leaving `stripeLink` blank turns the card's button into "Ask on Discord" instead of "Buy," so it's safe to add a beat before its payment link exists. Standing default: all beats are listed at **$12** unless you decide otherwise for a specific one.
 4. Commit. The "coming soon" panel on the Beats page disappears automatically the moment there's at least one entry, and your new beat shows up with a working preview player and Buy button.
 
+### Hosting other producers' beats
+You can list a beat made by another producer and automatically split each sale with them, using Stripe Connect — no code or backend needed, just an extra step or two per producer/beat on top of the normal "Adding a new beat" flow above. **On this site, you (Rowen) are always the merchant of record and you handle any refunds/disputes yourself**, same as every other sale — the producer never needs their own storefront or support process.
+
+**One-time setup:**
+1. In your Stripe Dashboard, go to Connect and register as a platform (a short profile form — what your business does). This only needs to happen once, ever.
+2. Under Connect settings → branding, set your business name/icon/color so producer onboarding and checkout pages look consistent with your site.
+
+**Onboarding a new producer (once per producer):**
+1. Dashboard → Connect → Connected accounts → **+Create** → choose **Express** as the account type and their country.
+2. Stripe generates a one-time onboarding link — send it to the producer privately (DM/email, never post it publicly). It expires in 90 days and only works once.
+3. They complete Stripe's own onboarding (identity + bank account) directly with Stripe — you never see or handle that information yourself.
+4. Once they're done, their account appears in your Connected accounts list and you're ready to list their beats.
+
+**Listing one of their beats (per beat, same rhythm as "Adding a new beat" above):**
+1. Upload the audio file the same way as usual.
+2. Create the Payment Link the same way, but before finishing: under Advanced options → After payment, check **"Split the payment with a connected account"** and select that producer's account. Leave **"Make payment on behalf of selected account"** unchecked (this keeps your business as the merchant of record, matching the choice above).
+3. Enter your cut as a flat dollar amount — the no-code version of Payment Links takes a fixed amount per sale rather than a live percentage, so do that math once against the beat's price (e.g. $6 on a $20 beat for a 30% cut).
+4. Add the entry to `config.js` exactly as before, plus a `producer` field:
+   ```js
+   {
+     title: "Neon Skyline",
+     price: 20,
+     audio: "assets/beats/neon-skyline.mp3",
+     stripeLink: "https://buy.stripe.com/xxxxxxxx",
+     producer: { name: "Jordan", link: "https://instagram.com/jordanbeats" }
+   },
+   ```
+   `producer.link` is optional — leave it out and the card just shows plain text ("Produced by Jordan") instead of a clickable name.
+5. Commit. The card shows "Produced by ___" under the title, and Stripe automatically routes the producer's share to them and keeps your cut on every sale — nothing else to track manually.
+
+A couple of things worth keeping in mind: you're vouching for every producer you onboard (Stripe holds your platform responsible for vetting against fraud, and for covering a producer's balance if it ever goes negative from a refund after they've been paid out), and it's worth having a quick, even informal, understanding with each producer confirming the beat is actually theirs to sell and that they're okay with the revenue split before you list anything.
+
 ### Approving a submitted review
 Reviews never publish themselves — when a client uses the form on the Reviews page (`#reviews`), it just sends you a message the same way a commission request does (labeled "New Review Submission" so it's easy to spot in your inbox, or in a separate Formspree form if you set `reviewsFormspreeId` — see the comment above that field in `config.js`). Nothing appears on the site until you add it yourself:
 1. Read the submission and decide if you want to publish it. Skip this step entirely for any you don't.

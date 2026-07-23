@@ -337,6 +337,26 @@ function buildBeatCard(beat){
   title.textContent = beat.title || 'Untitled Beat';
   card.appendChild(title);
 
+  // Credits the original producer for beats hosted on behalf of someone
+  // else — omitted entirely for beats Rowen made, so nothing changes for
+  // the existing catalog. Built with textContent/append (not innerHTML)
+  // so a producer's name or link text can never be interpreted as markup.
+  if (beat.producer && beat.producer.name) {
+    const credit = document.createElement('div');
+    credit.className = 'beat-producer';
+    if (beat.producer.link) {
+      const link = document.createElement('a');
+      link.href = beat.producer.link;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = beat.producer.name;
+      credit.append('Produced by ', link);
+    } else {
+      credit.textContent = `Produced by ${beat.producer.name}`;
+    }
+    card.appendChild(credit);
+  }
+
   const metaBits = [];
   if (beat.bpm) metaBits.push(`${beat.bpm} BPM`);
   if (beat.key) metaBits.push(beat.key);

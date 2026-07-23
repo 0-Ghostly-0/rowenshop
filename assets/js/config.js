@@ -256,7 +256,18 @@ const SITE_CONFIG = {
        stripeLink  - fixed-price Stripe Payment Link for this exact
                      beat (NOT the customer-chooses-price one used for
                      deposits) — leave blank and the button becomes
-                     "Ask on Discord" instead of "Buy" until it's set */
+                     "Ask on Discord" instead of "Buy" until it's set
+       producer    - optional. Leave this out entirely for beats you
+                     made yourself — nothing changes for those. For a
+                     beat you're hosting on behalf of another producer,
+                     set this to { name, link } (link is optional — their
+                     Instagram/Discord/website) and the card credits them
+                     as "Produced by ___" under the title. Their cut is
+                     handled by Stripe when you create THEIR stripeLink
+                     above (a Connect payment link that splits the sale
+                     with their connected account) — see the README
+                     section "Hosting other producers' beats" for the
+                     full walkthrough. */
   beats: [
     // {
     //   title: "Midnight Drive",
@@ -266,7 +277,8 @@ const SITE_CONFIG = {
     //   price: 12,
     //   audio: "assets/beats/midnight-drive.mp3",
     //   cover: "assets/beats/midnight-drive-cover.jpg",
-    //   stripeLink: "https://buy.stripe.com/xxxxxxxx"
+    //   stripeLink: "https://buy.stripe.com/xxxxxxxx",
+    //   producer: { name: "Jordan", link: "https://instagram.com/jordanbeats" }
     // }
   ],
 
@@ -311,7 +323,7 @@ const SITE_CONFIG = {
         { h: "Overview", p: "These Terms of Service (“Terms”) govern any commission or purchase made through rowen.work (“the Site”), operated by Rowen (“I”, “me”). By submitting a project request or making a payment, you agree to these Terms." },
         { h: "Eligibility", p: "By submitting a project request or making a payment, you confirm that you're legally able to enter into this agreement, or that you have permission from a parent or legal guardian to do so." },
         { h: "Commission scope", p: "Each project is scoped individually based on the brief you submit and the quote I send back. Work outside the agreed scope (extra concepts, unrelated revisions, additional deliverables) may be quoted separately." },
-        { h: "Ownership & licensing", p: "Upon full payment, you receive an exclusive, worldwide license to use the final delivered files for the purpose described in your brief, including commercial use, unless otherwise agreed in writing. Beat purchases are licensed differently — see the Refund & Cancellation Policy. I retain the right to display finished work in my portfolio unless you request otherwise in your brief. (See the Commission Policy for cover art crediting guidelines.)" },
+        { h: "Ownership & licensing", p: "Upon full payment, you receive an exclusive, worldwide license to use the final delivered files for the purpose described in your brief, including commercial use, unless otherwise agreed in writing. Beat purchases are licensed differently — see the Refund & Cancellation Policy. Some beats are made by other producers and hosted here with their permission; for those, I grant that license on the producer's behalf, and I'm still your point of contact for it. I retain the right to display finished work in my portfolio unless you request otherwise in your brief. (See the Commission Policy for cover art crediting guidelines.)" },
         { h: "Drafts & previews", p: "Preliminary concepts, drafts, sketches, and watermarked previews remain my intellectual property until full payment has been received. They aren't licensed for use, publication, or distribution until the final files have been delivered and paid for in full." },
         { h: "Client responsibilities", p: "You're responsible for making sure any reference material, logos, or text you provide doesn't infringe on someone else's rights. I reserve the right to decline projects that involve hate speech, harassment, or clearly illegal content." },
         { h: "Delays outside my control", p: "I'm not responsible for delays caused by circumstances outside my reasonable control — illness, internet or power outages, platform outages (Discord, Stripe, Formspree, etc.), natural disasters, and similar events. I'll let you know as soon as possible if something like this affects your timeline." },
@@ -328,6 +340,7 @@ const SITE_CONFIG = {
         { h: "Revisions", p: "Each service includes a set number of revision rounds (listed in the pricing section). Revisions must relate to the original brief — new concepts requested after work has started may be quoted as a separate round." },
         { h: "Timelines", p: "Turnaround estimates are based on the current queue at the time of your quote and are not guaranteed delivery dates. I'll flag it as early as possible if something is going to run long, including for delays outside my control (see the Terms of Service)." },
         { h: "Credit for cover art", p: "Using a cover art piece as your actual album/single/EP cover across streaming platforms and social media doesn't require a credit each time. But if you make a post that's focused specifically on the cover art itself — a reveal post, a print, a portfolio or fan-art feature, etc. — please credit me as the designer, either by tagging/mentioning @yoorowen or linking rowen.work." },
+        { h: "Beats from other producers", p: "Some beats in the catalog are made by other producers and hosted here with their permission, splitting each sale with them automatically. That doesn't change anything about buying one — I'm still the seller of record and your point of contact for any question, issue, or refund request, exactly like a beat I made myself. Any beat credited to another producer says so on its card." },
         { h: "What I won't take on", p: "I reserve the right to decline any commission, including (but not limited to) hate symbols, explicit/NSFW content, plagiarized concepts, or anything that infringes on someone else's copyright or trademark." }
       ]
     },
@@ -339,6 +352,7 @@ const SITE_CONFIG = {
         { h: "Review submissions", p: "Reviews are moderated — submitting one doesn't publish it automatically. If I approve your review, your rating, review text, name, and optional project/channel name may be published on the site. Your email is never published; it's only used if I need to follow up with you." },
         { h: "Third-party processors", p: "The order form and review submissions are both processed by Formspree (formspree.io), a third-party form backend. Their privacy policy governs how submissions are transmitted and briefly stored on their end before forwarding to my inbox." },
         { h: "Payment processing", p: "Payments are made directly through Stripe, CashApp, Venmo, or Apple Pay — I never receive or store your card or bank details on this site. Stripe payments happen on Stripe's own secure checkout page, not on rowen.work; CashApp, Venmo, and Apple Pay payments happen directly in those apps. Each provider is governed by its own privacy policy." },
+        { h: "Producer payouts", p: "For beats hosted here on behalf of another producer, Stripe automatically splits your payment between me and that producer. The producer completed their own identity and bank verification directly with Stripe to receive their share — I never see, collect, or store that information myself." },
         { h: "Cookies & third-party content", p: "rowen.work doesn't use cookies, analytics, or advertising trackers. The site loads fonts from Google Fonts, which may receive standard technical information (like your IP address) as part of serving those files — this is normal for any font hosted this way and isn't used to track you. If you follow a link to Discord, Instagram, TikTok, or a payment provider, that site's own cookies and privacy policy apply once you're there." },
         { h: "Data retention", p: "I keep project-related emails and files for up to 24 months after your project is completed, then delete them. You can request earlier deletion of your information at any time by emailing me." },
         { h: "Contact", p: "Questions about this policy can be sent to rowenapichardo@gmail.com." }
@@ -351,7 +365,7 @@ const SITE_CONFIG = {
         { h: "After work starts", p: "Once work has started, the deposit becomes non-refundable, since it covers time already spent on your project. If you're unhappy with the direction, tell me — revisions within scope are included, and I'd rather fix it than keep a refund." },
         { h: "After final delivery", p: "Refunds are not offered after final (unwatermarked) files have been delivered and the remaining balance paid, except in cases where delivered work clearly does not match the agreed brief." },
         { h: "Cancellations by me", p: "If I need to cancel a project (illness, no longer able to take it on, etc.) before delivering final files, you'll receive a full refund of any amount paid." },
-        { h: "Beats", p: "Beat purchases are instant digital downloads and are generally non-refundable once the files have been sent, except in cases of a clear technical issue (e.g. a corrupted or wrong file). Each beat is licensed for your use as described at checkout — it isn't sold exclusively unless we've separately agreed to that in writing." }
+        { h: "Beats", p: "Beat purchases are instant digital downloads and are generally non-refundable once the files have been sent, except in cases of a clear technical issue (e.g. a corrupted or wrong file). Each beat is licensed for your use as described at checkout — it isn't sold exclusively unless we've separately agreed to that in writing. This applies the same way whether I made the beat myself or I'm hosting it on behalf of another producer — either way, refund requests go through me, not the producer." }
       ]
     }
   }

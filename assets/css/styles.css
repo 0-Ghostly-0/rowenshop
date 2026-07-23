@@ -434,6 +434,28 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 .coming-soon h3{font-size:20px;font-weight:500;}
 .coming-soon p{color:var(--dim);font-size:14.5px;max-width:400px;line-height:1.6;}
 
+/* ---------- VST product teaser ---------- */
+.vst-teaser{
+  margin-top:44px;border:1px solid var(--line);border-radius:16px;background:var(--card);
+  padding:36px 32px;
+}
+.vst-teaser-top{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.vst-teaser-top .service-icon{
+  width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line-strong);color:var(--white);flex:0 0 auto;
+}
+.vst-teaser-badge{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--accent-dim);background:rgba(255,43,131,.06);
+  border-radius:100px;padding:5px 14px;
+}
+.vst-teaser h3{font-size:24px;font-weight:500;margin-bottom:10px;}
+.vst-teaser-desc{color:var(--dim);font-size:15px;line-height:1.7;max-width:560px;margin-bottom:20px;}
+.vst-teaser-desc b{color:var(--white);font-weight:500;}
+.vst-feature-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px;max-width:520px;}
+.vst-feature-list li{font-size:13.5px;color:var(--dim);line-height:1.5;display:flex;gap:8px;}
+.vst-feature-list li::before{content:'—';color:var(--dimmer);flex:0 0 auto;}
+
 /* ---------- beats catalog ---------- */
 .beats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px;}
 @media (max-width:960px){.beats-grid{grid-template-columns:repeat(2,1fr);}}
@@ -450,6 +472,9 @@ nav{display:flex;align-items:center;justify-content:space-between;}
 }
 .beat-cover img{width:100%;height:100%;object-fit:cover;}
 .beat-title{font-size:16px;}
+.beat-producer{font-size:11.5px;color:var(--dimmer);margin-top:-6px;}
+.beat-producer a{color:var(--dim);text-decoration:underline;text-underline-offset:2px;transition:color .2s;}
+.beat-producer a:hover{color:var(--white);}
 .beat-meta{display:flex;gap:8px;flex-wrap:wrap;}
 .beat-tag{
   font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
