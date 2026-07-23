@@ -1,0 +1,42 @@
+# Builds the Windows VST3 (and installer) automatically on GitHub's servers.
+# Same proven pipeline as Rowen Vocal Polish: every push produces downloadable
+# artifacts under the Actions tab.
+name: Build Windows VST3
+
+on:
+  push:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Configure (downloads JUCE automatically)
+        run: cmake -B build -A x64
+
+      - name: Build (Release)
+        run: cmake --build build --config Release
+
+      - name: Run the core tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Upload the VST3
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rowen-Fragment-VST3
+          path: build/RowenFragment_artefacts/Release/VST3/
+          if-no-files-found: error
+
+      - name: Build the installer
+        shell: pwsh
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\installer.iss'
+
+      - name: Upload the installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rowen-Fragment-Installer
+          path: installer/Output/*.exe
+          if-no-files-found: error
