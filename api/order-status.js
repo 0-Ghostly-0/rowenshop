@@ -18,7 +18,7 @@ const { parseQuery, sendJson } = require('./_lib/http');
 module.exports = async (req, res) => {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    sendJson(res, 500, { error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
+    sendJson(res, 500, { error: "Order lookup isn't configured yet — missing STRIPE_SECRET_KEY." });
     return;
   }
   const stripe = new Stripe(secretKey);
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
       expand: ['line_items.data.price']
     });
     if (session.payment_status !== 'paid') {
-      sendJson(res, 402, { error: 'This order hasn’t completed payment yet.' });
+      sendJson(res, 402, { error: "This order hasn't completed payment yet." });
       return;
     }
     const products = [];
