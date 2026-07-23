@@ -467,6 +467,307 @@ function renderBeats(){
 }
 renderBeats();
 
+/* =========================================================
+   VSTS — plugin catalog + cart + Stripe checkout
+   Reads from CFG.vsts (see config.js). Empty array keeps the
+   "in development" teaser visible; a non-empty array switches
+   the page to a real product grid with a cart and checkout,
+   same empty/real-catalog pattern as beats above.
+   ========================================================= */
+const VST_BY_KEY = {};
+(CFG.vsts || []).forEach(v => { VST_BY_KEY[v.key] = v; });
+
+function formatUSD(n){
+  return `$${Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+}
+
+function buildVstCard(v, index){
+  const card = document.createElement('div');
+  card.className = 'vst-card';
+
+  const cover = document.createElement('div');
+  cover.className = 'vst-card-cover';
+  if (v.images && v.images[0]) {
+    const img = document.createElement('img');
+    img.src = v.images[0]; img.alt = ''; img.loading = 'lazy';
+    cover.appendChild(img);
+  } else {
+    cover.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M9 15h.01M15 9h.01M15 15h.01"/></svg>';
+  }
+  if (v.badge) {
+    const badge = document.createElement('span');
+    badge.className = 'vst-card-badge';
+    badge.textContent = v.badge;
+    cover.appendChild(badge);
+  }
+  cover.addEventListener('click', () => openVstModal(v));
+  card.appendChild(cover);
+
+  const body = document.createElement('div');
+  body.className = 'vst-card-body';
+
+  const title = document.createElement('h3');
+  title.className = 'vst-card-title';
+  title.textContent = v.name || 'Untitled Plugin';
+  title.addEventListener('click', () => openVstModal(v));
+  body.appendChild(title);
+
+  const tagline = document.createElement('p');
+  tagline.className = 'vst-card-tagline';
+  tagline.textContent = v.tagline || '';
+  body.appendChild(tagline);
+
+  const foot = document.createElement('div');
+  foot.className = 'vst-card-foot';
+  const price = document.createElement('span');
+  price.className = 'vst-card-price';
+  price.textContent = v.price != null ? formatUSD(v.price) : '';
+  foot.appendChild(price);
+
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'btn solid small';
+  addBtn.innerHTML = '<span>Add to Cart</span>';
+  addBtn.addEventListener('click', () => {
+    RowenCart.addItem(v.key, 1);
+    showToast(`Added "${v.name}" to your cart`);
+  });
+  foot.appendChild(addBtn);
+
+  body.appendChild(foot);
+  card.appendChild(body);
+  return card;
+}
+
+function renderVstCatalog(){
+  const teaserEl = document.getElementById('vstTeaser');
+  const gridEl = document.getElementById('vstGrid');
+  if (!teaserEl || !gridEl) return;
+  const vsts = CFG.vsts || [];
+  if (!vsts.length) {
+    teaserEl.hidden = false;
+    gridEl.hidden = true;
+    return;
+  }
+  teaserEl.hidden = true;
+  gridEl.hidden = false;
+  gridEl.innerHTML = '';
+  vsts.forEach((v,i) => gridEl.appendChild(buildVstCard(v,i)));
+}
+renderVstCatalog();
+
+/* ---------- VST product detail modal ---------- */
+const vstModal = document.getElementById('vstModal');
+const vstModalBadge = document.getElementById('vstModalBadge');
+const vstModalTitle = document.getElementById('vstModalTitle');
+const vstModalTagline = document.getElementById('vstModalTagline');
+const vstModalGalleryMain = document.getElementById('vstModalGalleryMain');
+const vstModalGalleryThumbs = document.getElementById('vstModalGalleryThumbs');
+const vstModalPrice = document.getElementById('vstModalPrice');
+const vstModalDesc = document.getElementById('vstModalDesc');
+const vstModalFeatures = document.getElementById('vstModalFeatures');
+const vstModalQty = document.getElementById('vstModalQty');
+const vstModalAddToCart = document.getElementById('vstModalAddToCart');
+let currentVstModalItem = null;
+let currentVstModalQty = 1;
+
+function setVstModalMainImage(src){
+  if (!vstModalGalleryMain) return;
+  vstModalGalleryMain.innerHTML = src ? `<img src="${src}" alt="">` : '';
+  vstModalGalleryThumbs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.src === src));
+}
+
+function openVstModal(v){
+  if (!vstModal) return;
+  currentVstModalItem = v;
+  currentVstModalQty = 1;
+  if (vstModalQty) vstModalQty.textContent = '1';
+  if (vstModalBadge) vstModalBadge.textContent = v.badge || '';
+  if (vstModalTitle) vstModalTitle.textContent = v.name || 'Untitled Plugin';
+  if (vstModalTagline) vstModalTagline.textContent = v.tagline || '';
+  if (vstModalPrice) vstModalPrice.textContent = v.price != null ? formatUSD(v.price) : '';
+  if (vstModalDesc) { vstModalDesc.textContent = v.description || ''; vstModalDesc.hidden = !v.description; }
+  if (vstModalFeatures) {
+    vstModalFeatures.innerHTML = '';
+    (v.features || []).forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      vstModalFeatures.appendChild(li);
+    });
+  }
+  const images = v.images && v.images.length ? v.images : [];
+  setVstModalMainImage(images[0]);
+  if (vstModalGalleryThumbs) {
+    vstModalGalleryThumbs.innerHTML = '';
+    vstModalGalleryThumbs.hidden = images.length < 2;
+    images.forEach(src => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.src = src;
+      btn.innerHTML = `<img src="${src}" alt="">`;
+      btn.addEventListener('click', () => setVstModalMainImage(src));
+      vstModalGalleryThumbs.appendChild(btn);
+    });
+    setVstModalMainImage(images[0]);
+  }
+  openModal(vstModal);
+}
+wireModalDismiss(vstModal, 'vstModalBg', 'vstModalClose');
+
+document.querySelectorAll('#vstModalQtyStepper [data-qty-down]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentVstModalQty = Math.max(1, currentVstModalQty - 1);
+    if (vstModalQty) vstModalQty.textContent = String(currentVstModalQty);
+  });
+});
+document.querySelectorAll('#vstModalQtyStepper [data-qty-up]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentVstModalQty = Math.min(99, currentVstModalQty + 1);
+    if (vstModalQty) vstModalQty.textContent = String(currentVstModalQty);
+  });
+});
+if (vstModalAddToCart) {
+  vstModalAddToCart.addEventListener('click', () => {
+    if (!currentVstModalItem) return;
+    RowenCart.addItem(currentVstModalItem.key, currentVstModalQty);
+    showToast(`Added "${currentVstModalItem.name}" to your cart`);
+    closeModal(vstModal);
+  });
+}
+
+/* ---------- cart badge + drawer ---------- */
+const cartDrawer = document.getElementById('cartDrawer');
+const cartDrawerItems = document.getElementById('cartDrawerItems');
+const cartDrawerEmpty = document.getElementById('cartDrawerEmpty');
+const cartDrawerFoot = document.getElementById('cartDrawerFoot');
+const cartSubtotalEl = document.getElementById('cartSubtotal');
+const cartCheckoutBtn = document.getElementById('cartCheckoutBtn');
+const cartCheckoutText = document.getElementById('cartCheckoutText');
+const cartCheckoutError = document.getElementById('cartCheckoutError');
+
+function updateCartBadges(){
+  const count = RowenCart.getCount();
+  ['cartBadge','cartBadgeMobile'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.dataset.count = String(count);
+    el.textContent = count > 0 ? String(count) : '';
+  });
+}
+
+function buildCartItemRow(entry){
+  const v = VST_BY_KEY[entry.key];
+  if (!v) return null; // product no longer in the catalog — skip gracefully
+  const row = document.createElement('div');
+  row.className = 'cart-item';
+
+  const cover = document.createElement('div');
+  cover.className = 'cart-item-cover';
+  if (v.images && v.images[0]) {
+    const img = document.createElement('img');
+    img.src = v.images[0]; img.alt = '';
+    cover.appendChild(img);
+  }
+  row.appendChild(cover);
+
+  const info = document.createElement('div');
+  info.className = 'cart-item-info';
+  const name = document.createElement('div');
+  name.className = 'cart-item-name';
+  name.textContent = v.name;
+  info.appendChild(name);
+  const price = document.createElement('div');
+  price.className = 'cart-item-price';
+  price.textContent = `${formatUSD(v.price)} × ${entry.qty}`;
+  info.appendChild(price);
+  row.appendChild(info);
+
+  const stepper = document.createElement('div');
+  stepper.className = 'qty-stepper';
+  const down = document.createElement('button');
+  down.type = 'button'; down.textContent = '−'; down.setAttribute('aria-label', `Decrease quantity of ${v.name}`);
+  down.addEventListener('click', () => RowenCart.setQty(entry.key, entry.qty - 1));
+  const qtySpan = document.createElement('span');
+  qtySpan.textContent = String(entry.qty);
+  const up = document.createElement('button');
+  up.type = 'button'; up.textContent = '+'; up.setAttribute('aria-label', `Increase quantity of ${v.name}`);
+  up.addEventListener('click', () => RowenCart.setQty(entry.key, entry.qty + 1));
+  stepper.append(down, qtySpan, up);
+  row.appendChild(stepper);
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'cart-item-remove';
+  removeBtn.setAttribute('aria-label', `Remove ${v.name} from cart`);
+  removeBtn.innerHTML = '✕';
+  removeBtn.addEventListener('click', () => RowenCart.removeItem(entry.key));
+  row.appendChild(removeBtn);
+
+  return row;
+}
+
+function renderCartDrawer(){
+  if (!cartDrawerItems) return;
+  const entries = RowenCart.getItems();
+  const rows = entries.map(buildCartItemRow).filter(Boolean);
+  if (!rows.length) {
+    cartDrawerEmpty.hidden = false;
+    cartDrawerItems.hidden = true;
+    cartDrawerFoot.hidden = true;
+    return;
+  }
+  cartDrawerEmpty.hidden = true;
+  cartDrawerItems.hidden = false;
+  cartDrawerFoot.hidden = false;
+  cartDrawerItems.innerHTML = '';
+  rows.forEach(r => cartDrawerItems.appendChild(r));
+  const subtotal = entries.reduce((sum, entry) => {
+    const v = VST_BY_KEY[entry.key];
+    return v ? sum + v.price * entry.qty : sum;
+  }, 0);
+  if (cartSubtotalEl) cartSubtotalEl.textContent = formatUSD(subtotal);
+  if (cartCheckoutError) cartCheckoutError.hidden = true;
+}
+
+RowenCart.subscribe(() => { updateCartBadges(); renderCartDrawer(); });
+updateCartBadges();
+
+['cartTrigger','cartTriggerMobile'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', () => { renderCartDrawer(); openModal(cartDrawer); });
+});
+wireModalDismiss(cartDrawer, 'cartDrawerBg', 'cartDrawerClose');
+
+if (cartCheckoutBtn) {
+  cartCheckoutBtn.addEventListener('click', async () => {
+    const entries = RowenCart.getItems().filter(e => VST_BY_KEY[e.key]);
+    if (!entries.length) return;
+    cartCheckoutBtn.disabled = true;
+    cartCheckoutText.innerHTML = '<span class="spinner" aria-hidden="true"></span> Redirecting…';
+    if (cartCheckoutError) cartCheckoutError.hidden = true;
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: entries.map(e => ({ key: e.key, qty: e.qty })) })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      throw new Error(data.error || 'Checkout could not be started.');
+    } catch (err) {
+      if (cartCheckoutError) {
+        cartCheckoutError.textContent = 'Something went wrong starting checkout — please try again in a moment.';
+        cartCheckoutError.hidden = false;
+      }
+    }
+    cartCheckoutBtn.disabled = false;
+    cartCheckoutText.textContent = 'Checkout';
+  });
+}
+
 /* hero "selected work" strip — first few cover-art pieces */
 const heroStrip = document.getElementById('heroStripTrack');
 if (heroStrip) {

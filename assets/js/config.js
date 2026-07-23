@@ -282,6 +282,57 @@ const SITE_CONFIG = {
     // }
   ],
 
+  /* ---------- VSTs (plugin store) ----------
+     Leave this empty until you have a real plugin ready to sell — the
+     VSTs page shows the "in development" teaser automatically while this
+     array is empty, and switches to a real product catalog (with a cart
+     + checkout) the moment you add an entry. See the README section
+     "Selling a finished VST" for the full walkthrough, including the
+     one-time setup (Vercel environment variables, creating the Stripe
+     Price) you'll need to do first. Each entry:
+       key         - short unique id, e.g. "vocal-polish" — used to match
+                     this product to its Stripe Price server-side. Once
+                     you've listed a product, don't change its key.
+       name        - product name, shown as the card/detail title
+       tagline     - one short line shown under the name
+       description - a paragraph or two for the product detail view
+       features    - array of short strings, shown as a feature list
+       images      - array of screenshot/UI paths for the gallery (first
+                     one is the card's cover image) — this is what makes
+                     it "look like something," so use real screenshots or
+                     renders, not stock art
+       price       - number, shown as "$49" etc.
+       priceId     - the Stripe Price ID (starts "price_...") for this
+                     product's one-time purchase — created in the Stripe
+                     Dashboard or ask me to create it once you're ready.
+                     This is NOT secret, it's fine to expose in this file.
+       badge       - optional small tag, e.g. "New" or "Best seller"
+     Where does the actual installer file live? That's set up
+     server-side (in api/_lib/catalog.js), matched to this same "key" —
+     never in this file, since anything in config.js is publicly
+     readable in the browser. See the README for exactly how to wire
+     a new product's download up once it's ready. */
+  vsts: [
+    // {
+    //   key: "vocal-polish",
+    //   name: "Rowen Vocal Polish",
+    //   tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
+    //   description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
+    //   features: [
+    //     "One main knob — Polish — plus Clarity, Smooth, Space & Width",
+    //     "10 factory presets, from a light touch-up to the full treatment",
+    //     "VST3, Windows — AU planned for a later phase"
+    //   ],
+    //   images: [
+    //     "assets/vsts/vocal-polish/screenshot-1.webp",
+    //     "assets/vsts/vocal-polish/screenshot-2.webp"
+    //   ],
+    //   price: 49,
+    //   priceId: "price_xxxxxxxxxxxxx",
+    //   badge: "New"
+    // }
+  ],
+
   /* ---------- reviews ----------
      Leave this empty until you have real reviews — the "What clients
      say" section on the homepage and the whole Reviews page hide/show

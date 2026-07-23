@@ -11,6 +11,10 @@ Monochrome studio site for Rowen — cover art, YouTube thumbnails, ads, PFPs, b
 - `assets/thumbnails/` — thumbnail portfolio images
 - `assets/beats/` — beat audio files and optional cover art (create this folder when you add your first beat)
 - `assets/brand/` — logo, favicon, background texture
+- `assets/js/cart.js` — the VST store's shopping cart (add/remove/quantity, saved in the visitor's browser)
+- `api/` — small Vercel serverless functions that power the VST store's checkout, license keys, and order recovery (see "Selling a finished VST" below). `api/_lib/catalog.js` is the private, server-only product list — never edit `config.js` expecting it to control checkout, and never put a download URL there.
+- `order-success.html` — the page a customer lands on right after paying for a VST: shows their license key(s) + download link(s), and doubles as a "lost my download" lookup by email
+- `package.json` — the one dependency (`stripe`) the `api/` functions need; Vercel installs it automatically on deploy
 - `robots.txt`, `sitemap.xml` — SEO
 - `favicon.ico`
 
@@ -21,7 +25,7 @@ Monochrome studio site for Rowen — cover art, YouTube thumbnails, ads, PFPs, b
 - **Ads** (`#ads`) — "coming soon" panel until real examples are added
 - **PFPs** (`#pfps`) — "coming soon" panel until real examples are added
 - **Beats** (`#beats`) — beat catalog with preview player + instant Stripe checkout; shows a "coming soon" panel automatically until you add your first entry to `CFG.beats` (see "Adding a new beat" below)
-- **VSTs** (`#vsts`) — "coming soon" placeholder for now — add real content here whenever those are ready (same pattern as Ads/PFPs: build the real page, remove the coming-soon panel)
+- **VSTs** (`#vsts`) — shows an "in development" teaser for now; the moment you add a real entry to `CFG.vsts` it switches to a full product catalog with image galleries, a real shopping cart (multiple plugins in one order), and Stripe checkout — see "Selling a finished VST" below
 - **Reviews** (`#reviews`) — average rating banner + full grid of approved reviews (shows a "no reviews yet" panel until you add the first one), plus a review submission form for clients. Submissions never publish automatically — see "Approving a submitted review" below.
 - **Order** (`#order`) — commission form + business contact section; the "What do you need?" field auto-fills based on which service page you arrived from. The form is a one-question-at-a-time wizard (`assets/js/main.js`, "ORDER FORM — one-question-at-a-time wizard" section): each `.form-step` in `index.html` is a screen, a shared Back/Continue/Send Request bar at the bottom drives navigation, and the second-to-last step explains how payment works before a final review screen. If you ever add or remove a field, add/remove its `.form-step` (or add it to an existing one) and update `renderReviewSummary()` in main.js so the review screen picks it up. Beats/VSTs are sold separately from this form (instant checkout, not a custom quote), so "Ask About a Custom Beat" links to Discord instead.
 
@@ -112,6 +116,47 @@ You can list a beat made by another producer and automatically split each sale w
 
 A couple of things worth keeping in mind: you're vouching for every producer you onboard (Stripe holds your platform responsible for vetting against fraud, and for covering a producer's balance if it ever goes negative from a refund after they've been paid out), and it's worth having a quick, even informal, understanding with each producer confirming the beat is actually theirs to sell and that they're okay with the revenue split before you list anything.
 
+### Selling a finished VST
+When a plugin is actually ready to sell, the VSTs page becomes a real store: image-gallery product cards, a "View" modal with screenshots, an "Add to Cart" that supports buying several plugins in one order, and a Stripe checkout that emails nobody and stores nothing — it verifies payment straight from Stripe and hands over a license key + download link the instant checkout completes. Just send me the word and I'll wire up a specific plugin's listing for you, or do it yourself with the steps below.
+
+**One-time setup (only needed the first time you sell anything here):**
+1. In your Vercel project → Settings → Environment Variables, add:
+   - `STRIPE_SECRET_KEY` — your Stripe **secret** key (starts `sk_live_...` once you're off test mode). This is different from the publishable key and must never appear in `config.js` or any file the browser loads — only in Vercel's environment variable settings, which is why this has to happen in the Vercel dashboard, not in this repo.
+   - `LICENSE_SECRET` — any long random string you make up (e.g. run `openssl rand -hex 32` or just mash the keyboard for 40+ characters). This is what turns a paid order into a license key — treat it like a password, and never reuse the Stripe key for it.
+2. Redeploy after adding those (Vercel → Deployments → redeploy latest), so the `api/` functions can actually see them.
+
+**Listing a real plugin (once per product):**
+1. In your Stripe Dashboard, create a **Product** with a **one-time Price** for it (Products → Add product → One time). Copy the Price ID (starts `price_...`) — NOT a Payment Link this time, since the cart needs an actual Price to build a multi-item checkout.
+2. Decide where the actual installer file (the `.exe`/`.zip`) will live — anywhere with a direct download URL works (Vercel Blob, a GitHub release asset, Dropbox/Google Drive direct link, etc.). This isn't full copy-protection, just gated-behind-payment delivery — the same level most small plugin sellers use — so treat the URL as "not meant to be guessed," not as a secret.
+3. Open `api/_lib/catalog.js` (server-only — never sent to the browser) and add an entry:
+   ```js
+   'vocal-polish': {
+     name: 'Rowen Vocal Polish',
+     priceId: 'price_xxxxxxxxxxxxx',
+     downloadUrl: 'https://example.com/path/to/rowen-vocal-polish-v1.0.0.zip'
+   }
+   ```
+   The key (`'vocal-polish'`) is just a short id you make up — it has to match exactly on both sides.
+4. Open `assets/js/config.js`, find the `vsts:` array (commented-out example right above it), and add the matching public-facing entry — name, tagline, description, `features`, real screenshot paths under `images`, `price`, and the **same** `priceId`, plus the **same** key:
+   ```js
+   {
+     key: "vocal-polish",
+     name: "Rowen Vocal Polish",
+     tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
+     description: "…",
+     features: ["…", "…"],
+     images: ["assets/vsts/vocal-polish/screenshot-1.webp", "assets/vsts/vocal-polish/screenshot-2.webp"],
+     price: 49,
+     priceId: "price_xxxxxxxxxxxxx"
+   }
+   ```
+5. Add the real screenshots/renders to `assets/vsts/<product-key>/` — this is what makes the listing look like an actual product, so use real UI screenshots, not placeholder art.
+6. Commit and push. The VSTs page switches from the teaser to a real catalog automatically.
+
+**How checkout actually works, if you're curious:** "Add to Cart" only ever stores a product key + quantity in the visitor's browser (`assets/js/cart.js`) — never a price. When they check out, `api/create-checkout-session.js` looks up the real Stripe Price for each key from `api/_lib/catalog.js` and creates one Stripe Checkout Session for the whole cart, so nothing the browser sends can change what gets charged. After payment, `order-success.html` calls `api/order-status.js`, which re-confirms the payment directly with Stripe (never just trusts arriving at that page) and generates a license key on the spot — nothing is stored in a database, so there's nothing to lose or leak. If a customer closes that tab before seeing their key, the same page also has a "lost your download?" box where entering their email re-finds any completed order (`api/recover-order.js`).
+
+**Worth knowing:** this is a real backend now, not just static files — the `api/` functions run as Vercel serverless functions, so this needs to actually be deployed on Vercel (not just opened as a local file) for checkout to work at all. If you ever want stronger protection than a gated URL (real license-locking inside the plugin itself, per-seat limits, etc.), that's a bigger follow-up project — ask any time.
+
 ### Approving a submitted review
 Reviews never publish themselves — when a client uses the form on the Reviews page (`#reviews`), it just sends you a message the same way a commission request does (labeled "New Review Submission" so it's easy to spot in your inbox, or in a separate Formspree form if you set `reviewsFormspreeId` — see the comment above that field in `config.js`). Nothing appears on the site until you add it yourself:
 1. Read the submission and decide if you want to publish it. Skip this step entirely for any you don't.
@@ -147,7 +192,7 @@ The button stays hidden automatically if this field is ever emptied out, so it's
 - Opening animation: a short logo intro plays once on every page load, then fades out (respects `prefers-reduced-motion`).
 - Portfolio: filterable by category via the tabs above each portfolio grid; clicking any piece opens an accessible project detail modal (type, client label, tools, description, optional before/after slider where configured).
 - Beats: catalog page with a custom preview player (only one beat plays at a time) and a fixed-price "Buy" button per beat linking to that beat's own Stripe Payment Link; shows a "coming soon" panel automatically until `CFG.beats` has at least one entry.
-- VSTs: placeholder "coming soon" page for now, matching the Ads/PFPs treatment — build out real content here whenever those exist.
+- VSTs: an "in development" teaser for the first plugin (Rowen Vocal Polish) for now. The full store — image-gallery product cards, cart, multi-item Stripe checkout, license keys, gated downloads, lost-download recovery by email — is built and ready; it activates automatically the moment `CFG.vsts` has a real entry. See "Selling a finished VST" above.
 - Reviews: homepage teaser and a dedicated Reviews page both show a prominent average rating banner and the full set of approved reviews; both auto-hide their rating/grid content until `CFG.reviews` has at least one entry. Clients can submit a review via a form on the Reviews page, but nothing publishes automatically — see "Approving a submitted review" above.
 - Policies (Terms of Service, Commission Policy, Privacy Policy, Refund & Cancellation Policy) open as modals from the footer — placeholder text, flagged for legal review before publishing. Refund Policy now also covers beat purchases (instant digital downloads, generally non-refundable once sent).
 
@@ -163,8 +208,9 @@ or just open `index.html` directly in a browser (the file:// protocol works fine
 
 ### Deploy to Vercel
 1. Push this folder to a GitHub repo.
-2. In Vercel, "Add New Project" → import that repo. Framework preset: **Other** (static site) — no build command needed.
-3. Deploy.
+2. In Vercel, "Add New Project" → import that repo. Framework preset: **Other** (static site) — Vercel auto-detects the `api/` folder as serverless functions and runs `npm install` for `package.json` automatically; no build command needed.
+3. If you're planning to sell a VST (now or later), add the `STRIPE_SECRET_KEY` and `LICENSE_SECRET` environment variables under Settings → Environment Variables — see "Selling a finished VST" above for exactly what those are. Safe to skip until you actually list a plugin.
+4. Deploy.
 
 ### Connect rowen.work
 1. In the Vercel project → Settings → Domains → add `rowen.work` (and `www.rowen.work` if you want both).

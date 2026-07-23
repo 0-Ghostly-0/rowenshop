@@ -1,0 +1,12 @@
+{
+  "name": "rowen-work",
+  "private": true,
+  "version": "1.0.0",
+  "description": "rowen.work — static site + Vercel serverless functions (VST store checkout/licensing).",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^17.0.0"
+  }
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Complete — Rowen</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  body{min-height:100vh;display:flex;flex-direction:column;}
+  .order-wrap{max-width:620px;margin:0 auto;padding:120px 24px 80px;flex:1;width:100%;}
+  .order-status-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--line-strong);margin-bottom:22px;}
+  .order-status-icon.success{color:var(--white);background:rgba(255,255,255,.06);}
+  .order-status-icon.error{color:var(--accent);border-color:var(--accent-dim);}
+  .order-product{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:24px 26px;margin-top:18px;}
+  .order-product h3{font-size:17px;margin-bottom:14px;}
+  .license-box{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:100px;padding:10px 8px 10px 18px;margin-bottom:16px;background:var(--black-2);}
+  .license-box code{flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--white);letter-spacing:.03em;overflow-x:auto;white-space:nowrap;}
+  .license-copy{background:none;border:0;color:var(--dim);cursor:pointer;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;flex:0 0 auto;}
+  .license-copy:hover{color:var(--white);}
+  .order-simple-nav{padding:26px 0;}
+  .order-simple-nav .wrap{display:flex;align-items:center;justify-content:center;}
+  .recover-form{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;}
+  .recover-form input{
+    flex:1;min-width:200px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:14.5px;
+    transition:border-color .3s,background .3s;outline:none;
+  }
+  .recover-form input::placeholder{color:var(--dimmer);}
+  .recover-form input:focus{border-color:var(--line-strong);background:#131316;}
+  .order-loading{color:var(--dim);font-size:14.5px;}
+</style>
+</head>
+<body>
+
+<div id="bg-image" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="order-simple-nav">
+  <div class="wrap">
+    <a href="/" class="logo"><img src="assets/brand/logo-wordmark.webp" alt="Rowen" width="96" height="24"><span style="color:var(--dimmer);font-weight:400;">.work</span></a>
+  </div>
+</header>
+
+<main class="order-wrap">
+  <div id="orderContent">
+    <p class="order-loading">Confirming your order…</p>
+  </div>
+
+  <div id="recoverSection" style="margin-top:56px;" hidden>
+    <div class="eyebrow" style="margin-bottom:0;">Lost a download?</div>
+    <h2 style="font-size:24px;margin:14px 0 8px;">Look up a past order</h2>
+    <p style="color:var(--dim);font-size:14px;line-height:1.6;max-width:460px;">Enter the email address you paid with and we'll pull up your license key(s) and download link(s) again.</p>
+    <form class="recover-form" id="recoverForm">
+      <input type="email" id="recoverEmail" placeholder="you@example.com" required aria-label="Email address you paid with">
+      <button type="submit" class="btn solid" id="recoverBtn"><span>Find my order</span></button>
+    </form>
+    <p class="cart-error" id="recoverError" hidden style="margin-top:10px;"></p>
+    <div id="recoverResults" style="margin-top:10px;"></div>
+  </div>
+</main>
+
+<footer style="padding:30px 0;text-align:center;color:var(--dimmer);font-size:12.5px;">
+  <div class="wrap">© <span id="year"></span> Rowen · <a href="/" style="color:var(--dim);">rowen.work</a></div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+
+function renderProductCard(p){
+  const wrap = document.createElement('div');
+  wrap.className = 'order-product';
+  const h3 = document.createElement('h3');
+  h3.textContent = p.name;
+  wrap.appendChild(h3);
+
+  const box = document.createElement('div');
+  box.className = 'license-box';
+  const code = document.createElement('code');
+  code.textContent = p.licenseKey;
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'license-copy';
+  copyBtn.textContent = 'Copy';
+  copyBtn.addEventListener('click', ()=>{
+    navigator.clipboard.writeText(p.licenseKey).then(()=>{
+      copyBtn.textContent = 'Copied';
+      setTimeout(()=> copyBtn.textContent = 'Copy', 1800);
+    }).catch(()=>{});
+  });
+  box.append(code, copyBtn);
+  wrap.appendChild(box);
+
+  const dl = document.createElement('a');
+  dl.href = p.downloadUrl || '#';
+  dl.target = '_blank';
+  dl.rel = 'noopener';
+  dl.className = 'btn solid';
+  dl.style.width = '100%';
+  dl.style.justifyContent = 'center';
+  dl.innerHTML = '<span>Download</span>';
+  if (!p.downloadUrl) {
+    dl.setAttribute('aria-disabled', 'true');
+    dl.addEventListener('click', e => e.preventDefault());
+    dl.querySelector('span').textContent = 'Download link coming soon';
+  }
+  wrap.appendChild(dl);
+  return wrap;
+}
+
+const params = new URLSearchParams(location.search);
+const sessionId = params.get('session_id');
+const contentEl = document.getElementById('orderContent');
+const recoverSection = document.getElementById('recoverSection');
+
+if (sessionId) {
+  fetch('/api/order-status?session_id=' + encodeURIComponent(sessionId))
+    .then(res => res.json().then(data => ({ ok: res.ok, data })))
+    .then(({ ok, data }) => {
+      contentEl.innerHTML = '';
+      if (!ok) {
+        const icon = document.createElement('div');
+        icon.className = 'order-status-icon error';
+        icon.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+        contentEl.appendChild(icon);
+        const h1 = document.createElement('h1');
+        h1.style.fontSize = '28px';
+        h1.textContent = "We couldn't confirm that order";
+        contentEl.appendChild(h1);
+        const p = document.createElement('p');
+        p.style.color = 'var(--dim)';
+        p.style.marginTop = '10px';
+        p.textContent = data.error || 'Please check the link or look up your order by email below.';
+        contentEl.appendChild(p);
+        recoverSection.hidden = false;
+        return;
+      }
+      const icon = document.createElement('div');
+      icon.className = 'order-status-icon success';
+      icon.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg>';
+      contentEl.appendChild(icon);
+      const h1 = document.createElement('h1');
+      h1.style.fontSize = '28px';
+      h1.textContent = 'Thank you — you’re all set.';
+      contentEl.appendChild(h1);
+      const sub = document.createElement('p');
+      sub.style.color = 'var(--dim)';
+      sub.style.marginTop = '10px';
+      sub.textContent = 'Your license key' + (data.products.length > 1 ? 's are' : ' is') + ' below — bookmark this page or save it somewhere safe.';
+      contentEl.appendChild(sub);
+      (data.products || []).forEach(p => contentEl.appendChild(renderProductCard(p)));
+      if (!data.products || !data.products.length) {
+        const note = document.createElement('p');
+        note.style.color = 'var(--dim)';
+        note.style.marginTop = '14px';
+        note.textContent = "We found this order but couldn't match it to a current product listing — get in touch and it'll be sorted out.";
+        contentEl.appendChild(note);
+      }
+    })
+    .catch(() => {
+      contentEl.innerHTML = '<p style="color:var(--dim);">Something went wrong loading this order. Try the lookup below instead.</p>';
+      recoverSection.hidden = false;
+    });
+} else {
+  contentEl.innerHTML = '';
+  const h1 = document.createElement('h1');
+  h1.style.fontSize = '28px';
+  h1.textContent = 'Look up your order';
+  contentEl.appendChild(h1);
+  const p = document.createElement('p');
+  p.style.color = 'var(--dim)';
+  p.style.marginTop = '10px';
+  p.textContent = 'No order was linked to this page directly — use the lookup below.';
+  contentEl.appendChild(p);
+  recoverSection.hidden = false;
+}
+
+const recoverForm = document.getElementById('recoverForm');
+const recoverBtn = document.getElementById('recoverBtn');
+const recoverError = document.getElementById('recoverError');
+const recoverResults = document.getElementById('recoverResults');
+if (recoverForm) {
+  recoverForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('recoverEmail').value.trim();
+    if (!email) return;
+    recoverBtn.disabled = true;
+    recoverError.hidden = true;
+    recoverResults.innerHTML = '<p class="order-loading">Looking that up…</p>';
+    try {
+      const res = await fetch('/api/recover-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json().catch(() => ({}));
+      recoverResults.innerHTML = '';
+      if (!res.ok) {
+        recoverError.textContent = data.error || 'Something went wrong — please try again.';
+        recoverError.hidden = false;
+        return;
+      }
+      const allProducts = (data.orders || []).flatMap(o => o.products);
+      if (!allProducts.length) {
+        recoverResults.innerHTML = '<p style="color:var(--dim);font-size:14px;">No completed orders found for that email.</p>';
+        return;
+      }
+      allProducts.forEach(p => recoverResults.appendChild(renderProductCard(p)));
+    } catch (err) {
+      recoverError.textContent = 'Network error — please try again.';
+      recoverError.hidden = false;
+    }
+    recoverBtn.disabled = false;
+  });
+}
+</script>
+</body>
+</html>
