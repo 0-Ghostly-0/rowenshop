@@ -1,12 +1,9 @@
 {
-  "name": "rowen-work",
+  "name": "rowenshop",
   "private": true,
   "version": "1.0.0",
-  "description": "rowen.work — static site + Vercel serverless functions (VST store checkout/licensing).",
-  "engines": {
-    "node": ">=18"
-  },
+  "description": "rowen.work — static site + Vercel serverless functions for the VST store checkout.",
   "dependencies": {
-    "stripe": "^17.0.0"
+    "stripe": "^17.4.0"
   }
 }
