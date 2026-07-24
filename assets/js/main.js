@@ -450,11 +450,32 @@ function buildBeatCard(beat){
   return card;
 }
 
-function renderBeats(){
+/* Beats come from two places, combined: CFG.beats (hand-added in
+   config.js, per the README "Adding a new beat" section — always
+   works even if the API below fails) plus whatever's been
+   auto-approved through the producer submission form (see
+   api/beats.js, api/approve-beat.js, and the README "Getting beat
+   submissions from producers" section). The fetch is wrapped so a
+   network hiccup, or the automatic-approval env vars not being set
+   up yet, just falls back to CFG.beats alone instead of breaking the
+   page. */
+async function fetchAutoApprovedBeats(){
+  try {
+    const res = await fetch('/api/beats');
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+async function renderBeats(){
   const beatsEmptyEl = document.getElementById('beatsEmpty');
   const beatsGridEl = document.getElementById('beatsGrid');
   if (!beatsEmptyEl || !beatsGridEl) return;
-  const beats = CFG.beats || [];
+  const autoApproved = await fetchAutoApprovedBeats();
+  const beats = [...(CFG.beats || []), ...autoApproved];
   if (!beats.length) {
     beatsEmptyEl.hidden = false;
     beatsGridEl.hidden = true;
@@ -1610,12 +1631,15 @@ function resetReviewSubmitButton(){
 
 /* =========================================================
    PRODUCER BEAT SUBMISSION FORM (Beats page) — lets a producer send
-   over a beat + their info. Like the review form above, this never
-   publishes anything automatically: it lands in the inbox labeled
-   "New Beat Submission," and Rowen adds it by hand (see the README
-   "Hosting other producers' beats" section) after agreeing on details
-   like the revenue split. One beat per submission — a producer with
-   several beats just submits this again for each one.
+   over a beat + their info. Unlike the review form above, this ONE
+   DOES publish automatically — just not instantly and not without a
+   check: submitting uploads the files straight to Blob storage, then
+   sends Rowen a review email with every field plus one-click Approve
+   / Reject links (see api/submit-beat.js, api/approve-beat.js, and
+   the README "Getting beat submissions from producers" section).
+   Approving is the entire "add it to the site" step; nothing needs
+   editing config.js or pushing to GitHub. One beat per submission — a
+   producer with several beats just submits this again for each one.
    ========================================================= */
 const beatSubmitForm = document.getElementById('beatSubmitForm');
 const beatSubmitStatus = document.getElementById('beatSubmitStatus');
@@ -1626,13 +1650,58 @@ const beatSubmitLoadedAt = Date.now();
 const BEAT_FILE_MAX_MB = 15;
 const BEAT_IMAGE_TYPES = ['image/png','image/jpeg','image/webp','image/gif'];
 const BEAT_AUDIO_TYPES = ['audio/mpeg','audio/mp3'];
+const BEAT_MP3_MIN_SECONDS = 30;
+const BEAT_MP3_MAX_SECONDS = 5 * 60 + 30; // 5:30
+// True while getAudioDurationSeconds() is mid-flight for the MP3 field —
+// checked by the submit handler below so a very fast submit right after
+// dropping a file can't sneak past the duration check before it resolves
+// (the check itself is near-instant, but this closes the gap either way).
+let beatMp3DurationCheckPending = false;
+
+function formatSeconds(totalSeconds){
+  const s = Math.round(totalSeconds);
+  const m = Math.floor(s / 60);
+  const rem = s % 60;
+  return `${m}:${String(rem).padStart(2,'0')}`;
+}
+
+/* Reads an audio file's duration without ever uploading it, by loading
+   it into a throwaway <audio> element via an object URL. Rejects if
+   the browser can't determine a duration at all (corrupt file, or a
+   type it can't decode) — treated as invalid, same as a wrong file
+   type, rather than silently letting it through unchecked. */
+function getAudioDurationSeconds(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const audio = new Audio();
+    function cleanup(){
+      audio.removeEventListener('loadedmetadata', onLoaded);
+      audio.removeEventListener('error', onError);
+      URL.revokeObjectURL(url);
+    }
+    function onLoaded(){
+      const duration = audio.duration;
+      cleanup();
+      if (!isFinite(duration) || duration <= 0) reject(new Error('Could not read this file\'s length.'));
+      else resolve(duration);
+    }
+    function onError(){
+      cleanup();
+      reject(new Error('Could not read this file\'s length.'));
+    }
+    audio.addEventListener('loadedmetadata', onLoaded);
+    audio.addEventListener('error', onError);
+    audio.src = url;
+  });
+}
 
 /* Wires a single-file drop zone (used for producer photo, beat cover,
    and the MP3 preview). Simpler than the order form's multi-file
    reference uploader above since each of these only ever holds one
-   file — just validates type/size and swaps the drop-zone text to
-   show the selected filename (or an error, clearing the bad file). */
-function wireSingleFileDrop({ inputId, dropId, textId, types, typeLabel, placeholder }){
+   file — just validates type/size (and, when durationRange is given,
+   audio length) and swaps the drop-zone text to show the selected
+   filename (or an error, clearing the bad file). */
+function wireSingleFileDrop({ inputId, dropId, textId, types, typeLabel, placeholder, durationRange }){
   const input = document.getElementById(inputId);
   const drop = document.getElementById(dropId);
   const text = document.getElementById(textId);
@@ -1648,19 +1717,52 @@ function wireSingleFileDrop({ inputId, dropId, textId, types, typeLabel, placeho
     setFieldError(input, message);
   }
 
-  function applyFile(file){
+  // The duration check is async (reading audio metadata takes a beat),
+  // so a fast double-pick (drop one file, immediately drop another)
+  // could otherwise let an old check's result land after a newer one.
+  // A simple increasing token per call makes any stale check a no-op.
+  let checkToken = 0;
+
+  function reject(file, message){
+    showError(message);
+    input.value = '';
+    text.textContent = placeholder;
+  }
+
+  async function applyFile(file){
+    const myToken = ++checkToken;
     if (!file) { text.textContent = placeholder; showError(''); return; }
     if (!types.includes(file.type)) {
-      showError(`"${file.name}" isn't a supported ${typeLabel} type.`);
-      input.value = '';
-      text.textContent = placeholder;
+      reject(file, `"${file.name}" isn't a supported ${typeLabel} type.`);
       return;
     }
     if (file.size > BEAT_FILE_MAX_MB * 1024 * 1024) {
-      showError(`"${file.name}" is over the ${BEAT_FILE_MAX_MB}MB limit.`);
-      input.value = '';
-      text.textContent = placeholder;
+      reject(file, `"${file.name}" is over the ${BEAT_FILE_MAX_MB}MB limit.`);
       return;
+    }
+    if (durationRange) {
+      showError('');
+      text.textContent = `Checking "${file.name}"…`;
+      beatMp3DurationCheckPending = true;
+      let duration;
+      try {
+        duration = await getAudioDurationSeconds(file);
+      } catch (err) {
+        if (myToken === checkToken) beatMp3DurationCheckPending = false;
+        if (myToken !== checkToken) return; // superseded by a newer pick
+        reject(file, `Couldn't read "${file.name}" — try a different file.`);
+        return;
+      }
+      if (myToken === checkToken) beatMp3DurationCheckPending = false;
+      if (myToken !== checkToken) return; // a newer pick already replaced this one
+      if (duration < durationRange.min) {
+        reject(file, `"${file.name}" is ${formatSeconds(duration)} — previews must be at least ${formatSeconds(durationRange.min)}.`);
+        return;
+      }
+      if (duration > durationRange.max) {
+        reject(file, `"${file.name}" is ${formatSeconds(duration)} — previews must be ${formatSeconds(durationRange.max)} or shorter.`);
+        return;
+      }
     }
     showError('');
     text.textContent = file.name;
@@ -1693,7 +1795,8 @@ if (beatSubmitForm) {
   wireSingleFileDrop({
     inputId: 'beatMp3', dropId: 'beatMp3Drop', textId: 'beatMp3Text',
     types: BEAT_AUDIO_TYPES, typeLabel: 'MP3',
-    placeholder: 'Drop an MP3 here or click to browse'
+    placeholder: 'Drop an MP3 here or click to browse',
+    durationRange: { min: BEAT_MP3_MIN_SECONDS, max: BEAT_MP3_MAX_SECONDS }
   });
 }
 
@@ -1712,19 +1815,27 @@ function setBeatLicenseError(message){
 /* Same two-part pattern as validateReviewForm above: run the generic
    required-field validator first, then check the license checkbox
    group separately since "at least one of several checkboxes" isn't
-   something validateStep's single-field logic covers. */
-function validateBeatSubmitForm(){
+   something validateStep's single-field logic covers. Used both as
+   the per-step check (scoped to just that step, below) and as a final
+   whole-form safety net on submit. */
+function validateBeatSubmitForm(container){
   if (!beatSubmitForm) return null;
-  const textInvalid = validateStep(beatSubmitForm);
-  const licenseChecked = beatSubmitForm.querySelector('input[name="license"]:checked');
-  let licenseInvalid = null;
-  if (!licenseChecked) {
-    setBeatLicenseError('Pick at least one license type.');
-    licenseInvalid = beatSubmitForm.querySelector('input[name="license"]');
-  } else {
+  const scope = container || beatSubmitForm;
+  const textInvalid = validateStep(scope);
+  if (textInvalid) return textInvalid;
+  // Only check the license group if it's actually within the scope being
+  // validated (so validating a single early step doesn't wrongly flag a
+  // later step's license checkboxes).
+  const licenseField = document.getElementById('beatLicenseField');
+  if (licenseField && scope.contains(licenseField)) {
+    const licenseChecked = beatSubmitForm.querySelector('input[name="license"]:checked');
+    if (!licenseChecked) {
+      setBeatLicenseError('Pick at least one license type.');
+      return beatSubmitForm.querySelector('input[name="license"]');
+    }
     setBeatLicenseError('');
   }
-  return textInvalid || licenseInvalid;
+  return null;
 }
 
 if (beatSubmitForm) {
@@ -1739,75 +1850,198 @@ if (beatSubmitForm) {
     f.addEventListener('input', ()=>setFieldError(f, ''));
     f.addEventListener('change', ()=>setFieldError(f, ''));
   });
+}
 
+/* =========================================================
+   BEAT SUBMISSION FORM — same one-question-at-a-time wizard as the
+   order form above (see ORDER FORM — one-question-at-a-time wizard),
+   just wired to its own set of elements/ids so the two forms don't
+   interfere with each other.
+   ========================================================= */
+const beatFormSteps = beatSubmitForm ? Array.from(beatSubmitForm.querySelectorAll('#beatFormSteps .form-step')) : [];
+const BEAT_TOTAL_STEPS = beatFormSteps.length;
+const BEAT_REVIEW_STEP_INDEX = BEAT_TOTAL_STEPS - 1;
+let beatCurrentStep = 0;
+const beatStepBackBtn = document.getElementById('beatStepBack');
+const beatStepNextBtn = document.getElementById('beatStepNext');
+const beatFormProgressFill = document.getElementById('beatFormProgressFill');
+const beatFormStepCount = document.getElementById('beatFormStepCount');
+
+function goToBeatStep(index, opts){
+  if (!beatFormSteps.length) return;
+  opts = opts || {};
+  beatCurrentStep = Math.max(0, Math.min(index, BEAT_TOTAL_STEPS - 1));
+  beatFormSteps.forEach((el,i)=> el.classList.toggle('active', i === beatCurrentStep));
+  const isReview = beatCurrentStep === BEAT_REVIEW_STEP_INDEX;
+  if (beatStepBackBtn) beatStepBackBtn.hidden = beatCurrentStep === 0;
+  if (beatStepNextBtn) beatStepNextBtn.hidden = isReview;
+  if (beatSubmitBtn) beatSubmitBtn.hidden = !isReview;
+  const pct = Math.round(((beatCurrentStep + 1) / BEAT_TOTAL_STEPS) * 100);
+  if (beatFormProgressFill) beatFormProgressFill.style.width = pct + '%';
+  if (beatFormStepCount) beatFormStepCount.textContent = `Step ${beatCurrentStep + 1} of ${BEAT_TOTAL_STEPS}`;
+  if (isReview) renderBeatReviewSummary();
+  if (opts.focusField) {
+    opts.focusField.focus();
+  } else {
+    const heading = beatFormSteps[beatCurrentStep].querySelector('.form-step-heading');
+    if (heading) heading.focus({ preventScroll: false });
+  }
+}
+
+if (beatStepNextBtn) {
+  beatStepNextBtn.addEventListener('click', ()=>{
+    const firstInvalid = validateBeatSubmitForm(beatFormSteps[beatCurrentStep]);
+    if (firstInvalid) { firstInvalid.focus(); return; }
+    goToBeatStep(beatCurrentStep + 1);
+  });
+}
+if (beatStepBackBtn) {
+  beatStepBackBtn.addEventListener('click', ()=> goToBeatStep(beatCurrentStep - 1));
+}
+if (beatSubmitForm) {
+  // Enter advances to the next step instead of doing nothing — except in
+  // a textarea, where it should just insert a newline like normal.
+  beatSubmitForm.addEventListener('keydown', (e)=>{
+    if (e.key !== 'Enter' || e.target.tagName === 'TEXTAREA') return;
+    if (beatCurrentStep === BEAT_REVIEW_STEP_INDEX) return; // let the Submit Beat button handle this step
+    e.preventDefault();
+    if (beatStepNextBtn) beatStepNextBtn.click();
+  });
+}
+
+/* Plain-text summary of every answer, shown on the final review step —
+   same reviewRow() helper the order form's review step uses above
+   (textContent throughout, so nothing typed in can be interpreted as
+   markup). */
+function renderBeatReviewSummary(){
+  const beatReviewSummaryEl = document.getElementById('beatReviewSummary');
+  if (!beatReviewSummaryEl || !beatSubmitForm) return;
+  beatReviewSummaryEl.innerHTML = '';
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const fileName = id => { const el = document.getElementById(id); return el && el.files && el.files[0] ? el.files[0].name : null; };
+  const licenses = Array.from(beatSubmitForm.querySelectorAll('input[name="license"]:checked')).map(c => c.value);
+  reviewRow(beatReviewSummaryEl, 'Producer / artist', val('beatProducerName') || '—');
+  reviewRow(beatReviewSummaryEl, 'Logo / photo', fileName('beatProducerPhoto') || 'None');
+  reviewRow(beatReviewSummaryEl, 'Bio', val('beatBio') || '—');
+  reviewRow(beatReviewSummaryEl, 'Social links', val('beatSocialLinks') || '—');
+  reviewRow(beatReviewSummaryEl, 'Beat store link', val('beatStoreLink') || '—');
+  reviewRow(beatReviewSummaryEl, 'Beat title', val('beatTitle') || '—');
+  reviewRow(beatReviewSummaryEl, 'BPM', val('beatBpm') || '—');
+  reviewRow(beatReviewSummaryEl, 'Key', val('beatKey') || '—');
+  reviewRow(beatReviewSummaryEl, 'Genre', val('beatGenre') || '—');
+  reviewRow(beatReviewSummaryEl, 'Mood / tags', val('beatMood') || '—');
+  reviewRow(beatReviewSummaryEl, 'Price', val('beatPrice') ? `$${val('beatPrice')}` : 'Default ($12)');
+  reviewRow(beatReviewSummaryEl, 'License types', licenses.length ? licenses.join(', ') : '—');
+  reviewRow(beatReviewSummaryEl, 'Cover image', fileName('beatCover') || 'None');
+  reviewRow(beatReviewSummaryEl, 'MP3 preview', fileName('beatMp3') || 'None');
+  reviewRow(beatReviewSummaryEl, 'WAV link', val('beatWavLink') || '—');
+}
+
+if (beatSubmitForm) {
   beatSubmitForm.addEventListener('submit', (e)=>{
     e.preventDefault();
+    if (beatMp3DurationCheckPending) {
+      beatSubmitStatus.textContent = 'Still checking the MP3\'s length — try submitting again in a second.';
+      beatSubmitStatus.className = 'form-status is-error';
+      return;
+    }
+    // Final whole-form safety net, in case something invalid somehow
+    // slipped past the per-step Continue checks — jumps back to
+    // whichever step actually has the problem, same as the order form.
     const firstInvalid = validateBeatSubmitForm();
-    if (firstInvalid) { firstInvalid.focus(); return; }
+    if (firstInvalid) {
+      const stepEl = firstInvalid.closest('.form-step');
+      if (stepEl) goToBeatStep(Number(stepEl.dataset.step), { focusField: firstInvalid });
+      else firstInvalid.focus();
+      return;
+    }
     // basic bot check: honeypot filled, or submitted implausibly fast
     const honeypot = beatSubmitForm.querySelector('input[name="_gotcha"]');
     const elapsed = Date.now() - beatSubmitLoadedAt;
     if ((honeypot && honeypot.value) || elapsed < 2000) { return; } // silently drop — likely a bot
     submitBeatForm();
   });
+  goToBeatStep(0);
+}
+
+// Pinned version, loaded on demand (not at page load) so a slow or
+// blocked CDN never delays the Beats page itself — only submitting
+// the form needs it. Pinned rather than "@latest" so a future release
+// of @vercel/blob can't silently change this form's behavior; bump
+// this deliberately (and re-test a real submission) if it ever needs
+// updating.
+const VERCEL_BLOB_CLIENT_CDN_URL = 'https://esm.sh/@vercel/blob@0.27.1/client';
+
+// Uploads one <input type="file"> field straight to Blob storage (see
+// api/beat-upload.js, which authorizes this) and resolves to its
+// public URL — or null if nothing was selected, since photo/cover are
+// optional. Doing this client-side (instead of sending the file
+// through a server function) is what lets a 15MB MP3 through at all —
+// Vercel functions cap request bodies at a few MB, well under that.
+async function uploadBeatFile(upload, submissionFolder, fieldName, subfolder){
+  const input = beatSubmitForm.querySelector(`[name="${fieldName}"]`);
+  const file = input && input.files && input.files[0];
+  if (!file) return null;
+  const blob = await upload(`pending/${submissionFolder}/${subfolder}-${file.name}`, file, {
+    access: 'public',
+    handleUploadUrl: '/api/beat-upload'
+  });
+  return blob.url;
 }
 
 async function submitBeatForm(){
   if (!beatSubmitForm) return;
-  const formspreeId = CFG.beatsFormspreeId || CFG.formspreeId;
   beatSubmitBtn.disabled = true;
   beatSubmitBtn.setAttribute('aria-disabled','true');
   beatSubmitText.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…';
   beatSubmitStatus.textContent = '';
   beatSubmitStatus.className = 'form-status';
 
-  const fileFields = ['producerPhoto','coverImage','mp3Preview'];
-  const attachedNames = fileFields
-    .map(name => beatSubmitForm.querySelector(`[name="${name}"]`))
-    .filter(input => input && input.files && input.files[0])
-    .map(input => input.files[0].name);
+  const data = new FormData(beatSubmitForm);
+  const honeypot = data.get('_gotcha');
+  const elapsedMs = Date.now() - beatSubmitLoadedAt;
 
-  if (!formspreeId || formspreeId === 'YOUR_FORM_ID') {
-    const data = new FormData(beatSubmitForm);
-    const licenses = data.getAll('license').join(', ') || '—';
-    const body = encodeURIComponent(
-      `Producer: ${data.get('producerName')}\nBio: ${data.get('bio')||'—'}\nSocial links: ${data.get('socialLinks')||'—'}\nBeat store link: ${data.get('storeLink')||'—'}\n\nBeat Title: ${data.get('beatTitle')}\nBPM: ${data.get('bpm')||'—'}\nKey: ${data.get('key')||'—'}\nGenre: ${data.get('genre')||'—'}\nMood/Tags: ${data.get('mood')||'—'}\nPrice: ${data.get('price')||'12 (default)'}\nLicense types: ${licenses}\nWAV link: ${data.get('wavLink')||'—'}\n\n(Note: attach files — ${attachedNames.length ? attachedNames.join(', ') : 'none selected'} — separately, they can't come through email links.)`
-    );
-    window.location.href = `mailto:${CFG.business.email}?subject=${encodeURIComponent('New Beat Submission: '+(data.get('beatTitle')||data.get('producerName')))}&body=${body}`;
-    resetBeatSubmitButton();
-    showToast('Opening your email client to send this — attach your files there too.');
-    return;
-  }
+  try {
+    const { upload } = await import(VERCEL_BLOB_CLIENT_CDN_URL);
+    // Just a folder name to keep this submission's own files together
+    // in Blob storage — not a security boundary (the approve/reject
+    // links are what's actually signed), so a simple random string is
+    // fine here.
+    const submissionFolder = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
-  const hadFiles = attachedNames.length > 0;
+    const [photoUrl, coverUrl, mp3Url] = await Promise.all([
+      uploadBeatFile(upload, submissionFolder, 'producerPhoto', 'photo'),
+      uploadBeatFile(upload, submissionFolder, 'coverImage', 'cover'),
+      uploadBeatFile(upload, submissionFolder, 'mp3Preview', 'mp3')
+    ]);
 
-  try{
-    let res = await fetch(`https://formspree.io/f/${formspreeId}`, {
-      method:'POST',
-      headers:{'Accept':'application/json'},
-      body:new FormData(beatSubmitForm)
+    const payload = {
+      producerName: data.get('producerName'),
+      bio: data.get('bio'),
+      socialLinks: data.get('socialLinks'),
+      storeLink: data.get('storeLink'),
+      beatTitle: data.get('beatTitle'),
+      bpm: data.get('bpm'),
+      key: data.get('key'),
+      genre: data.get('genre'),
+      mood: data.get('mood'),
+      price: data.get('price'),
+      license: data.getAll('license'),
+      wavLink: data.get('wavLink'),
+      permission: data.get('permission') === 'on',
+      photoUrl, coverUrl, mp3Url,
+      gotcha: honeypot,
+      elapsedMs
+    };
+
+    const res = await fetch('/api/submit-beat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
+    const result = await res.json().catch(() => ({}));
 
-    let sentWithoutFiles = false;
-
-    // Same fallback as the order form above: some Formspree plans don't
-    // support file attachments, which fails the whole submission even
-    // though the text fields are fine. Retry once without the files so
-    // the submission still gets through, and tell the producer to send
-    // the files another way instead of losing the whole thing.
-    if(!res.ok && hadFiles){
-      const retryData = new FormData(beatSubmitForm);
-      fileFields.forEach(name => retryData.delete(name));
-      retryData.set('filesNote', `This submission included ${attachedNames.length} file(s) (${attachedNames.join(', ')}) that couldn't be delivered automatically (file uploads may require a Formspree plan upgrade). Ask the producer to resend via Discord or email.`);
-      res = await fetch(`https://formspree.io/f/${formspreeId}`, {
-        method:'POST',
-        headers:{'Accept':'application/json'},
-        body: retryData
-      });
-      sentWithoutFiles = res.ok;
-    }
-
-    if(res.ok){
+    if (res.ok) {
       beatSubmitForm.reset();
       ['beatProducerPhotoText','beatCoverText'].forEach(id=>{
         const el = document.getElementById(id);
@@ -1815,18 +2049,18 @@ async function submitBeatForm(){
       });
       const mp3Text = document.getElementById('beatMp3Text');
       if (mp3Text) mp3Text.textContent = 'Drop an MP3 here or click to browse';
-      const successMsg = sentWithoutFiles
-        ? "Submitted! Your files couldn't come through automatically — please send them to me on Discord so I have everything."
-        : "Beat submitted — thank you! I'll review it and follow up before anything goes live.";
+      goToBeatStep(0);
+      const successMsg = "Beat submitted — thank you! I'll take a quick look and it'll go live once I approve it.";
       beatSubmitStatus.textContent = successMsg;
       beatSubmitStatus.classList.add('is-success');
       showToast(successMsg);
     } else {
-      beatSubmitStatus.textContent = 'Something went wrong sending that. Please try again or send it on Discord instead.';
+      const errorMsg = result.error || 'Something went wrong sending that. Please try again or send it on Discord instead.';
+      beatSubmitStatus.textContent = errorMsg;
       beatSubmitStatus.classList.add('is-error');
       showToast('Could not send — please try again or use Discord instead.', true);
     }
-  }catch(err){
+  } catch (err) {
     beatSubmitStatus.textContent = 'Network error — please try again or send it on Discord instead.';
     beatSubmitStatus.classList.add('is-error');
     showToast('Network error — please try again.', true);

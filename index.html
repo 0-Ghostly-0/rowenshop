@@ -494,138 +494,178 @@
       <div class="beats-grid reveal-stagger" id="beatsGrid" aria-label="Beats catalog" hidden></div>
 
       <div class="section-pad" style="padding-bottom:0;">
-        <div class="section-head reveal">
-          <h2>Get your beats on the site</h2>
-          <p>A producer? Fill this out to submit a beat. Nothing publishes automatically — I review every submission by hand, and we'll agree on the details (including any revenue split, see "Hosting other producers' beats") before anything goes live.</p>
-        </div>
+        <div class="order-grid">
+          <div class="order-side reveal">
+            <div class="eyebrow" style="margin-bottom:18px;">Get Featured</div>
+            <h2>Put your beat<br>in front of new ears.</h2>
+            <p>Rowen's audience is already here looking for beats. Submit yours below, and once it's approved it's live on rowen.work with its own preview player, cover art, and buy button — crediting you by name. One quick review on my end, that's it.</p>
+            <ul class="order-list">
+              <li><span class="ck" aria-hidden="true"></span>Free to submit — no listing fees, ever</li>
+              <li><span class="ck" aria-hidden="true"></span>You keep ownership and set your own license terms</li>
+              <li><span class="ck" aria-hidden="true"></span>Fast, simple review — most get a decision quickly</li>
+              <li><span class="ck" aria-hidden="true"></span>Approved beats go live with your name credited and linked</li>
+            </ul>
+          </div>
 
-        <div class="reveal" style="max-width:560px;">
-          <form id="beatSubmitForm" novalidate>
-            <!-- honeypot — real visitors never see or fill this in -->
-            <div class="hp-field" aria-hidden="true">
-              <label for="beatSubmitCompany">Company</label>
-              <input type="text" id="beatSubmitCompany" name="_gotcha" tabindex="-1" autocomplete="off">
-            </div>
-            <input type="hidden" name="_subject" value="New Beat Submission">
-
-            <h3 style="font-size:15px;letter-spacing:.02em;">About you</h3>
-
-            <div class="field">
-              <label for="beatProducerName">Producer / Artist Name <span class="req" aria-hidden="true">*</span></label>
-              <input type="text" id="beatProducerName" name="producerName" placeholder="Jordan" required aria-required="true">
-              <span class="field-error" role="alert"></span>
-            </div>
-
-            <div class="field">
-              <label for="beatProducerPhoto">Logo / Profile Picture (optional)</label>
-              <label class="file-drop" id="beatProducerPhotoDrop" for="beatProducerPhoto">
-                <span id="beatProducerPhotoText">Drop an image here or click to browse</span>
-                <input type="file" id="beatProducerPhoto" name="producerPhoto" accept="image/png,image/jpeg,image/webp,image/gif">
-              </label>
-              <span class="field-hint">PNG, JPG, WEBP, or GIF — up to 15MB.</span>
-              <span class="field-error" id="beatProducerPhotoError" role="alert"></span>
-            </div>
-
-            <div class="field">
-              <label for="beatBio">Short Bio (optional)</label>
-              <textarea id="beatBio" name="bio" placeholder="A sentence or two about you or your sound."></textarea>
-            </div>
-
-            <div class="field">
-              <label for="beatSocialLinks">Social Media Links (optional)</label>
-              <textarea id="beatSocialLinks" name="socialLinks" placeholder="Instagram, TikTok, YouTube, etc. — one per line"></textarea>
-            </div>
-
-            <div class="field">
-              <label for="beatStoreLink">Beat Store Link (optional)</label>
-              <input type="url" id="beatStoreLink" name="storeLink" placeholder="https://beatstars.com/yourname">
-            </div>
-
-            <h3 style="font-size:15px;letter-spacing:.02em;margin-top:8px;">About the beat</h3>
-
-            <div class="field">
-              <label for="beatTitle">Beat Title <span class="req" aria-hidden="true">*</span></label>
-              <input type="text" id="beatTitle" name="beatTitle" placeholder="Midnight Drive" required aria-required="true">
-              <span class="field-error" role="alert"></span>
-            </div>
-
-            <div class="row2">
-              <div class="field">
-                <label for="beatBpm">BPM (optional)</label>
-                <input type="number" id="beatBpm" name="bpm" min="1" max="400" placeholder="140">
+          <div class="reveal">
+            <form id="beatSubmitForm" novalidate>
+              <!-- honeypot — real visitors never see or fill this in -->
+              <div class="hp-field" aria-hidden="true">
+                <label for="beatSubmitCompany">Company</label>
+                <input type="text" id="beatSubmitCompany" name="_gotcha" tabindex="-1" autocomplete="off">
               </div>
-              <div class="field">
-                <label for="beatKey">Key (optional)</label>
-                <input type="text" id="beatKey" name="key" placeholder="F# Minor">
+
+              <div class="form-progress-wrap" aria-hidden="true">
+                <div class="form-progress-bar"><div class="form-progress-fill" id="beatFormProgressFill"></div></div>
               </div>
-            </div>
+              <p class="form-step-count" id="beatFormStepCount" aria-live="polite">Step 1 of 9</p>
 
-            <div class="row2">
-              <div class="field">
-                <label for="beatGenre">Genre (optional)</label>
-                <input type="text" id="beatGenre" name="genre" placeholder="Trap, R&B, Drill…">
+              <div class="form-steps" id="beatFormSteps">
+
+                <div class="form-step active" data-step="0">
+                  <h3 class="form-step-heading" tabindex="-1">Whose beat is this?</h3>
+                  <div class="field">
+                    <label for="beatProducerName">Producer / Artist Name <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="beatProducerName" name="producerName" placeholder="Jordan" required aria-required="true">
+                    <span class="field-error" role="alert"></span>
+                  </div>
+                  <div class="field">
+                    <label for="beatProducerPhoto">Logo / Profile Picture (optional)</label>
+                    <label class="file-drop" id="beatProducerPhotoDrop" for="beatProducerPhoto">
+                      <span id="beatProducerPhotoText">Drop an image here or click to browse</span>
+                      <input type="file" id="beatProducerPhoto" name="producerPhoto" accept="image/png,image/jpeg,image/webp,image/gif">
+                    </label>
+                    <span class="field-hint">PNG, JPG, WEBP, or GIF — up to 15MB.</span>
+                    <span class="field-error" id="beatProducerPhotoError" role="alert"></span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="1">
+                  <h3 class="form-step-heading" tabindex="-1">Tell listeners about you</h3>
+                  <div class="field">
+                    <label for="beatBio">Short Bio (optional)</label>
+                    <textarea id="beatBio" name="bio" placeholder="A sentence or two about you or your sound."></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="beatSocialLinks">Social Media Links (optional)</label>
+                    <textarea id="beatSocialLinks" name="socialLinks" placeholder="Instagram, TikTok, YouTube, etc. — one per line"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="beatStoreLink">Beat Store Link (optional)</label>
+                    <input type="url" id="beatStoreLink" name="storeLink" placeholder="https://beatstars.com/yourname">
+                    <span class="field-hint">BeatStars, Airbit, your own site — wherever else people can find you.</span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="2">
+                  <h3 class="form-step-heading" tabindex="-1">What's the beat called?</h3>
+                  <div class="field">
+                    <label for="beatTitle">Beat Title <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="beatTitle" name="beatTitle" placeholder="Midnight Drive" required aria-required="true">
+                    <span class="field-error" role="alert"></span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="3">
+                  <h3 class="form-step-heading" tabindex="-1">Give it some technical details</h3>
+                  <div class="row2">
+                    <div class="field">
+                      <label for="beatBpm">BPM (optional)</label>
+                      <input type="number" id="beatBpm" name="bpm" min="1" max="400" placeholder="140">
+                    </div>
+                    <div class="field">
+                      <label for="beatKey">Key (optional)</label>
+                      <input type="text" id="beatKey" name="key" placeholder="F# Minor">
+                    </div>
+                  </div>
+                  <span class="field-hint">Producers shopping by BPM/key find you faster — worth filling in if you know it.</span>
+                </div>
+
+                <div class="form-step" data-step="4">
+                  <h3 class="form-step-heading" tabindex="-1">How would you describe it?</h3>
+                  <div class="row2">
+                    <div class="field">
+                      <label for="beatGenre">Genre (optional)</label>
+                      <input type="text" id="beatGenre" name="genre" placeholder="Trap, R&B, Drill…">
+                    </div>
+                    <div class="field">
+                      <label for="beatMood">Mood / Tags (optional)</label>
+                      <input type="text" id="beatMood" name="mood" placeholder="Dark, dreamy, aggressive…">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="5">
+                  <h3 class="form-step-heading" tabindex="-1">Set your price &amp; license terms</h3>
+                  <div class="field">
+                    <label for="beatPrice">Price (optional)</label>
+                    <input type="number" id="beatPrice" name="price" min="0" step="1" placeholder="12">
+                    <span class="field-hint">Leave blank and it'll default to the standard $12 unless we agree on something else.</span>
+                  </div>
+                  <div class="field" id="beatLicenseField">
+                    <label>License Types Available <span class="req" aria-hidden="true">*</span></label>
+                    <div class="license-checks">
+                      <label class="license-check"><input type="checkbox" name="license" value="MP3 Lease"> MP3 Lease</label>
+                      <label class="license-check"><input type="checkbox" name="license" value="WAV Lease"> WAV Lease</label>
+                      <label class="license-check"><input type="checkbox" name="license" value="Unlimited"> Unlimited</label>
+                      <label class="license-check"><input type="checkbox" name="license" value="Exclusive"> Exclusive</label>
+                    </div>
+                    <span class="field-error" id="beatLicenseError" role="alert" style="display:block;"></span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="6">
+                  <h3 class="form-step-heading" tabindex="-1">Got cover art?</h3>
+                  <div class="field">
+                    <label for="beatCover">Cover Image for This Beat (optional)</label>
+                    <label class="file-drop" id="beatCoverDrop" for="beatCover">
+                      <span id="beatCoverText">Drop an image here or click to browse</span>
+                      <input type="file" id="beatCover" name="coverImage" accept="image/png,image/jpeg,image/webp,image/gif">
+                    </label>
+                    <span class="field-hint">PNG, JPG, WEBP, or GIF — up to 15MB. A good cover makes your card stand out in the catalog.</span>
+                    <span class="field-error" id="beatCoverError" role="alert"></span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="7">
+                  <h3 class="form-step-heading" tabindex="-1">Upload your preview</h3>
+                  <div class="field">
+                    <label for="beatMp3">MP3 Preview <span class="req" aria-hidden="true">*</span></label>
+                    <label class="file-drop" id="beatMp3Drop" for="beatMp3">
+                      <span id="beatMp3Text">Drop an MP3 here or click to browse</span>
+                      <input type="file" id="beatMp3" name="mp3Preview" accept="audio/mpeg,.mp3" required aria-required="true">
+                    </label>
+                    <span class="field-hint">MP3 only — up to 15MB, between 0:30 and 5:30 long.</span>
+                    <span class="field-error" id="beatMp3Error" role="alert"></span>
+                  </div>
+                  <div class="field">
+                    <label for="beatWavLink">WAV Download Link (optional)</label>
+                    <input type="url" id="beatWavLink" name="wavLink" placeholder="Google Drive, Dropbox, or WeTransfer link">
+                    <span class="field-hint">WAV files are usually too big to upload directly — a link works better.</span>
+                  </div>
+                </div>
+
+                <div class="form-step" data-step="8">
+                  <h3 class="form-step-heading" tabindex="-1">Review &amp; submit</h3>
+                  <dl class="review-summary" id="beatReviewSummary"></dl>
+                  <div class="field field-checkbox" style="margin-top:6px;">
+                    <input type="checkbox" id="beatPermission" name="permission" required aria-required="true">
+                    <label for="beatPermission">I own this beat (or have the right to license it) and give Rowen permission to feature it on rowen.work. <span class="req" aria-hidden="true">*</span></label>
+                    <span class="field-error" role="alert"></span>
+                  </div>
+                  <div class="form-note">Submitting sends it straight for review — most get a quick decision, and you'll see it live on rowen.work the moment it's approved.</div>
+                </div>
+
               </div>
-              <div class="field">
-                <label for="beatMood">Mood / Tags (optional)</label>
-                <input type="text" id="beatMood" name="mood" placeholder="Dark, dreamy, aggressive…">
+
+              <div class="form-nav">
+                <button type="button" class="btn ghost" id="beatStepBack" hidden>Back</button>
+                <button type="button" class="btn solid" id="beatStepNext">Continue <span class="arrow">→</span></button>
+                <button type="submit" class="btn solid" id="beatSubmitBtn" hidden><span id="beatSubmitText">Submit Beat</span> <span class="arrow">↗</span></button>
               </div>
-            </div>
-
-            <div class="field">
-              <label for="beatPrice">Price (optional)</label>
-              <input type="number" id="beatPrice" name="price" min="0" step="1" placeholder="12">
-              <span class="field-hint">Leave blank and it'll default to the standard $12 unless we agree on something else.</span>
-            </div>
-
-            <div class="field" id="beatLicenseField">
-              <label>License Types Available <span class="req" aria-hidden="true">*</span></label>
-              <div class="license-checks">
-                <label class="license-check"><input type="checkbox" name="license" value="MP3 Lease"> MP3 Lease</label>
-                <label class="license-check"><input type="checkbox" name="license" value="WAV Lease"> WAV Lease</label>
-                <label class="license-check"><input type="checkbox" name="license" value="Unlimited"> Unlimited</label>
-                <label class="license-check"><input type="checkbox" name="license" value="Exclusive"> Exclusive</label>
-              </div>
-              <span class="field-error" id="beatLicenseError" role="alert" style="display:block;"></span>
-            </div>
-
-            <div class="field">
-              <label for="beatCover">Cover Image for This Beat (optional)</label>
-              <label class="file-drop" id="beatCoverDrop" for="beatCover">
-                <span id="beatCoverText">Drop an image here or click to browse</span>
-                <input type="file" id="beatCover" name="coverImage" accept="image/png,image/jpeg,image/webp,image/gif">
-              </label>
-              <span class="field-hint">PNG, JPG, WEBP, or GIF — up to 15MB.</span>
-              <span class="field-error" id="beatCoverError" role="alert"></span>
-            </div>
-
-            <div class="field">
-              <label for="beatMp3">MP3 Preview <span class="req" aria-hidden="true">*</span></label>
-              <label class="file-drop" id="beatMp3Drop" for="beatMp3">
-                <span id="beatMp3Text">Drop an MP3 here or click to browse</span>
-                <input type="file" id="beatMp3" name="mp3Preview" accept="audio/mpeg,.mp3" required aria-required="true">
-              </label>
-              <span class="field-hint">MP3 only — up to 15MB.</span>
-              <span class="field-error" id="beatMp3Error" role="alert"></span>
-            </div>
-
-            <div class="field">
-              <label for="beatWavLink">WAV Download Link (optional)</label>
-              <input type="url" id="beatWavLink" name="wavLink" placeholder="Google Drive, Dropbox, or WeTransfer link">
-              <span class="field-hint">WAV files are usually too big to email directly — a link works better than uploading one here.</span>
-            </div>
-
-            <div class="field field-checkbox" style="margin-top:6px;">
-              <input type="checkbox" id="beatPermission" name="permission" required aria-required="true">
-              <label for="beatPermission">I own this beat (or have the right to license it) and give Rowen permission to feature it on rowen.work. <span class="req" aria-hidden="true">*</span></label>
-              <span class="field-error" role="alert"></span>
-            </div>
-
-            <div class="form-nav">
-              <button type="submit" class="btn solid" id="beatSubmitBtn"><span id="beatSubmitText">Submit Beat</span> <span class="arrow">↗</span></button>
-            </div>
-            <div class="form-status" id="beatSubmitStatus" role="status" aria-live="polite"></div>
-            <p class="form-note" style="margin-top:6px;max-width:100%;">Submitting doesn't add your beat automatically — nothing goes live until I've reviewed it and we've agreed on the details.</p>
-          </form>
+              <div class="form-status" id="beatSubmitStatus" role="status" aria-live="polite"></div>
+            </form>
+          </div>
         </div>
       </div>
 

@@ -106,4 +106,112 @@ async function sendLicenseEmail({ to, products }) {
   }
 }
 
-module.exports = { sendLicenseEmail, buildEmailHtml, escapeHtml };
+/* =========================================================
+   sendBeatReviewEmail({ to, submission, approveUrl, rejectUrl })
+   ---------------------------------------------------------
+   The "someone submitted a beat" notification for the automatic
+   producer-submission pipeline (api/submit-beat.js). Sent to
+   BEAT_REVIEW_EMAIL (Rowen's own inbox) via the same Resend HTTP API
+   as sendLicenseEmail above. Contains every field the producer typed
+   in, a playable link to the uploaded MP3, and two links — Approve /
+   Reject — that are pre-signed (see api/_lib/beatApproval.js), so
+   clicking one is the entire review step: no login, no dashboard.
+   ========================================================= */
+function buildBeatReviewEmailHtml({ submission, approveUrl, rejectUrl }) {
+  const rows = [
+    ['Producer / artist', submission.producerName],
+    ['Bio', submission.bio],
+    ['Social links', submission.socialLinks],
+    ['Beat store link', submission.storeLink],
+    ['Beat title', submission.beatTitle],
+    ['BPM', submission.bpm],
+    ['Key', submission.key],
+    ['Genre', submission.genre],
+    ['Mood / tags', submission.mood],
+    ['Price', submission.price ? `$${submission.price}` : 'Not given — defaults to $12'],
+    ['License types', Array.isArray(submission.license) ? submission.license.join(', ') : submission.license],
+    ['WAV link', submission.wavLink]
+  ].filter(([, value]) => value != null && value !== '');
+
+  const rowsHtml = rows.map(([label, value]) => `
+    <tr>
+      <td style="padding:6px 12px 6px 0;font-family:Arial,Helvetica,sans-serif;color:#9a9a9a;font-size:13px;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td>
+      <td style="padding:6px 0;font-family:Arial,Helvetica,sans-serif;color:#f5f5f5;font-size:13px;">${escapeHtml(value)}</td>
+    </tr>`).join('');
+
+  const fileLinks = [
+    submission.mp3Url ? `<a href="${escapeHtml(submission.mp3Url)}" style="color:#c9a6ff;">Listen to the MP3</a>` : null,
+    submission.coverUrl ? `<a href="${escapeHtml(submission.coverUrl)}" style="color:#c9a6ff;">View cover image</a>` : null,
+    submission.photoUrl ? `<a href="${escapeHtml(submission.photoUrl)}" style="color:#c9a6ff;">View producer photo</a>` : null
+  ].filter(Boolean).join(' &nbsp;·&nbsp; ');
+
+  return `
+  <div style="background:#0d0d0d;padding:32px 16px;">
+    <table role="presentation" width="100%" style="max-width:560px;margin:0 auto;border-collapse:collapse;">
+      <tr>
+        <td style="padding-bottom:20px;">
+          <div style="font-family:Arial,Helvetica,sans-serif;color:#fff;font-size:20px;font-weight:700;">New beat submission</div>
+          <div style="font-family:Arial,Helvetica,sans-serif;color:#9a9a9a;font-size:14px;margin-top:4px;">
+            Nothing has been published yet — review below, then click Approve or Reject.
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:16px 0;border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a;">
+          <table role="presentation" width="100%" style="border-collapse:collapse;">${rowsHtml}</table>
+        </td>
+      </tr>
+      ${fileLinks ? `<tr><td style="padding:16px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;">${fileLinks}</td></tr>` : ''}
+      <tr>
+        <td style="padding-top:20px;">
+          <a href="${escapeHtml(approveUrl)}" style="display:inline-block;background:#c9a6ff;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:8px;margin-right:10px;">
+            ✓ Approve &amp; publish
+          </a>
+          <a href="${escapeHtml(rejectUrl)}" style="display:inline-block;background:transparent;color:#f5f5f5;border:1px solid #444;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:8px;">
+            ✕ Reject
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top:20px;">
+          <div style="font-family:Arial,Helvetica,sans-serif;color:#7a7a7a;font-size:12px;line-height:1.6;">
+            Approving publishes this beat to rowen.work within a few seconds — no further steps needed.
+            Rejecting just discards the submission and its files; the producer isn't notified either way.
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>`;
+}
+
+async function sendBeatReviewEmail({ to, submission, approveUrl, rejectUrl }) {
+  if (!to) throw new Error('sendBeatReviewEmail: missing "to" address.');
+  if (!submission) throw new Error('sendBeatReviewEmail: missing submission.');
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error('sendBeatReviewEmail: missing RESEND_API_KEY.');
+
+  const from = process.env.EMAIL_FROM || 'Rowen <onboarding@resend.dev>';
+  const subject = `New beat submission: ${submission.beatTitle || submission.producerName || 'Untitled'}`;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from,
+      to,
+      subject,
+      html: buildBeatReviewEmailHtml({ submission, approveUrl, rejectUrl })
+    })
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`sendBeatReviewEmail: Resend responded ${res.status} — ${text}`);
+  }
+}
+
+module.exports = { sendLicenseEmail, sendBeatReviewEmail, buildEmailHtml, escapeHtml };

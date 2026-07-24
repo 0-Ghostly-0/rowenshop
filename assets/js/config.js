@@ -401,15 +401,17 @@ const SITE_CONFIG = {
 
   /* ---------- beat submissions (Beats page "Get your beats on the
      site" form) ----------
-     Same idea as reviewsFormspreeId above: leave blank to send producer
-     beat submissions to the SAME Formspree form as everything else
-     (clearly labeled "New Beat Submission" in your inbox), or set this
-     to a separate Formspree form's ID to keep them in their own inbox
-     view. Submissions never publish automatically — see the README
-     "Hosting other producers' beats" section for what to do once one
-     comes in (Stripe Connect onboarding, adding it to the beats: array
-     above, etc.). */
-  beatsFormspreeId: "",
+     Unlike review submissions above, this form doesn't use Formspree
+     at all — it publishes automatically once you approve it. A
+     producer's submission uploads straight to Blob storage, then you
+     get an email with every field plus one-click Approve/Reject
+     links; approving publishes it to the site within seconds, no
+     editing this file or pushing to GitHub required. See the README
+     "Getting beat submissions from producers" section for the
+     one-time Vercel environment variable setup this needs
+     (BEAT_APPROVAL_SECRET, BEAT_REVIEW_EMAIL, plus the
+     BLOB_READ_WRITE_TOKEN/RESEND_API_KEY you likely already have from
+     the VST store). */
 
   /* ---------- policies ----------
      Placeholder legal-style text so the site doesn't feel unfinished.
