@@ -37,6 +37,7 @@ module.exports = async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
+      allow_promotion_codes: true,
       line_items,
       success_url: `${origin}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/#vsts`,
