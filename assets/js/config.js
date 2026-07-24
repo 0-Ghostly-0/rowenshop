@@ -16,7 +16,7 @@ const SITE_CONFIG = {
   /* ---------- business identity ---------- */
   business: {
     name: "Rowen",
-    tagline: "Graphic design for creators who mean it.",
+    tagline: "Design & beats for creators who mean it.",
     // Update this once the rowen.work domain is connected in Vercel.
     url: "https://rowen.work",
     email: "rowenapichardo@gmail.com",
@@ -346,7 +346,7 @@ const SITE_CONFIG = {
         "assets/vsts/vocal-polish/screenshot-2.webp"
       ],
       price: 25,
-      priceId: "price_1TwTBOL5jHly4mj0pEsXIVpO",
+      priceId: "price_1TwNucLkl1wjSsm07HPhwqjt",
       badge: "New"
     },
     {

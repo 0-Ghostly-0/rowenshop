@@ -102,7 +102,7 @@ PAGE_KEYS.forEach(k=>{ pageEls[k] = document.querySelector(`.page[data-page="${k
 const navLinkEls = document.querySelectorAll('.nav-links a[data-page], .mobile-nav-panel a[data-page]');
 const dotLinkEls = document.querySelectorAll('.side-dots a[data-page]');
 const PAGE_TITLES = {
-  'home': `${CFG.business.name} — Graphic Design Studio`,
+  'home': `${CFG.business.name} — Design & Beats`,
   'cover-art': `Cover Art — ${CFG.business.name}`,
   'thumbnails': `YouTube Thumbnails — ${CFG.business.name}`,
   'ads': `Ad Creative — ${CFG.business.name}`,
@@ -171,6 +171,12 @@ function routeFromHash(){
   const raw = location.hash.replace('#','');
   const [pageKey, serviceParam] = raw.split('/');
   setActivePage(pageKey || 'home', serviceParam);
+  // "#beats/submit" is the deep link the header + icon and every "Upload a
+  // Beat" button point to — land straight on step 1 of the beat wizard
+  // instead of just the top of the Beats page.
+  if (pageKey === 'beats' && serviceParam === 'submit' && typeof goToBeatStep === 'function') {
+    goToBeatStep(0);
+  }
 }
 window.addEventListener('hashchange', routeFromHash);
 
