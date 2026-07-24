@@ -20,6 +20,6 @@ module.exports = {
 'vocal-polish': {
   name: 'Rowen Vocal Polish',
   priceId: 'price_1TwTBOL5jHly4mj0pEsXIVpO',
-  downloadUrl: 'https://sqq3du9z1jhiaayr.public.blob.vercel-storage.com/Rowen-Vocal-Polish-Installer%20PRO.zip'
+  downloadUrl: 'https://sqq3du9z1jhiaayr.public.blob.vercel-storage.com/Rowen-Vocal-Polish-Installer%20PRO%20LICENSE.zip'
 }
 };
