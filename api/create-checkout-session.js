@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     sendJson(res, 500, { error: "Checkout isn't configured yet — missing STRIPE_SECRET_KEY." });
     return;
   }
-  const stripe = new Stripe(secretKey);
+  const stripe = new Stripe(secretKey, { apiVersion: '2025-03-31.basil' });
 
   const body = await parseJsonBody(req);
   const items = Array.isArray(body && body.items) ? body.items : [];
