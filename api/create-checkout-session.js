@@ -1,3 +1,15 @@
+/* =========================================================
+   POST /api/create-checkout-session
+   ---------------------------------------------------------
+   Takes the visitor's cart ({ items: [{ key, qty }] }) and
+   creates a real multi-item Stripe Checkout Session, returning
+   its URL for the browser to redirect to.
+
+   Security note: the browser only ever sends a product KEY and
+   quantity — never a price. The actual Stripe Price ID always
+   comes from the server-side catalog (api/_lib/catalog.js), so
+   nothing the client sends can change what gets charged.
+   ========================================================= */
 const Stripe = require('stripe');
 const catalog = require('./_lib/catalog');
 const { parseJsonBody, sendJson } = require('./_lib/http');
@@ -10,15 +22,21 @@ module.exports = async (req, res) => {
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    sendJson(res, 500, { error: "Checkout isn't configured yet — missing STRIPE_SECRET_KEY." });
+    sendJson(res, 500, { error: 'Checkout isn’t configured yet — missing STRIPE_SECRET_KEY.' });
     return;
   }
-  const stripe = new Stripe(secretKey, { apiVersion: '2025-03-31.basil' });
+  const stripe = new Stripe(secretKey);
 
   const body = await parseJsonBody(req);
   const items = Array.isArray(body && body.items) ? body.items : [];
-  if (!items.length) { sendJson(res, 400, { error: 'Your cart is empty.' }); return; }
-  if (items.length > 20) { sendJson(res, 400, { error: 'Too many distinct items in one order.' }); return; }
+  if (!items.length) {
+    sendJson(res, 400, { error: 'Your cart is empty.' });
+    return;
+  }
+  if (items.length > 20) {
+    sendJson(res, 400, { error: 'Too many distinct items in one order.' });
+    return;
+  }
 
   const line_items = [];
   for (const item of items) {
@@ -26,7 +44,7 @@ module.exports = async (req, res) => {
     const qty = Math.max(1, Math.min(99, Math.floor(Number(item && item.qty)) || 1));
     const product = key ? catalog[key] : null;
     if (!product || !product.priceId) {
-      sendJson(res, 400, { error: `"${key || 'One of the items'}" isn't available for purchase right now.` });
+      sendJson(res, 400, { error: `"${key || 'One of the items'}" isn’t available for purchase right now.` });
       return;
     }
     line_items.push({ price: product.priceId, quantity: qty });
@@ -37,7 +55,6 @@ module.exports = async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      allow_promotion_codes: true,
       line_items,
       success_url: `${origin}/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/#vsts`,

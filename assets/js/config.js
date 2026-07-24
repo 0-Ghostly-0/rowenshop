@@ -313,24 +313,44 @@ const SITE_CONFIG = {
      readable in the browser. See the README for exactly how to wire
      a new product's download up once it's ready. */
   vsts: [
-     {
-       key: "vocal-polish",
-       name: "Rowen Vocal Polish",
-       tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
-       description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
-       features: [
-         "One main knob — Polish — plus Clarity, Smooth, Space & Width",
-         "10 factory presets, from a light touch-up to the full treatment",
-         "VST3, Windows — AU planned for a later phase"
-       ],
-       images: [
-         "assets/vsts/vocal-polish/screenshot-1.webp",
-         "assets/vsts/vocal-polish/screenshot-2.webp"
-       ],
-       price: 25,
-       priceId: "price_1TwTBOL5jHly4mj0pEsXIVpO",
-       badge: "New"
-     }
+    // {
+    //   key: "vocal-polish",
+    //   name: "Rowen Vocal Polish",
+    //   tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
+    //   description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
+    //   features: [
+    //     "One main knob — Polish — plus Clarity, Smooth, Space & Width",
+    //     "10 factory presets, from a light touch-up to the full treatment",
+    //     "VST3, Windows — AU planned for a later phase"
+    //   ],
+    //   images: [
+    //     "assets/vsts/vocal-polish/screenshot-1.webp",
+    //     "assets/vsts/vocal-polish/screenshot-2.webp"
+    //   ],
+    //   price: 49,
+    //   priceId: "price_xxxxxxxxxxxxx",
+    //   badge: "New"
+    // }
+    {
+      key: "fragment",
+      name: "Rowen Fragment",
+      tagline: "Turn any melody, vocal, or loop into something you've never heard before.",
+      description: "Rowen Fragment takes whatever's playing — a melody, a vocal, a drum loop, a full sample — and continuously breaks it into small moving pieces you can reshape in real time. Six simple controls handle all the heavy lifting, so you get inspiring, unique textures fast without digging through a wall of technical settings.",
+      features: [
+        "Six creative controls — Fragment, Shift, Reverse, Scatter, Drift & Atmosphere",
+        "Freeze any moment and keep transforming it from there",
+        "One-click Randomize for instant new variations, with Undo",
+        "30+ factory presets across Subtle, Melodic, Rhythmic, Vocal, Drum & Experimental categories",
+        "VST3, Windows — AU planned for a later phase"
+      ],
+      images: [
+        "assets/vsts/fragment/screenshot-1.webp",
+        "assets/vsts/fragment/screenshot-2.webp"
+      ],
+      price: 25,
+      priceId: "price_1TwkKsL5jHly4mj0dG4BHFxu",
+      badge: "New"
+    }
   ],
 
   /* ---------- reviews ----------

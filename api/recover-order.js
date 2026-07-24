@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   }
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    sendJson(res, 500, { error: "Order lookup isn't configured yet — missing STRIPE_SECRET_KEY." });
+    sendJson(res, 500, { error: 'Order lookup isn’t configured yet — missing STRIPE_SECRET_KEY.' });
     return;
   }
   const stripe = new Stripe(secretKey);

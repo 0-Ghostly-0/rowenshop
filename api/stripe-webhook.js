@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secretKey || !webhookSecret) {
     console.error('stripe-webhook: missing STRIPE_SECRET_KEY or STRIPE_WEBHOOK_SECRET.');
-    sendJson(res, 500, { error: "Webhook isn't configured yet." });
+    sendJson(res, 500, { error: 'Webhook isn’t configured yet.' });
     return;
   }
   const stripe = new Stripe(secretKey);
