@@ -332,6 +332,24 @@ const SITE_CONFIG = {
     //   badge: "New"
     // }
     {
+      key: "vocal-polish",
+      name: "Rowen Vocal Polish",
+      tagline: "A vocal finishing plugin for artists who record at home and don't mix.",
+      description: "Insert it on a vocal, turn up Polish, and it comes out cleaner, more controlled, brighter, and more finished. Five simple controls, ten factory presets, built for people who want a great-sounding vocal without learning to mix.",
+      features: [
+        "One main knob — Polish — plus Clarity, Smooth, Space & Width",
+        "10 factory presets, from a light touch-up to the full treatment",
+        "VST3, Windows — AU planned for a later phase"
+      ],
+      images: [
+        "assets/vsts/vocal-polish/screenshot-1.webp",
+        "assets/vsts/vocal-polish/screenshot-2.webp"
+      ],
+      price: 25,
+      priceId: "price_1TwNucLkl1wjSsm07HPhwqjt",
+      badge: "New"
+    },
+    {
       key: "fragment",
       name: "Rowen Fragment",
       tagline: "Turn any melody, vocal, or loop into something you've never heard before.",
@@ -344,8 +362,8 @@ const SITE_CONFIG = {
         "VST3, Windows — AU planned for a later phase"
       ],
       images: [
-        "assets/vsts/fragment/screenshot-1.webp",
-        "assets/vsts/fragment/screenshot-2.webp"
+        "assets/vsts/fragment/screenshot-1.png",
+        "assets/vsts/fragment/screenshot-2.png"
       ],
       price: 25,
       priceId: "price_1TwkKsL5jHly4mj0dG4BHFxu",

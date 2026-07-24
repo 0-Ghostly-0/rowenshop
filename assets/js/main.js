@@ -542,15 +542,21 @@ function buildVstCard(v, index){
 function renderVstCatalog(){
   const teaserEl = document.getElementById('vstTeaser');
   const gridEl = document.getElementById('vstGrid');
+  const earlyAccessEl = document.getElementById('vstEarlyAccessBand');
   if (!teaserEl || !gridEl) return;
   const vsts = CFG.vsts || [];
   if (!vsts.length) {
     teaserEl.hidden = false;
     gridEl.hidden = true;
+    if (earlyAccessEl) earlyAccessEl.hidden = false;
     return;
   }
   teaserEl.hidden = true;
   gridEl.hidden = false;
+  // Once there are real, buyable products, the "get notified when they
+  // launch" CTA reads oddly right under working Add to Cart buttons —
+  // hide it so the page doesn't send a mixed "buy now" / "not out yet" signal.
+  if (earlyAccessEl) earlyAccessEl.hidden = true;
   gridEl.innerHTML = '';
   vsts.forEach((v,i) => gridEl.appendChild(buildVstCard(v,i)));
 }
