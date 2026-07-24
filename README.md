@@ -84,6 +84,15 @@ Everything below can be done straight from **github.com** in your browser — no
    `bpm`, `key`, `tags`, and `cover` are all optional — leave any of them out and that part just doesn't show. Leaving `stripeLink` blank turns the card's button into "Ask on Discord" instead of "Buy," so it's safe to add a beat before its payment link exists. Standing default: all beats are listed at **$12** unless you decide otherwise for a specific one.
 4. Commit. The "coming soon" panel on the Beats page disappears automatically the moment there's at least one entry, and your new beat shows up with a working preview player and Buy button.
 
+### Getting beat submissions from producers
+The bottom of the Beats page has a "Get your beats on the site" form producers can fill out themselves — producer name, optional photo/logo, bio, social links, beat store link, then the beat's title, BPM, key, genre, mood/tags, price, which license types they offer (MP3/WAV/Unlimited/Exclusive), an optional cover image, the MP3 preview file, an optional WAV link (WAV files are usually too big to attach directly, so it's a link instead — Google Drive, Dropbox, WeTransfer, whatever), and a required checkbox confirming they own the beat and are okay with it being featured on rowen.work. One beat per submission — a producer with several sends the form again for each one.
+
+**Nothing about this form is automatic.** Same as review submissions, it just lands in your inbox (subject "New Beat Submission") — nobody's beat goes on the site until you personally review it, agree on the details (including any revenue split — see "Hosting other producers' beats" below), and add it to `config.js` yourself following "Adding a new beat" above. Think of the form as replacing "please DM me your beat and info on Discord" with something more organized, not as a self-service upload tool.
+
+By default, submissions go to the same inbox as everything else (Formspree form `xojgvwbp`). If you'd rather keep beat submissions in a separate view, set `beatsFormspreeId` in `config.js` to a second Formspree form's ID — see the comment right above it.
+
+A couple of technical notes if you're ever debugging a submission that didn't come through: the MP3 preview, cover image, and producer photo are real file uploads, so they're subject to the same Formspree file-attachment limits mentioned earlier in this README (free plans may not support attachments at all) — if a submission with files gets rejected, the form automatically retries without them and adds a note asking the producer to resend files via Discord instead, exactly like the order form does with reference files.
+
 ### Hosting other producers' beats
 You can list a beat made by another producer and automatically split each sale with them, using Stripe Connect — no code or backend needed, just an extra step or two per producer/beat on top of the normal "Adding a new beat" flow above. **On this site, you (Rowen) are always the merchant of record and you handle any refunds/disputes yourself**, same as every other sale — the producer never needs their own storefront or support process.
 

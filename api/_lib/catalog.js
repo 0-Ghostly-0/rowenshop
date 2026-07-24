@@ -17,11 +17,11 @@
    walkthrough of what to fill in here when a plugin is ready.
    ========================================================= */
 module.exports = {
-   'vocal-polish': {
-     name: 'Rowen Vocal Polish',
-     priceId: 'price_1TwTBOL5jHly4mj0pEsXIVpO',      // from the Stripe Dashboard, NOT a Payment Link
-     downloadUrl: 'https://sqq3du9z1jhiaayr.public.blob.vercel-storage.com/Rowen-Vocal-Polish-Installer%20PRO%20LICENSE.zip'
-   }
+  // 'vocal-polish': {
+  //   name: 'Rowen Vocal Polish',
+  //   priceId: 'price_xxxxxxxxxxxxx',      // from the Stripe Dashboard, NOT a Payment Link
+  //   downloadUrl: 'https://example.com/path/to/rowen-vocal-polish-v1.0.0.zip'
+  // }
   'fragment': {
     name: 'Rowen Fragment',
     priceId: 'price_1TwkKsL5jHly4mj0dG4BHFxu',

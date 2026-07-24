@@ -399,6 +399,18 @@ const SITE_CONFIG = {
      if you'd rather keep reviews in a completely separate inbox view. */
   reviewsFormspreeId: "",
 
+  /* ---------- beat submissions (Beats page "Get your beats on the
+     site" form) ----------
+     Same idea as reviewsFormspreeId above: leave blank to send producer
+     beat submissions to the SAME Formspree form as everything else
+     (clearly labeled "New Beat Submission" in your inbox), or set this
+     to a separate Formspree form's ID to keep them in their own inbox
+     view. Submissions never publish automatically — see the README
+     "Hosting other producers' beats" section for what to do once one
+     comes in (Stripe Connect onboarding, adding it to the beats: array
+     above, etc.). */
+  beatsFormspreeId: "",
+
   /* ---------- policies ----------
      Placeholder legal-style text so the site doesn't feel unfinished.
      Everything here is generic boilerplate — have it reviewed

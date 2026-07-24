@@ -1608,6 +1608,237 @@ function resetReviewSubmitButton(){
   reviewSubmitText.textContent = 'Submit Review';
 }
 
+/* =========================================================
+   PRODUCER BEAT SUBMISSION FORM (Beats page) — lets a producer send
+   over a beat + their info. Like the review form above, this never
+   publishes anything automatically: it lands in the inbox labeled
+   "New Beat Submission," and Rowen adds it by hand (see the README
+   "Hosting other producers' beats" section) after agreeing on details
+   like the revenue split. One beat per submission — a producer with
+   several beats just submits this again for each one.
+   ========================================================= */
+const beatSubmitForm = document.getElementById('beatSubmitForm');
+const beatSubmitStatus = document.getElementById('beatSubmitStatus');
+const beatSubmitBtn = document.getElementById('beatSubmitBtn');
+const beatSubmitText = document.getElementById('beatSubmitText');
+const beatSubmitLoadedAt = Date.now();
+
+const BEAT_FILE_MAX_MB = 15;
+const BEAT_IMAGE_TYPES = ['image/png','image/jpeg','image/webp','image/gif'];
+const BEAT_AUDIO_TYPES = ['audio/mpeg','audio/mp3'];
+
+/* Wires a single-file drop zone (used for producer photo, beat cover,
+   and the MP3 preview). Simpler than the order form's multi-file
+   reference uploader above since each of these only ever holds one
+   file — just validates type/size and swaps the drop-zone text to
+   show the selected filename (or an error, clearing the bad file). */
+function wireSingleFileDrop({ inputId, dropId, textId, types, typeLabel, placeholder }){
+  const input = document.getElementById(inputId);
+  const drop = document.getElementById(dropId);
+  const text = document.getElementById(textId);
+  if (!input || !drop || !text) return;
+
+  // Reuses the same setFieldError() the generic required-field validator
+  // uses (toggles the wrapping .field's has-error class + its
+  // .field-error span) instead of a separate show/hide mechanism —
+  // otherwise a required file input's "This field is required" error
+  // (set by validateStep) and this drop zone's own type/size errors
+  // would fight over two different ways of hiding the same element.
+  function showError(message){
+    setFieldError(input, message);
+  }
+
+  function applyFile(file){
+    if (!file) { text.textContent = placeholder; showError(''); return; }
+    if (!types.includes(file.type)) {
+      showError(`"${file.name}" isn't a supported ${typeLabel} type.`);
+      input.value = '';
+      text.textContent = placeholder;
+      return;
+    }
+    if (file.size > BEAT_FILE_MAX_MB * 1024 * 1024) {
+      showError(`"${file.name}" is over the ${BEAT_FILE_MAX_MB}MB limit.`);
+      input.value = '';
+      text.textContent = placeholder;
+      return;
+    }
+    showError('');
+    text.textContent = file.name;
+  }
+
+  input.addEventListener('change', () => applyFile(input.files && input.files[0]));
+  ['dragover','dragenter'].forEach(evt => drop.addEventListener(evt, (e) => { e.preventDefault(); drop.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(evt => drop.addEventListener(evt, (e) => { e.preventDefault(); drop.classList.remove('drag'); }));
+  drop.addEventListener('drop', (e) => {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!file) return;
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    applyFile(file);
+  });
+}
+
+if (beatSubmitForm) {
+  wireSingleFileDrop({
+    inputId: 'beatProducerPhoto', dropId: 'beatProducerPhotoDrop', textId: 'beatProducerPhotoText',
+    types: BEAT_IMAGE_TYPES, typeLabel: 'image',
+    placeholder: 'Drop an image here or click to browse'
+  });
+  wireSingleFileDrop({
+    inputId: 'beatCover', dropId: 'beatCoverDrop', textId: 'beatCoverText',
+    types: BEAT_IMAGE_TYPES, typeLabel: 'image',
+    placeholder: 'Drop an image here or click to browse'
+  });
+  wireSingleFileDrop({
+    inputId: 'beatMp3', dropId: 'beatMp3Drop', textId: 'beatMp3Text',
+    types: BEAT_AUDIO_TYPES, typeLabel: 'MP3',
+    placeholder: 'Drop an MP3 here or click to browse'
+  });
+}
+
+function setBeatLicenseError(message){
+  const wrap = document.getElementById('beatLicenseField');
+  const errorEl = document.getElementById('beatLicenseError');
+  if (message) {
+    if (wrap) wrap.classList.add('has-error');
+    if (errorEl) errorEl.textContent = message;
+  } else {
+    if (wrap) wrap.classList.remove('has-error');
+    if (errorEl) errorEl.textContent = '';
+  }
+}
+
+/* Same two-part pattern as validateReviewForm above: run the generic
+   required-field validator first, then check the license checkbox
+   group separately since "at least one of several checkboxes" isn't
+   something validateStep's single-field logic covers. */
+function validateBeatSubmitForm(){
+  if (!beatSubmitForm) return null;
+  const textInvalid = validateStep(beatSubmitForm);
+  const licenseChecked = beatSubmitForm.querySelector('input[name="license"]:checked');
+  let licenseInvalid = null;
+  if (!licenseChecked) {
+    setBeatLicenseError('Pick at least one license type.');
+    licenseInvalid = beatSubmitForm.querySelector('input[name="license"]');
+  } else {
+    setBeatLicenseError('');
+  }
+  return textInvalid || licenseInvalid;
+}
+
+if (beatSubmitForm) {
+  beatSubmitForm.querySelectorAll('input[name="license"]').forEach(c=>{
+    c.addEventListener('change', ()=>setBeatLicenseError(''));
+  });
+  // Skips type="file" here on purpose — wireSingleFileDrop's own change
+  // handler already sets the correct error (or clears it) after actually
+  // validating the picked file. This blind "clear on change" is only
+  // safe for fields where any change means the field is now fine.
+  beatSubmitForm.querySelectorAll('[required]:not([type="file"])').forEach(f=>{
+    f.addEventListener('input', ()=>setFieldError(f, ''));
+    f.addEventListener('change', ()=>setFieldError(f, ''));
+  });
+
+  beatSubmitForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const firstInvalid = validateBeatSubmitForm();
+    if (firstInvalid) { firstInvalid.focus(); return; }
+    // basic bot check: honeypot filled, or submitted implausibly fast
+    const honeypot = beatSubmitForm.querySelector('input[name="_gotcha"]');
+    const elapsed = Date.now() - beatSubmitLoadedAt;
+    if ((honeypot && honeypot.value) || elapsed < 2000) { return; } // silently drop — likely a bot
+    submitBeatForm();
+  });
+}
+
+async function submitBeatForm(){
+  if (!beatSubmitForm) return;
+  const formspreeId = CFG.beatsFormspreeId || CFG.formspreeId;
+  beatSubmitBtn.disabled = true;
+  beatSubmitBtn.setAttribute('aria-disabled','true');
+  beatSubmitText.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending…';
+  beatSubmitStatus.textContent = '';
+  beatSubmitStatus.className = 'form-status';
+
+  const fileFields = ['producerPhoto','coverImage','mp3Preview'];
+  const attachedNames = fileFields
+    .map(name => beatSubmitForm.querySelector(`[name="${name}"]`))
+    .filter(input => input && input.files && input.files[0])
+    .map(input => input.files[0].name);
+
+  if (!formspreeId || formspreeId === 'YOUR_FORM_ID') {
+    const data = new FormData(beatSubmitForm);
+    const licenses = data.getAll('license').join(', ') || '—';
+    const body = encodeURIComponent(
+      `Producer: ${data.get('producerName')}\nBio: ${data.get('bio')||'—'}\nSocial links: ${data.get('socialLinks')||'—'}\nBeat store link: ${data.get('storeLink')||'—'}\n\nBeat Title: ${data.get('beatTitle')}\nBPM: ${data.get('bpm')||'—'}\nKey: ${data.get('key')||'—'}\nGenre: ${data.get('genre')||'—'}\nMood/Tags: ${data.get('mood')||'—'}\nPrice: ${data.get('price')||'12 (default)'}\nLicense types: ${licenses}\nWAV link: ${data.get('wavLink')||'—'}\n\n(Note: attach files — ${attachedNames.length ? attachedNames.join(', ') : 'none selected'} — separately, they can't come through email links.)`
+    );
+    window.location.href = `mailto:${CFG.business.email}?subject=${encodeURIComponent('New Beat Submission: '+(data.get('beatTitle')||data.get('producerName')))}&body=${body}`;
+    resetBeatSubmitButton();
+    showToast('Opening your email client to send this — attach your files there too.');
+    return;
+  }
+
+  const hadFiles = attachedNames.length > 0;
+
+  try{
+    let res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:new FormData(beatSubmitForm)
+    });
+
+    let sentWithoutFiles = false;
+
+    // Same fallback as the order form above: some Formspree plans don't
+    // support file attachments, which fails the whole submission even
+    // though the text fields are fine. Retry once without the files so
+    // the submission still gets through, and tell the producer to send
+    // the files another way instead of losing the whole thing.
+    if(!res.ok && hadFiles){
+      const retryData = new FormData(beatSubmitForm);
+      fileFields.forEach(name => retryData.delete(name));
+      retryData.set('filesNote', `This submission included ${attachedNames.length} file(s) (${attachedNames.join(', ')}) that couldn't be delivered automatically (file uploads may require a Formspree plan upgrade). Ask the producer to resend via Discord or email.`);
+      res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method:'POST',
+        headers:{'Accept':'application/json'},
+        body: retryData
+      });
+      sentWithoutFiles = res.ok;
+    }
+
+    if(res.ok){
+      beatSubmitForm.reset();
+      ['beatProducerPhotoText','beatCoverText'].forEach(id=>{
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Drop an image here or click to browse';
+      });
+      const mp3Text = document.getElementById('beatMp3Text');
+      if (mp3Text) mp3Text.textContent = 'Drop an MP3 here or click to browse';
+      const successMsg = sentWithoutFiles
+        ? "Submitted! Your files couldn't come through automatically — please send them to me on Discord so I have everything."
+        : "Beat submitted — thank you! I'll review it and follow up before anything goes live.";
+      beatSubmitStatus.textContent = successMsg;
+      beatSubmitStatus.classList.add('is-success');
+      showToast(successMsg);
+    } else {
+      beatSubmitStatus.textContent = 'Something went wrong sending that. Please try again or send it on Discord instead.';
+      beatSubmitStatus.classList.add('is-error');
+      showToast('Could not send — please try again or use Discord instead.', true);
+    }
+  }catch(err){
+    beatSubmitStatus.textContent = 'Network error — please try again or send it on Discord instead.';
+    beatSubmitStatus.classList.add('is-error');
+    showToast('Network error — please try again.', true);
+  }
+  resetBeatSubmitButton();
+}
+function resetBeatSubmitButton(){
+  beatSubmitBtn.disabled = false;
+  beatSubmitBtn.removeAttribute('aria-disabled');
+  beatSubmitText.textContent = 'Submit Beat';
+}
+
 function showToast(msg, isError){
   const toast = document.getElementById('toast');
   toast.textContent = msg;

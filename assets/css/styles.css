@@ -854,6 +854,9 @@ form{display:flex;flex-direction:column;gap:18px;}
 }
 .field-checkbox label{text-transform:none;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--dim);letter-spacing:0;}
 .field-checkbox label button{color:var(--accent);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;font:inherit;}
+.license-checks{display:flex;flex-wrap:wrap;gap:10px 22px;}
+.license-check{display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--dim);cursor:pointer;}
+.license-check input[type="checkbox"]{width:18px;height:18px;flex:0 0 auto;accent-color:var(--accent);background:var(--card);}
 /* honeypot — visually hidden, still in DOM/tab order excluded, screen readers skip via aria-hidden */
 .hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 .file-drop{
